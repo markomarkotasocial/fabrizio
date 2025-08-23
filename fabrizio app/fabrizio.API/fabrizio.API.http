@@ -1,0 +1,6 @@
+@fabrizio.API_HostAddress = http://localhost:5250
+
+GET {{fabrizio.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
