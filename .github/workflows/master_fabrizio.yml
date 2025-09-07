@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./fabrizio app/fabrizio.API/publish
 
   deploy:
     runs-on: windows-latest
@@ -66,4 +66,5 @@ jobs:
           package: .
 
           
+
 
