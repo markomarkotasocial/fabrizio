@@ -25,17 +25,17 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: fabrizio app/fabrizio.API
+        working-directory: "fabrizio app/fabrizio.API"
 
       - name: dotnet publish
-        run: dotnet publish -c Release
-        working-directory: fabrizio app/fabrizio.API
+        run: dotnet publish -c Release -o ./publish
+        working-directory: "fabrizio app/fabrizio.API"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./fabrizio app/fabrizio.API/publish
+          path: "fabrizio app/fabrizio.API/publish"
 
   deploy:
     runs-on: windows-latest
@@ -66,5 +66,6 @@ jobs:
           package: .
 
           
+
 
 
