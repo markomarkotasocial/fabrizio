@@ -67,7 +67,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="dto"></param>
 		/// <returns></returns>
 		[HttpPost("")]
-		[AllowAnonymous]
+		[Authorize]
 		public async Task<IActionResult> Create([FromBody] POSTTrip dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
