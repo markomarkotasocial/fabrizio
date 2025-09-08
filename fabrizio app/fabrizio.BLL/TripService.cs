@@ -11,9 +11,10 @@ namespace fabrizio.BLL
 	public interface ITripService
 	{
 		Task<DTO.GETTrip> GetById(Guid id);
-		Task<PagedResult<DTO.GETTrip>> GetAll(int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
-		Task<Trip> Create(POSTTrip dto);
-		Task Update(Guid id, PUTTrip dto);
+		Task<PagedResult<DTO.GETTrip>> GetAll(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Trip> Create(int accountid, POSTTrip dto);
+		Task Update(int accountid, Guid id, PUTTrip dto);
+		Task Delete(int accountid, Guid id);
 	}
 
 	public class TripService : ITripService
@@ -51,10 +52,8 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<PagedResult<DTO.GETTrip>> GetAll(int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<PagedResult<DTO.GETTrip>> GetAll(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
 		{
-			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
-
 			#region Validate
 
 			if (accountid < 0)
@@ -113,10 +112,8 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<Trip> Create(POSTTrip dto)
+		public async Task<Trip> Create(int accountid, POSTTrip dto)
 		{
-			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
-
 			#region Validate
 
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
@@ -148,10 +145,8 @@ namespace fabrizio.BLL
 			return trip;
 		}
 
-		public async Task Update(Guid id, PUTTrip dto)
+		public async Task Update(int accountid, Guid id, PUTTrip dto)
 		{
-			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
-
 			#region Validate
 
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
@@ -178,7 +173,20 @@ namespace fabrizio.BLL
 			await _repository.SaveChangesAsync();
 		}
 
+		public async Task Delete(int accountid, Guid id)
+		{
+			#region Validate
 
+			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
+
+			Trip? trip = await _repository.GetById(id);
+			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
+
+			#endregion Validate
+
+			_repository.Delete(trip);
+			await _repository.SaveChangesAsync();
+		}
 
 
 	}

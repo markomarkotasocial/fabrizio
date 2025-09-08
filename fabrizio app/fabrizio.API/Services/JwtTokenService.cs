@@ -1,11 +1,11 @@
-﻿using System;
+﻿using fabrizio.DAL.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-
-using fabrizio.DAL.Entities;
 
 namespace fabrizio.API.Services
 {
@@ -28,7 +28,8 @@ namespace fabrizio.API.Services
 		{
 			var claims = new[]
 			{
-				new Claim(JwtRegisteredClaimNames.Sub, account.Id.ToString()),
+				//new Claim(JwtRegisteredClaimNames.Sub, account.Id.ToString()),
+				new Claim("accountId", account.Id.ToString()),			
 				new Claim(JwtRegisteredClaimNames.Email, account.Email),
 				new Claim("name", account.Name),
 				new Claim("status", account.Status.ToString())
