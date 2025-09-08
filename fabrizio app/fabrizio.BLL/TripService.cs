@@ -1,18 +1,19 @@
-﻿using fabrizio.DAL;
+﻿using Microsoft.EntityFrameworkCore;
+
+using fabrizio.DAL;
+using fabrizio.DAL.Entities;
 using fabrizio.DTO;
 using fabrizio.Repository;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace fabrizio.BLL
 {
 	public interface ITripService
 	{
-		Task<PagedResult<DTO.GETTrip>> GetAllAsync(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
-		//Task<DTO.Trip?> GetByIdAsync(int id);
-		//Task AddAsync(DTO.Trip trip);
-		//Task UpdateAsync(DTO.Trip trip);
-		//Task DeleteAsync(int id);
+		Task<DTO.GETTrip> GetById(Guid id);
+		Task<PagedResult<DTO.GETTrip>> GetAll(int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Trip> Create(POSTTrip dto);
+		Task Update(Guid id, PUTTrip dto);
 	}
 
 	public class TripService : ITripService
@@ -26,8 +27,34 @@ namespace fabrizio.BLL
 			_context = context;	
 		}
 
-		public async Task<PagedResult<DTO.GETTrip>> GetAllAsync(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
+
+
+		public async Task<DTO.GETTrip> GetById(Guid id)
 		{
+			#region Validate
+
+			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
+
+			Trip? trip = await _repository.GetById(id);
+			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
+
+			#endregion Validate
+
+			return new DTO.GETTrip
+			{
+				Id = trip.Id,
+				Status = (int)trip.Status,
+				Name = trip.Name,
+				Destination = trip.Destination,
+				StartDate = trip.StartDate,
+				EndDate = trip.EndDate
+			};
+		}
+
+		public async Task<PagedResult<DTO.GETTrip>> GetAll(int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
+		{
+			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
+
 			#region Validate
 
 			if (accountid < 0)
@@ -38,7 +65,7 @@ namespace fabrizio.BLL
 			
 			#endregion Validate
 
-			var query = _repository.QueryByAccount(accountid);
+			var query = _repository.QueryAll(accountid);
 
 			#region Filters
 
@@ -86,33 +113,74 @@ namespace fabrizio.BLL
 			};
 		}
 
+		public async Task<Trip> Create(POSTTrip dto)
+		{
+			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
 
-		//public async Task<DTO.Trip?> GetByIdAsync(int id)
-		//{
-		//	return await _repository.GetByIdAsync(id);
-		//}
+			#region Validate
 
-		//public async Task AddAsync(DTO.Trip trip)
-		//{
-		//	// Example business rule: trip must have end date after start date
-		//	if (trip.EndDate <= trip.StartDate)
-		//		throw new ArgumentException("End date must be after start date.");
+			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
-		//	await _repository.AddAsync(trip);
-		//}
+			if (string.IsNullOrWhiteSpace(dto.Name))
+				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
-		//public async Task UpdateAsync(DTO.Trip trip)
-		//{
-		//	if (trip.EndDate <= trip.StartDate)
-		//		throw new ArgumentException("End date must be after start date.");
+			if (dto.StartDate != null && dto.EndDate != null)
+			{
+				if (dto.EndDate < dto.StartDate)
+					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
+			}
 
-		//	await _repository.UpdateAsync(trip);
-		//}
 
-		//public async Task DeleteAsync(int id)
-		//{
-		//	await _repository.DeleteAsync(id);
-		//}
+			#endregion Validate
+
+			var trip = new Trip
+			{
+				AccountId = accountid,
+				Name = dto.Name, 
+				Destination = dto.Destination, 
+				StartDate = dto.StartDate, 
+				EndDate = dto.EndDate, 
+				Status= TripStatus.Planned
+			};
+
+			_repository.Add(trip);
+			await _repository.SaveChangesAsync();
+			return trip;
+		}
+
+		public async Task Update(Guid id, PUTTrip dto)
+		{
+			int accountid = 100000; // TO BE REPLACED WITH THE ACTUAL ACCOUNT ID FROM THE CONTEXT
+
+			#region Validate
+
+			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+
+			if (string.IsNullOrWhiteSpace(dto.Name))
+				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+
+			if (dto.StartDate != null && dto.EndDate != null)
+			{
+				if (dto.EndDate < dto.StartDate)
+					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
+			}
+
+			var trip = await _repository.GetById(id);
+			if (trip == null)
+				throw new KeyNotFoundException("There is no trip with the specified ID.");
+
+			#endregion Validate
+
+			trip.Name = dto.Name;
+			trip.StartDate = dto.StartDate;
+			trip.EndDate = dto.EndDate;
+
+			await _repository.SaveChangesAsync();
+		}
+
+
+
+
 	}
 
 }

@@ -14,7 +14,6 @@ namespace fabrizio.Repository
 		Task<Account?> GetById(int id);
 		Task<bool> AnyAsync(string email);
 		void Add(Account account);
-		//void Update(Account account);
 		void Delete(Account account);
 	}
 
@@ -56,11 +55,6 @@ namespace fabrizio.Repository
 		{
 			_context.Accounts.Add(account);
 		}
-
-		//public void Update(Account account)
-		//{
-		//	_context.Accounts.Update(account);
-		//}
 
 		public void Delete(Account account)
 		{

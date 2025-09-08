@@ -8,11 +8,12 @@ namespace fabrizio.Repository
 {
 	public interface ITripRepository
 	{
-		IQueryable<Trip> QueryByAccount(int accountId);
-		//Task<Trip?> GetByIdAsync(int id);
-		//Task AddAsync(Trip trip);
-		//Task UpdateAsync(Trip trip);
-		Task DeleteAsync(int id);
+		Task SaveChangesAsync();
+
+		IQueryable<Trip> QueryAll(int accountid);
+		Task<Trip?> GetById(Guid id);
+		void Add(Trip trip);
+		void Delete(Trip trip);
 	}
 
 
@@ -26,37 +27,33 @@ namespace fabrizio.Repository
 			_context = context;
 		}
 
-		public IQueryable<Trip> QueryByAccount(int accountId)
+		public async Task SaveChangesAsync()
 		{
-			return _context.Trips.AsNoTracking().Where(t => t.AccountId == accountId);
+			await _context.SaveChangesAsync();
 		}
 
 
-		//public async Task<Trip?> GetByIdAsync(int id)
-		//{
-		//	return await _context.Trips.FindAsync(id);
-		//}
 
-		//public async Task AddAsync(Trip trip)
-		//{
-		//	_context.Trips.Add(trip);
-		//	await _context.SaveChangesAsync();
-		//}
-
-		//public async Task UpdateAsync(Trip trip)
-		//{
-		//	_context.Trips.Update(trip);
-		//	await _context.SaveChangesAsync();
-		//}
-
-		public async Task DeleteAsync(int id)
+		public IQueryable<Trip> QueryAll(int accountid)
 		{
-			var trip = await _context.Trips.FindAsync(id);
-			if (trip != null)
-			{
-				_context.Trips.Remove(trip);
-				await _context.SaveChangesAsync();
-			}
+			return _context.Trips.Where(x => x.AccountId == accountid).AsNoTracking();
+		}
+
+		public async Task<Trip?> GetById(Guid id)
+		{
+			return await _context.Trips.FindAsync(id);
+		}
+
+		public void Add(Trip trip)
+		{
+			_context.Trips.Add(trip);
+		}
+
+
+
+		public void Delete(Trip trip)
+		{
+			_context.Trips.Remove(trip);
 		}
 
 
