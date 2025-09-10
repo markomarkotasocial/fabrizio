@@ -4,25 +4,23 @@
              x:Class="fabrizio.App.LoginPage"
              Title="Login">
 
+	<!-- UI goes here -->
 
 
-	<VerticalStackLayout Padding="20" Spacing="15">
+<VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+		<Label Text="Email" FontSize="18" HorizontalOptions="Center" />
+		<Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" />
+		<Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+		<Button Text="Login" Clicked="OnLoginClicked" />
+		<Label Text="" TextColor= "PaleVioletRed" x:Name="MessageLabel" HorizontalOptions="Center" />
 
-		<Label x:Name="MessageLabel"
-               Text=""
-               TextColor="Red"
-               FontSize="14" />
-
-		<Entry x:Name="EmailEntry"
-               Placeholder="Email"
-               Keyboard="Email" />
-
-		<Entry x:Name="PasswordEntry"
-               Placeholder="Password"
-               IsPassword="True" />
-
-		<Button Text="Login"
-                Clicked="OnLoginClicked" />
-
+		<Label Text="or choose other options" FontSize="18" HorizontalOptions="Center" />
+		<Button Text="Login with Google (coming soon)" IsEnabled="False" />
+		<Button Text="Login with Microsoft (coming soon)" IsEnabled="False" />
+		<Button Text="Login with Apple (coming soon)" IsEnabled="False" />
+	    <Button Text="Login with Facebook (coming soon)" IsEnabled="False" />
 	</VerticalStackLayout>
+
+
+
 </ContentPage>
