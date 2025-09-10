@@ -1,26 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fabrizio.App.LoginPage"
-             Title="Login">
+             x:Class="fabrizio.App.LoginPage">
 
-	<!-- UI goes here -->
+	<ScrollView>
+		<VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center"
+                             BackgroundColor="White">
 
+			<Label Text="Login using e-mail" FontSize="16" HorizontalOptions="Center" TextColor="Black"/>
 
-<VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
-		<Label Text="Email" FontSize="18" HorizontalOptions="Center" />
-		<Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" />
-		<Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
-		<Button Text="Login" Clicked="OnLoginClicked" />
-		<Label Text="" TextColor= "PaleVioletRed" x:Name="MessageLabel" HorizontalOptions="Center" />
+			<Frame BorderColor="Gray" CornerRadius="8" Padding="5" BackgroundColor="White">
+				<Entry x:Name="EmailEntry"  
+                   Placeholder="Email" 
+                   PlaceholderColor="DimGray" 
+                   Keyboard="Email" 
+                   TextColor="Black"/>
+			</Frame>
 
-		<Label Text="or choose other options" FontSize="18" HorizontalOptions="Center" />
-		<Button Text="Login with Google (coming soon)" IsEnabled="False" />
-		<Button Text="Login with Microsoft (coming soon)" IsEnabled="False" />
-		<Button Text="Login with Apple (coming soon)" IsEnabled="False" />
-	    <Button Text="Login with Facebook (coming soon)" IsEnabled="False" />
-	</VerticalStackLayout>
+			<Frame BorderColor="Gray" CornerRadius="8" Padding="5" BackgroundColor="White">
+				<Entry x:Name="PasswordEntry" 
+                   Placeholder="Password" 
+                   PlaceholderColor="DimGray" 
+                   IsPassword="True" 
+                   TextColor="Black"/>
+			</Frame>
 
+			<Button Text="Login" 
+                    Clicked="OnLoginClicked" 
+                    BackgroundColor="CornflowerBlue"/>
 
+			<Label Text="" 
+                   TextColor="Red" 
+                   x:Name="MessageLabel" 
+                   HorizontalOptions="Center" />
 
+			<Label Text="or choose other options" 
+                   FontSize="18" 
+                   HorizontalOptions="Center" 
+                   TextColor="Black"/>
+
+			<Button Text="Login with Google (coming soon)" 
+                    IsEnabled="False" 
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+
+			<Button Text="Login with Microsoft (coming soon)" 
+                    IsEnabled="False" 
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+
+			<Button Text="Login with Apple (coming soon)" 
+                    IsEnabled="False" 
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+
+			<Button Text="Login with Facebook (coming soon)" 
+                    IsEnabled="False" 
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+
+		</VerticalStackLayout>
+	</ScrollView>
 </ContentPage>

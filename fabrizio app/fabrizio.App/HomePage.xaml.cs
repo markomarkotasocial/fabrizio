@@ -15,6 +15,8 @@ namespace fabrizio.App
 			_httpClient = new HttpClient { BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/") };
 		}
 
+
+
 		private async void OnFetchTripsClicked(object sender, EventArgs e)
 		{
 			try
@@ -22,7 +24,7 @@ namespace fabrizio.App
 				var token = await SecureStorage.GetAsync("jwt_token");
 				if (string.IsNullOrEmpty(token))
 				{
-					ResultLabel.Text = "No token found. Please login.";
+					//ResultLabel.Text = "No token found. Please login.";
 					return;
 				}
 
@@ -31,16 +33,16 @@ namespace fabrizio.App
 				var response = await _httpClient.GetAsync("api/trips");
 				if (!response.IsSuccessStatusCode)
 				{
-					ResultLabel.Text = $"Error: {response.StatusCode}";
+					//ResultLabel.Text = $"Error: {response.StatusCode}";
 					return;
 				}
 
 				var json = await response.Content.ReadAsStringAsync();
-				ResultLabel.Text = json;
+				//ResultLabel.Text = json;
 			}
 			catch (Exception ex)
 			{
-				ResultLabel.Text = "Error: " + ex.Message;
+				//ResultLabel.Text = "Error: " + ex.Message;
 			}
 		}
 	}
