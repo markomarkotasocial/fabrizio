@@ -20,6 +20,7 @@ builder.Services.AddScoped<ITripRepository, TripRepository>();
 
 // Register Services
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 

@@ -1,6 +1,11 @@
 ﻿namespace fabrizio.DTO
 {
 
+	public class GoogleLoginDto
+	{
+		public required string IdToken { get; set; }
+	}
+
 	public class LoginDto
 	{
 		public required string Email { get; set; }

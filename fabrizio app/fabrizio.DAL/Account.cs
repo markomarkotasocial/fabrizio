@@ -19,9 +19,11 @@ namespace fabrizio.DAL.Entities
 	{
 		public AccountStatuses Status { get; set; } = AccountStatuses.Inactive;
 
-		public required string Email { get; set; }
-		public string PasswordHash { get; set; } = string.Empty; // store securely
+		public required string Email { get; set; }		
 		public string Name { get; set; } = string.Empty;
+
+		public string? PasswordHash { get; set; } 
+		//public string? GoogleId { get; set; }
 
 
 		public List<Trip> Trips { get; set; } = new();
