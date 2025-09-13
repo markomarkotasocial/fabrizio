@@ -1,18 +1,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fabrizio.App.HomePage"
-             Title="Home">
+             x:Class="fabrizio.App.TripsPage"
+             Title="Trips">
 
 	<ScrollView>
 		<VerticalStackLayout Padding="20" Spacing="15">
-			<Label Text="Welcome to Home Page!"
+			<Label Text="Welcome to Trips Page!"
                    FontSize="24"
                    TextColor="Black" />
 
 			<Label Text="This content is scrollable..." TextColor="Gray"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
 			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
 			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
 			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>

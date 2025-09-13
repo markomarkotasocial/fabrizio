@@ -1,15 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="fabrizio.App.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:fabrizio.App"
-    Shell.FlyoutBehavior="Disabled"
-    Title="fabrizio.App">
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:fabrizio.App"
+       x:Class="fabrizio.App.AppShell">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+	<!-- Bottom Tab Bar -->
+	<TabBar>
+		<ShellContent Title="Home"
+                      Icon="home.png"
+                      ContentTemplate="{DataTemplate local:HomePage}"
+					  Route="HomePage"/>
+
+		<ShellContent Title="Trips"
+                      Icon="trips.png"
+                      ContentTemplate="{DataTemplate local:TripsPage}" 
+					  Route="TripsPage"/>
+
+		<ShellContent Title="Add"
+                      Icon="add.png"
+                      ContentTemplate="{DataTemplate local:AddPage}"
+					  Route="TripsPage"/>
+
+		<ShellContent Title="Discover"
+                      Icon="discover.png"
+                      ContentTemplate="{DataTemplate local:DiscoverPage}"
+					  Route="DiscoverPage"/>
+
+		<ShellContent Title="Profile"
+					  Icon="profile.png"
+					  ContentTemplate="{DataTemplate local:ProfilePage}" 
+					  Route="ProfilePage"/>
+	</TabBar>
 
 </Shell>

@@ -5,11 +5,11 @@ using Microsoft.Maui.Storage;
 
 namespace fabrizio.App
 {
-	public partial class HomePage : ContentPage
+	public partial class TripsPage : ContentPage
 	{
 		private readonly HttpClient _httpClient;
 
-		public HomePage()
+		public TripsPage()
 		{
 			InitializeComponent();
 			_httpClient = new HttpClient { BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/") };

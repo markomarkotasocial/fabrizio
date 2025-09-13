@@ -1,4 +1,4 @@
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -42,16 +42,19 @@ namespace fabrizio.App
 				var json = await response.Content.ReadAsStringAsync();
 				using var doc = JsonDocument.Parse(json);
 
-				// robustly look for "token" case-insensitive
-				if (doc.RootElement.TryGetProperty("token", out var tokenProp) || doc.RootElement.TryGetProperty("Token", out tokenProp))
+				if (doc.RootElement.TryGetProperty("token", out var tokenProp) ||
+					doc.RootElement.TryGetProperty("Token", out tokenProp))
 				{
 					string token = tokenProp.GetString() ?? string.Empty;
 
 					// store token securely
 					await SecureStorage.SetAsync("jwt_token", token);
 
-					// navigate to home
-					await Navigation.PushAsync(new HomePage());
+					// 🔑 switch to AppShell instead of pushing a page
+					Application.Current.MainPage = new AppShell();
+
+					// optionally navigate to HomePage explicitly
+					await Shell.Current.GoToAsync("//HomePage");
 				}
 				else
 				{

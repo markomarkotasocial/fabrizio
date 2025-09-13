@@ -67,12 +67,36 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="AddPage.xaml.cs">
+	    <DependentUpon>AddPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="ProfilePage.xaml.cs">
+	    <DependentUpon>ProfilePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="DiscoverPage.xaml.cs">
+	    <DependentUpon>DiscoverPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="TripsPage.xaml.cs">
+	    <DependentUpon>TripsPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="AddPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="DiscoverPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="TripsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

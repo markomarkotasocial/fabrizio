@@ -5,10 +5,20 @@
              x:Class="fabrizio.App.App">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
+
+			<Style TargetType="TabBar" ApplyToDerivedTypes="True">
+				
+				<Setter Property="Shell.TabBarBackgroundColor" Value="Black" />
+				<Setter Property="Shell.TabBarTitleColor" Value="White" />
+				<Setter Property="Shell.TabBarUnselectedColor" Value="Gray" />
+				<Setter Property="Shell.TabBarForegroundColor" Value="White" />
+			</Style>
+
+			<ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+
+			</ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
