@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace fabrizio.DAL.Entities
 {
-	public enum AccomodationBookingTypes
+	public enum AccommodationBookingTypes
 	{
 		Other = 0,
 		Hotel,
@@ -15,10 +15,10 @@ namespace fabrizio.DAL.Entities
 		Private,		
 	}
 
-	public class AccomodationBooking : BaseEntityGuid
+	public class AccommodationBooking : BaseEntityGuid
 	{
 
-		public AccomodationBookingTypes Type { get; set; }
+		public AccommodationBookingTypes Type { get; set; }
 
 		public string Location { get; set; } = string.Empty;
 		//public string GpsCoordinates { get; set; } = string.Empty;

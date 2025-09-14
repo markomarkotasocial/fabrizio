@@ -48,7 +48,32 @@ namespace fabrizio.BLL
 				Name = trip.Name,
 				Destination = trip.Destination,
 				StartDate = trip.StartDate,
-				EndDate = trip.EndDate
+				EndDate = trip.EndDate,
+				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
+				{
+					Id = tb.Id,
+					TripId = tb.TripId,
+					Arrival = tb.Arrival,
+					Carrier = tb.Carrier,
+					Departure = tb.Departure,
+					Reference = tb.Reference,
+					Note = tb.Note,
+					Destination = tb.Destination,
+					Origin = tb.Origin,
+					Type = (int)tb.Type
+				}).ToList(),
+				AccommodationBookings = trip.AccommodationBookings.Select(ab => new DTO.GETAccommodationBooking
+				{
+					Id = ab.Id,
+					TripId = ab.TripId,
+					From = ab.From,
+					To = ab.To,					
+					Location = ab.Location, 
+					Name = ab.Name, 
+					Note = ab.Note, 
+					Reference = ab.Reference,
+					Type = (int)ab.Type
+				}).ToList(),
 			};
 		}
 

@@ -23,7 +23,7 @@ namespace fabrizio.DAL.Entities
 		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 
-		public List<AccomodationBooking> AccomodationBookings { get; set; } = new();
+		public List<AccommodationBooking> AccommodationBookings { get; set; } = new();
 		public List<TravelBooking> TravelBookings { get; set; } = new();
 
 		public int AccountId { get; set; }

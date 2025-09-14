@@ -15,7 +15,7 @@ namespace fabrizio.DAL
 		public DbSet<Entities.Account> Accounts { get; set; }
 		public DbSet<Entities.Trip> Trips { get; set; }
 		public DbSet<Entities.TravelBooking> TravelBookings { get; set; }
-		public DbSet<Entities.AccomodationBooking> AccomodationBookings { get; set; }
+		public DbSet<Entities.AccommodationBooking> AccommodationBookings { get; set; }
 
 
 
@@ -24,7 +24,7 @@ namespace fabrizio.DAL
 		{
 			modelBuilder.Entity<Account>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<Trip>().OwnsOne(e => e.Audit);
-			modelBuilder.Entity<AccomodationBooking>().OwnsOne(e => e.Audit);
+			modelBuilder.Entity<AccommodationBooking>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<TravelBooking>().OwnsOne(e => e.Audit);
 
 			// Apply all IEntityTypeConfiguration<T> in this assembly
@@ -163,11 +163,11 @@ namespace fabrizio.DAL
 		}
 	}
 
-	public class AccomodationBookingConfiguration : IEntityTypeConfiguration<Entities.AccomodationBooking>
+	public class AccommodationBookingConfiguration : IEntityTypeConfiguration<Entities.AccommodationBooking>
 	{
-		public void Configure(EntityTypeBuilder<Entities.AccomodationBooking> builder)
+		public void Configure(EntityTypeBuilder<Entities.AccommodationBooking> builder)
 		{
-			builder.ToTable("AccomodationBookings");
+			builder.ToTable("AccommodationBookings");
 
 			builder.HasKey(a => a.Id);
 

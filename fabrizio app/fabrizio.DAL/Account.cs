@@ -27,7 +27,7 @@ namespace fabrizio.DAL.Entities
 
 
 		public List<Trip> Trips { get; set; } = new();
-		public List<AccomodationBooking> AccomodationBookings { get; set; } = new();
+		public List<AccommodationBooking> AccommodationBookings { get; set; } = new();
 		public List<TravelBooking> TravelBookings { get; set; } = new();
 
 

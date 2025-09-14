@@ -9,6 +9,9 @@
 		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 
+		public IEnumerable<GETAccommodationBooking> AccommodationBookings { get; set; } = Enumerable.Empty<GETAccommodationBooking>();
+		public IEnumerable<GETTravelBooking> TravelBookings { get; set; } = Enumerable.Empty<GETTravelBooking>();
+
 	}
 
 	public class POSTTrip
