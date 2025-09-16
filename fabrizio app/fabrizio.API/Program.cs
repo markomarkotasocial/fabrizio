@@ -17,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
+builder.Services.AddScoped<ITravelBookingRepository, TravelBookingRepository>();
+builder.Services.AddScoped<IAccommodationBookingRepository, AccommodationBookingRepository>();
 
 // Register Services
 builder.Services.AddScoped<IAccountService, AccountService>();

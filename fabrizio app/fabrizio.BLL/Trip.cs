@@ -10,33 +10,42 @@ namespace fabrizio.BLL
 {
 	public interface ITripService
 	{
-		Task<DTO.GETTrip> GetById(Guid id);
-		Task<PagedResult<DTO.GETTrip>> GetAll(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
-		Task<Trip> Create(int accountid, POSTTrip dto);
-		Task Update(int accountid, Guid id, PUTTrip dto);
-		Task Delete(int accountid, Guid id);
+		Task<DTO.GETTrip> GetTripById(Guid id);
+		Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Trip> CreateTrip(int accountid, POSTTrip dto);
+		Task UpdateTrip(int accountid, Guid id, PUTTrip dto);
+		Task DeleteTrip(int accountid, Guid id);
+
+
+		Task<TravelBooking> CreateTravelBooking(int accountid, Guid tripid, POSTTravelBooking dto);
+
+
+		Task<TravelBooking> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto);
 	}
 
-	public class TripService : ITripService
+
+	public partial class TripService : ITripService
 	{
-		private readonly ITripRepository _repository;
+		private readonly ITripRepository _tripRepository;
+		private readonly ITravelBookingRepository _travelBookingRepository;
 		private readonly AppDbContext _context;
 
-		public TripService(ITripRepository repository, AppDbContext context)
+		public TripService(ITripRepository repository, ITravelBookingRepository travelBookingRepository, AppDbContext context)
 		{
-			_repository = repository;
+			_tripRepository = repository;
+			_travelBookingRepository = travelBookingRepository;
 			_context = context;	
 		}
 
 
 
-		public async Task<DTO.GETTrip> GetById(Guid id)
+		public async Task<DTO.GETTrip> GetTripById(Guid id)
 		{
 			#region Validate
 
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
 
-			Trip? trip = await _repository.GetById(id);
+			Trip? trip = await _tripRepository.GetById(id);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
 
 			#endregion Validate
@@ -77,7 +86,7 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<PagedResult<DTO.GETTrip>> GetAll(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
 		{
 			#region Validate
 
@@ -89,7 +98,7 @@ namespace fabrizio.BLL
 			
 			#endregion Validate
 
-			var query = _repository.QueryAll(accountid);
+			var query = _tripRepository.QueryAll(accountid);
 
 			#region Filters
 
@@ -137,9 +146,11 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<Trip> Create(int accountid, POSTTrip dto)
+		public async Task<Trip> CreateTrip(int accountid, POSTTrip dto)
 		{
 			#region Validate
+
+			if(accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
@@ -165,14 +176,16 @@ namespace fabrizio.BLL
 				Status= TripStatus.Planned
 			};
 
-			_repository.Add(trip);
-			await _repository.SaveChangesAsync();
+			_tripRepository.Add(trip);
+			await _tripRepository.SaveChangesAsync();
 			return trip;
 		}
 
-		public async Task Update(int accountid, Guid id, PUTTrip dto)
+		public async Task UpdateTrip(int accountid, Guid id, PUTTrip dto)
 		{
 			#region Validate
+
+			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
@@ -185,7 +198,7 @@ namespace fabrizio.BLL
 					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
 			}
 
-			var trip = await _repository.GetById(id);
+			var trip = await _tripRepository.GetById(id);
 			if (trip == null)
 				throw new KeyNotFoundException("There is no trip with the specified ID.");
 
@@ -195,22 +208,22 @@ namespace fabrizio.BLL
 			trip.StartDate = dto.StartDate;
 			trip.EndDate = dto.EndDate;
 
-			await _repository.SaveChangesAsync();
+			await _tripRepository.SaveChangesAsync();
 		}
 
-		public async Task Delete(int accountid, Guid id)
+		public async Task DeleteTrip(int accountid, Guid id)
 		{
 			#region Validate
 
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
 
-			Trip? trip = await _repository.GetById(id);
+			Trip? trip = await _tripRepository.GetById(id);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
 
 			#endregion Validate
 
-			_repository.Delete(trip);
-			await _repository.SaveChangesAsync();
+			_tripRepository.Delete(trip);
+			await _tripRepository.SaveChangesAsync();
 		}
 
 

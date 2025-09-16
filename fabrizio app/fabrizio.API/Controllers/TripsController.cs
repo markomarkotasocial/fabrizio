@@ -1,5 +1,6 @@
 ﻿using fabrizio.API.Services;
 using fabrizio.BLL;
+using fabrizio.DAL.Entities;
 using fabrizio.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,7 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var result = await _tripsService.GetAll(accountId, skip, take, name, destination, startdate, enddate);
+			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, destination, startdate, enddate);
 			return Ok(result);
 		}
 
@@ -57,7 +58,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetById(Guid id)
 		{
-			var result = await _tripsService.GetById(id);
+			var result = await _tripsService.GetTripById(id);
 			return Ok(result);
 		}
 
@@ -73,8 +74,24 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var trip = await _tripsService.Create(accountId, dto);
+			var trip = await _tripsService.CreateTrip(accountId, dto);
 			return CreatedAtAction(nameof(GetById), new { id = trip.Id }, trip);
+		}
+
+		/// <summary>
+		/// Create a new travel booking for a specific trip.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="dto"></param>
+		/// <returns></returns>
+		[HttpPost("{id:Guid}/travelbooking")]
+		public async Task<IActionResult> CreateTravelBooking(Guid id, [FromBody] POSTTravelBooking dto)
+		{
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			var travelbooking = await _tripsService.CreateTravelBooking(accountId, id, dto);
+			return CreatedAtAction(nameof(CreateTravelBooking), new { id = travelbooking.Id }, travelbooking);
 		}
 
 		/// <summary>
@@ -90,7 +107,7 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			await _tripsService.Update(accountId, id, dto);
+			await _tripsService.UpdateTrip(accountId, id, dto);
 			return NoContent();
 		}
 
@@ -106,7 +123,7 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			await _tripsService.Delete(accountId, id);
+			await _tripsService.DeleteTrip(accountId, id);
 			return NoContent();
 		}
 
