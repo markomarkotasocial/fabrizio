@@ -3,21 +3,9 @@
              x:Class="fabrizio.App.HomePage"
              Title="Home">
 
-	<ScrollView>
-		<VerticalStackLayout Padding="20" Spacing="15">
-			<Label Text="Welcome to Home Page!"
-                   FontSize="24"
-                   TextColor="Black" />
+	<Grid Padding="20">
 
-			<Label Text="This content is scrollable..." TextColor="Gray"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-		</VerticalStackLayout>
-	</ScrollView>
-
+		
+		
+	</Grid>
 </ContentPage>

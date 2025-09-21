@@ -1,49 +1,29 @@
+using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Microsoft.Maui.Storage;
+using fabrizio.App.Services;
 
 namespace fabrizio.App
 {
 	public partial class TripsPage : ContentPage
 	{
-		private readonly HttpClient _httpClient;
+		private readonly TripsViewModel _viewModel;
 
-		public TripsPage()
+		public TripsPage(TripsViewModel viewModel)
 		{
 			InitializeComponent();
-			_httpClient = new HttpClient { BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/") };
+			BindingContext = _viewModel = viewModel;
 		}
 
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
 
-
-		//private async void OnFetchTripsClicked(object sender, EventArgs e)
-		//{
-		//	try
-		//	{
-		//		var token = await SecureStorage.GetAsync("jwt_token");
-		//		if (string.IsNullOrEmpty(token))
-		//		{
-		//			//ResultLabel.Text = "No token found. Please login.";
-		//			return;
-		//		}
-
-		//		_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-		//		var response = await _httpClient.GetAsync("api/trips");
-		//		if (!response.IsSuccessStatusCode)
-		//		{
-		//			//ResultLabel.Text = $"Error: {response.StatusCode}";
-		//			return;
-		//		}
-
-		//		var json = await response.Content.ReadAsStringAsync();
-		//		//ResultLabel.Text = json;
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		//ResultLabel.Text = "Error: " + ex.Message;
-		//	}
-		//}
+			if (_viewModel.Trips.Count == 0)
+			{
+				await _viewModel.LoadCommand.ExecuteAsync(null);
+			}
+		}
 	}
 }
