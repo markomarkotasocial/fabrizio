@@ -36,12 +36,12 @@ namespace fabrizio.Repository
 
 		public IQueryable<Trip> QueryAll(int accountid)
 		{
-			return _context.Trips.Where(x => x.AccountId == accountid).AsNoTracking();
+			return _context.Trips.Where(x => x.AccountId == accountid).Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).AsNoTracking();
 		}
 
 		public async Task<Trip?> GetById(Guid id)
 		{
-			return await _context.Trips.FindAsync(id);
+			return await _context.Trips.Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).FirstOrDefaultAsync(t => t.Id == id); 
 		}
 
 		public void Add(Trip trip)

@@ -34,22 +34,10 @@ namespace fabrizio.Repository
 
 
 
-		//public IQueryable<Trip> QueryAll(int accountid)
-		//{
-		//	return _context.Trips.Where(x => x.AccountId == accountid).AsNoTracking();
-		//}
-
-		//public async Task<Trip?> GetById(Guid id)
-		//{
-		//	return await _context.Trips.FindAsync(id);
-		//}
-
 		public void Add(TravelBooking travelbooking)
 		{
 			_context.TravelBookings.Add(travelbooking);
 		}
-
-
 
 		public void Delete(TravelBooking travelbooking)
 		{

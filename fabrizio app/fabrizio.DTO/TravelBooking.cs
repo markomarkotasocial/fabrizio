@@ -24,7 +24,6 @@
 		public string Note { get; set; } = string.Empty;
 		public DateTime? Departure { get; set; }
 		public DateTime? Arrival { get; set; }
-		public Guid? TripId { get; set; }
 
 	}
 
@@ -39,7 +38,6 @@
 		public string Note { get; set; } = string.Empty;
 		public DateTime? Departure { get; set; }
 		public DateTime? Arrival { get; set; }
-		public Guid? TripId { get; set; }
 	}
 
 
