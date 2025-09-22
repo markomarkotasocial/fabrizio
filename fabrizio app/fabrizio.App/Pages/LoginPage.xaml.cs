@@ -54,7 +54,7 @@ namespace fabrizio.App
 					Application.Current.MainPage = new AppShell();
 
 					// optionally navigate to HomePage explicitly
-					await Shell.Current.GoToAsync("//HomePage");
+					await Shell.Current.GoToAsync("//Pages/HomePage");
 				}
 				else
 				{

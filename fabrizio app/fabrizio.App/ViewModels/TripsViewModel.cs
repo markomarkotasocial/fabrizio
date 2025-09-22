@@ -12,12 +12,24 @@ namespace fabrizio.App.Services
 
 		public ObservableCollection<GETTrip> Trips { get; } = new();
 
+		
 		[ObservableProperty]
 		private GETTrip selectedTrip;
 
+		[ObservableProperty]
+		private bool isBusy;
+
+		[ObservableProperty]
+		private bool isRefreshing;
+
+
+
+		public AsyncRelayCommand RefreshCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
 		public AsyncRelayCommand AddTripCommand { get; }
+		public AsyncRelayCommand<GETTrip> DeleteTripCommand { get; }
 		public AsyncRelayCommand<GETTrip> OpenTripCommand { get; }
+
 
 		public TripsViewModel(ITripService tripService)
 		{
@@ -25,16 +37,35 @@ namespace fabrizio.App.Services
 
 			LoadCommand = new AsyncRelayCommand(LoadTripsAsync);
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
+			DeleteTripCommand = new AsyncRelayCommand<GETTrip>(DeleteTripAsync);
 			OpenTripCommand = new AsyncRelayCommand<GETTrip>(OpenTripAsync);
 		}
 
+
+
+		private bool _isLoading = false;
 		private async Task LoadTripsAsync()
 		{
-			var list = await _tripService.GetTrips();
-			Trips.Clear();
-			foreach (var t in list)
-				Trips.Add(t);
+			if (_isLoading) return;
+
+			_isLoading = true;
+			try
+			{
+				IsRefreshing = true;
+				Trips.Clear();
+
+				var list = await _tripService.GetTrips();
+				foreach (var t in list)
+					Trips.Add(t);
+			}
+			finally
+			{
+				IsRefreshing = false;
+				_isLoading = false;
+			}
 		}
+
+
 
 		private Task OnAddTripAsync()
 			=> Shell.Current.GoToAsync("AddPage"); // make sure route matches
@@ -45,12 +76,18 @@ namespace fabrizio.App.Services
 			await Shell.Current.GoToAsync($"TripDetailPage?tripId={trip.Id}");
 		}
 
-		partial void OnSelectedTripChanged(GETTrip value)
-		{
-			if (value == null) return;
+		//partial void OnSelectedTripChanged(GETTrip value)
+		//{
+		//	if (value == null) return;
 
-			_ = OpenTripCommand.ExecuteAsync(value);
-			selectedTrip = null; // clear highlight
+		//	_ = OpenTripCommand.ExecuteAsync(value);
+		//	SelectedTrip = null; // clear highlight
+		//}
+
+		private async Task DeleteTripAsync(GETTrip trip)
+		{
+			await _tripService.DeleteTrip(trip.Id);
 		}
+
 	}
 }

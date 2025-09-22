@@ -10,7 +10,6 @@ namespace fabrizio.App
 		public App()
 		{
 			InitializeComponent();
-
 			MainPage = new NavigationPage(new LoginPage());
 		}
 	}

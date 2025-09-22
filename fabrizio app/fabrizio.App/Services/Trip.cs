@@ -34,26 +34,26 @@ namespace fabrizio.App.Services
 
 		public async Task<GETTrip> GetTrip(Guid id)
 		{
-			throw new NotImplementedException();
-			//return await _http.GetFromJsonAsync<TripDto>($"api/trips/{id}");
+			var result = await _http.GetFromJsonAsync<GETTrip>($"api/trips/{id}");
+			if (result == null)
+				throw new Exception($"Trip with ID {id} not found");
+
+			return result;
 		}
 
 		public async Task AddTrip(POSTTrip trip)
 		{
-			throw new NotImplementedException();
-			//await _http.PostAsJsonAsync("api/trips", trip);
+			await _http.PostAsJsonAsync("api/trips", trip);
 		}
 
 		public async Task UpdateTrip(PUTTrip trip)
 		{
-			throw new NotImplementedException();
-			//await _http.PutAsJsonAsync($"api/trips/{trip.Id}", trip);
+			await _http.PutAsJsonAsync($"api/trips/{trip.Id}", trip);
 		}
 
 		public async Task DeleteTrip(Guid id)
 		{
-			throw new NotImplementedException();
-			//await _http.DeleteAsync($"api/trips/{id}");
+			await _http.DeleteAsync($"api/trips/{id}");
 		}
 	}
 

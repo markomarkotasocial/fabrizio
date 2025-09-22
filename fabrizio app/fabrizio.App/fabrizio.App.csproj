@@ -69,46 +69,42 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="AddPage.xaml.cs">
+	  <Compile Update="Pages\AddPage.xaml.cs">
 	    <DependentUpon>AddPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="ProfilePage.xaml.cs">
+	  <Compile Update="Pages\ProfilePage.xaml.cs">
 	    <DependentUpon>ProfilePage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="DiscoverPage.xaml.cs">
+	  <Compile Update="Pages\DiscoverPage.xaml.cs">
 	    <DependentUpon>DiscoverPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="TripsPage.xaml.cs">
+	  <Compile Update="Pages\TripsPage.xaml.cs">
 	    <DependentUpon>TripsPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="LoginPage.xaml.cs">
+	  <Compile Update="Pages\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="AddPage.xaml">
+	  <MauiXaml Update="Pages\AddPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ProfilePage.xaml">
+	  <MauiXaml Update="Pages\ProfilePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DiscoverPage.xaml">
+	  <MauiXaml Update="Pages\DiscoverPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TripsPage.xaml">
+	  <MauiXaml Update="Pages\TripsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="HomePage.xaml">
+	  <MauiXaml Update="Pages\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="LoginPage.xaml">
+	  <MauiXaml Update="Pages\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Pages\" />
 	</ItemGroup>
 
 </Project>

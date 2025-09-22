@@ -19,11 +19,8 @@ namespace fabrizio.App
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-
-			if (_viewModel.Trips.Count == 0)
-			{
-				await _viewModel.LoadCommand.ExecuteAsync(null);
-			}
+			await _viewModel.LoadCommand.ExecuteAsync(null);
 		}
+
 	}
 }

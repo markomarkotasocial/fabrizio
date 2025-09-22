@@ -1,0 +1,52 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="fabrizio.App.TripsPage"
+             Title="Trips">
+
+	<Grid Padding="20">
+
+		<RefreshView IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                     Command="{Binding LoadCommand}">
+
+			<CollectionView ItemsSource="{Binding Trips}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedTrip, Mode=TwoWay}">
+
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Frame CornerRadius="12" 
+                               Margin="0,8"
+                               HasShadow="True"
+                               Padding="12"
+                               BackgroundColor="White">
+							<VerticalStackLayout>
+								<Label Text="{Binding Name}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"/>
+								<Label Text="{Binding Destination}" 
+                                       FontSize="14"
+                                       TextColor="DarkSlateGray"/>
+								<Label Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}"
+									   FontSize="10"
+									   TextColor="Gray"/>
+								<Label Text="{Binding EndDate, StringFormat='End: {0:dd.MM.yyyy}'}"
+									   FontSize="10"
+									   TextColor="Gray"/>
+							</VerticalStackLayout>
+						</Frame>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+
+				<CollectionView.EmptyView>
+					<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+						<Label Text="No trips yet :(" 
+                               FontSize="18"
+                               TextColor="Gray"
+                               FontAttributes="Italic"/>
+					</StackLayout>
+				</CollectionView.EmptyView>
+
+			</CollectionView>
+		</RefreshView>
+	</Grid>
+</ContentPage>
