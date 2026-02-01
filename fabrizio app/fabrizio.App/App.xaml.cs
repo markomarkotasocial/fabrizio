@@ -10,7 +10,35 @@ namespace fabrizio.App
 		public App()
 		{
 			InitializeComponent();
-			MainPage = new NavigationPage(new LoginPage());
+
+			MainPage = new ContentPage(); // privremeno dok se ne postavi token asinkrono
+			InitializeAsync();
 		}
+
+		private async void InitializeAsync()
+		{
+			try
+			{
+				var token = await SecureStorage.GetAsync("jwt_token");
+
+				if (!string.IsNullOrWhiteSpace(token))
+				{
+					// user je već logiran
+					MainPage = new AppShell();
+				}
+				else
+				{
+					// nema tokena → login
+					MainPage = new LoginPage();
+				}
+			}
+			catch
+			{
+				// SecureStorage može baciti exception (npr. prvi run)
+				MainPage = new LoginPage();
+			}
+		}
+
+
 	}
 }

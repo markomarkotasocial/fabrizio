@@ -66,23 +66,20 @@ namespace fabrizio.App.Services
 		}
 
 
-
 		private Task OnAddTripAsync()
-			=> Shell.Current.GoToAsync("AddPage"); // make sure route matches
-
-		private async Task OpenTripAsync(GETTrip trip)
 		{
-			if (trip == null) return;
-			await Shell.Current.GoToAsync($"TripDetailPage?tripId={trip.Id}");
+			// Navigate to AddTripPage without parameters = New trip
+			return Shell.Current.GoToAsync("AddTripPage");
 		}
 
-		//partial void OnSelectedTripChanged(GETTrip value)
-		//{
-		//	if (value == null) return;
+		private Task OpenTripAsync(GETTrip trip)
+		{
+			if (trip == null)
+				return Task.CompletedTask;
 
-		//	_ = OpenTripCommand.ExecuteAsync(value);
-		//	SelectedTrip = null; // clear highlight
-		//}
+			// Navigate to AddTripPage with a query parameter (TripId)
+			return Shell.Current.GoToAsync($"AddTripPage?tripId={trip.Id}");
+		}
 
 		private async Task DeleteTripAsync(GETTrip trip)
 		{
