@@ -32,10 +32,10 @@ namespace fabrizio.App
 			.AddHttpMessageHandler<TokenHandler>();
 
 			// 🟢 ViewModels
-			builder.Services.AddSingleton<TripsViewModel>();
+			builder.Services.AddTransient<TripsViewModel>();
 
 			// 🟢 Pages
-			builder.Services.AddSingleton<TripsPage>();
+			builder.Services.AddTransient<TripsPage>();
 
 			return builder.Build();
 		}
