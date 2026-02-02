@@ -20,10 +20,11 @@
 
 			<Frame BorderColor="Gray" CornerRadius="8" Padding="5" BackgroundColor="White">
 				<Entry x:Name="PasswordEntry" 
-                   Placeholder="Password" 
-                   PlaceholderColor="DimGray" 
-                   IsPassword="True" 
-                   TextColor="Black"/>
+					   Placeholder="Password" 
+					   Keyboard="Text"
+					   PlaceholderColor="DimGray" 
+					   IsPassword="True" 
+					   TextColor="Black"/>
 			</Frame>
 
 			<Button Text="Login" 

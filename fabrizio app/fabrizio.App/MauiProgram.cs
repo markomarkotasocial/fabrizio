@@ -23,6 +23,8 @@ namespace fabrizio.App
 #endif
 
 			// 🟢 Services
+
+			builder.Services.AddSingleton<AuthService>();
 			builder.Services.AddTransient<TokenHandler>();
 
 			builder.Services.AddHttpClient<ITripService, TripService>(client =>
@@ -31,6 +33,7 @@ namespace fabrizio.App
 				client.DefaultRequestHeaders.Add("Accept", "application/json");
 			})
 			.AddHttpMessageHandler<TokenHandler>();
+			
 
 			// 🟢 ViewModels
 			builder.Services.AddTransient<TripsViewModel>();

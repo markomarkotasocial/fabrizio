@@ -1,20 +1,34 @@
-﻿using System.Net.Http;
+﻿using fabrizio.App.Services;
+using Microsoft.Maui.Storage;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
 
 public class TokenHandler : DelegatingHandler
 {
-	protected override async Task<HttpResponseMessage> SendAsync(
-		HttpRequestMessage request, CancellationToken cancellationToken)
+	private readonly AuthService _authService;
+
+	public TokenHandler(AuthService authService)
+	{
+		_authService = authService;
+	}
+
+	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
 		var token = await SecureStorage.GetAsync("jwt_token");
 		if (!string.IsNullOrEmpty(token))
 		{
-			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+			request.Headers.Authorization =	new AuthenticationHeaderValue("Bearer", token);
 		}
 
-		return await base.SendAsync(request, cancellationToken);
+		var response = await base.SendAsync(request, cancellationToken);
+		if (response.StatusCode == HttpStatusCode.Unauthorized)
+		{
+			await _authService.LogoutAsync();
+		}
+
+		return response;
 	}
 }

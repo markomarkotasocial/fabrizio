@@ -22,6 +22,11 @@ namespace fabrizio.App.Pages.Flows
 			}
 		}
 
+		public AddTripPage()
+		{
+			InitializeComponent();
+		}
+
 		public AddTripPage(AddTripViewModel viewModel)
 		{
 			InitializeComponent();

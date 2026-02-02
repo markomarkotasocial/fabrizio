@@ -28,6 +28,16 @@ namespace fabrizio.App
 
 		private async void InitializeAsync()
 		{
+
+			//// 🔴 DEV ONLY – očisti sve tokene i secure storage
+			//SecureStorage.RemoveAll();
+
+			//// ⛔ odmah pošalji na login i prekini init
+			//MainPage = new LoginPage();
+			//return;
+
+
+
 			try
 			{
 				var token = await SecureStorage.GetAsync("jwt_token");
