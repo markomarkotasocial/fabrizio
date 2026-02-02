@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using fabrizio.App.Services;
 
-namespace fabrizio.App
+namespace fabrizio.App.Pages.Flows
 {
 	[QueryProperty(nameof(TripId), "tripId")]
 	public partial class AddTripPage : ContentPage

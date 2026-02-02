@@ -4,13 +4,13 @@ using System.Net.Http.Json;
 using Microsoft.Maui.Storage;
 
 
-namespace fabrizio.App
+namespace fabrizio.App.Pages.Auth
 {
-	public partial class HomePage : ContentPage
+	public partial class RegisterPage : ContentPage
 	{
 		
 
-		public HomePage()
+		public RegisterPage()
 		{
 			InitializeComponent();
 			
@@ -18,9 +18,6 @@ namespace fabrizio.App
 		}
 
 		
-
-
-
 
 	}
 }

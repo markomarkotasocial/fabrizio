@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using fabrizio.App.Services;
 
-namespace fabrizio.App
+namespace fabrizio.App.Pages.Tabs
 {
 	public partial class TripsPage : ContentPage
 	{

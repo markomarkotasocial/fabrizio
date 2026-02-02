@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using fabrizio.App.Services; 
+using fabrizio.App.Services;
+using fabrizio.App.Pages.Tabs;
 
 namespace fabrizio.App
 {

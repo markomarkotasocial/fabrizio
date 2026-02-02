@@ -71,40 +71,58 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Pages\AddPage.xaml.cs">
+	  <Compile Update="Pages\Auth\ForgotPasswordPage.xaml.cs">
+	    <DependentUpon>ForgotPasswordPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Auth\RegisterPage.xaml.cs">
+	    <DependentUpon>RegisterPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Tabs\AddPage.xaml.cs">
 	    <DependentUpon>AddPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\ProfilePage.xaml.cs">
+	  <Compile Update="Pages\Flows\TripDetailPage.xaml.cs">
+	    <DependentUpon>TripDetailPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\Tabs\ProfilePage.xaml.cs">
 	    <DependentUpon>ProfilePage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\DiscoverPage.xaml.cs">
+	  <Compile Update="Pages\Tabs\DiscoverPage.xaml.cs">
 	    <DependentUpon>DiscoverPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\TripsPage.xaml.cs">
+	  <Compile Update="Pages\Tabs\TripsPage.xaml.cs">
 	    <DependentUpon>TripsPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\LoginPage.xaml.cs">
+	  <Compile Update="Pages\Auth\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Pages\AddPage.xaml">
+	  <MauiXaml Update="Pages\Auth\ForgotPasswordPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\ProfilePage.xaml">
+	  <MauiXaml Update="Pages\Auth\RegisterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\DiscoverPage.xaml">
+	  <MauiXaml Update="Pages\Tabs\AddPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\TripsPage.xaml">
+	  <MauiXaml Update="Pages\Flows\TripDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\HomePage.xaml">
+	  <MauiXaml Update="Pages\Tabs\ProfilePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\LoginPage.xaml">
+	  <MauiXaml Update="Pages\Tabs\DiscoverPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Tabs\TripsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Tabs\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Auth\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

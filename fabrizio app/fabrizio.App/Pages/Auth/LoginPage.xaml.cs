@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace fabrizio.App
+namespace fabrizio.App.Pages.Auth
 {
 	public partial class LoginPage : ContentPage
 	{

@@ -68,17 +68,14 @@ namespace fabrizio.App.Services
 
 		private Task OnAddTripAsync()
 		{
-			// TODO: Navigate to AddTripPage (create flow)
-			return Task.CompletedTask;
+			return Shell.Current.GoToAsync("add-trip");
 		}
 
 		private Task OpenTripAsync(GETTrip trip)
 		{
-			if (trip == null)
-				return Task.CompletedTask;
+			if (trip == null) return Task.CompletedTask;
 
-			// Navigate to AddTripPage with a query parameter (TripId)
-			return Shell.Current.GoToAsync($"AddTripPage?tripId={trip.Id}");
+			return Shell.Current.GoToAsync($"trip-detail?tripId={trip.Id}");
 		}
 
 		private async Task DeleteTripAsync(GETTrip trip)

@@ -1,34 +1,38 @@
-<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:fabrizio.App"
-       x:Class="fabrizio.App.AppShell">
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:tabs="clr-namespace:fabrizio.App.Pages.Tabs"
+    xmlns:auth="clr-namespace:fabrizio.App.Pages.Auth"
+    xmlns:flows="clr-namespace:fabrizio.App.Pages.Flows"
+    x:Class="fabrizio.App.AppShell">
+
 
 	<!-- Bottom Tab Bar -->
 	<TabBar>
 		<ShellContent Title="Home"
                       Icon="home.png"
-                      ContentTemplate="{DataTemplate local:HomePage}"
-					  Route="HomePage"/>
+                      ContentTemplate="{DataTemplate tabs:HomePage}"
+					  Route="home"/>
 
 		<ShellContent Title="Trips"
                       Icon="trips.png"
-                      ContentTemplate="{DataTemplate local:TripsPage}" 
-					  Route="TripsPage"/>
+                      ContentTemplate="{DataTemplate tabs:TripsPage}" 
+					  Route="trips"/>
 
 		<ShellContent Title="Add"
                       Icon="add.png"
-                      ContentTemplate="{DataTemplate local:AddPage}"
-					  Route="TripsPage"/>
+                      ContentTemplate="{DataTemplate tabs:AddPage}"
+					  Route="add"/>
 
 		<ShellContent Title="Discover"
                       Icon="discover.png"
-                      ContentTemplate="{DataTemplate local:DiscoverPage}"
-					  Route="DiscoverPage"/>
+                      ContentTemplate="{DataTemplate tabs:DiscoverPage}"
+					  Route="discover"/>
 
 		<ShellContent Title="Profile"
 					  Icon="profile.png"
-					  ContentTemplate="{DataTemplate local:ProfilePage}" 
-					  Route="ProfilePage"/>
+					  ContentTemplate="{DataTemplate tabs:ProfilePage}" 
+					  Route="profile"/>
 	</TabBar>
 
 </Shell>

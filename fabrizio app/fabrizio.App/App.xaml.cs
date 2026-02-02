@@ -3,6 +3,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.Maui.Storage;
 
+using fabrizio.App.Pages.Auth;
+
 namespace fabrizio.App
 {
 	public partial class App : Application
@@ -11,7 +13,16 @@ namespace fabrizio.App
 		{
 			InitializeComponent();
 
-			MainPage = new ContentPage(); // privremeno dok se ne postavi token asinkrono
+			MainPage = new ContentPage
+			{
+				Content = new ActivityIndicator
+				{
+					IsRunning = true,
+					VerticalOptions = LayoutOptions.Center,
+					HorizontalOptions = LayoutOptions.Center
+				}
+			};
+
 			InitializeAsync();
 		}
 
