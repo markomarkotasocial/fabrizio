@@ -35,8 +35,7 @@ namespace fabrizio.App.Services
 		public async Task<GETTrip> GetTrip(Guid id)
 		{
 			var result = await _http.GetFromJsonAsync<GETTrip>($"api/trips/{id}");
-			if (result == null)
-				throw new Exception($"Trip with ID {id} not found");
+			if (result == null)	throw new KeyNotFoundException($"Trip with ID {id} not found");
 
 			return result;
 		}

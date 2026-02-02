@@ -1,7 +1,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Auth.RegisterPage"
-             Title="Home">
+             Title="Register">
 
 	<Grid Padding="20">
 
