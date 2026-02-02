@@ -1,5 +1,6 @@
 ﻿using fabrizio.App.Pages.Auth;
 using fabrizio.App.Pages.Flows;
+using fabrizio.App.Pages.Tabs;
 
 namespace fabrizio.App
 {

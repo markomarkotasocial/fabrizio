@@ -13,14 +13,9 @@ namespace fabrizio.App.Services
 		public ObservableCollection<GETTrip> Trips { get; } = new();
 
 		
-		[ObservableProperty]
-		private GETTrip selectedTrip;
-
-		[ObservableProperty]
-		private bool isBusy;
-
-		[ObservableProperty]
-		private bool isRefreshing;
+		[ObservableProperty] private GETTrip selectedTrip;
+		[ObservableProperty] private bool isBusy;
+		[ObservableProperty] private bool isRefreshing;
 
 
 

@@ -30,9 +30,9 @@
 					  Route="add"/>
 
 		<ShellContent Title="Profile"
+					  ContentTemplate="{DataTemplate tabs:ProfilePage}"
 					  Icon="profile.png"
-					  ContentTemplate="{DataTemplate tabs:ProfilePage}" 
-					  Route="profile"/>
+					  Route="profile" />
 	</TabBar>
 
 </Shell>

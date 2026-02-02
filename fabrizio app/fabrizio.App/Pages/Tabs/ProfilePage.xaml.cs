@@ -1,4 +1,5 @@
 using fabrizio.App.Pages.Auth;
+using fabrizio.App.Services;
 using Microsoft.Maui.Storage;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,14 +16,7 @@ namespace fabrizio.App.Pages.Tabs
 
 		private async void OnLogoutClicked(object sender, EventArgs e)
 		{
-			// briši token
-			SecureStorage.Remove("jwt_token");
-
-			// reset cijele aplikacije na LoginPage
-			if (Application.Current != null)
-			{
-				Application.Current.MainPage = new LoginPage();
-			}
+			await App.AuthService.LogoutAsync();
 		}
 	}
 }

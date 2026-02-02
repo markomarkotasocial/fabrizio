@@ -12,10 +12,11 @@
 
 			<Frame BorderColor="Gray" CornerRadius="8" Padding="5" BackgroundColor="White">
 				<Entry x:Name="EmailEntry"  
-                   Placeholder="Email" 
-                   PlaceholderColor="DimGray" 
-                   Keyboard="Email" 
-                   TextColor="Black"/>
+					   Placeholder="Email" 
+					   PlaceholderColor="DimGray" 
+					   Keyboard="Email" 
+					   TextColor="Black"
+					   Text="{Binding Email}"/>
 			</Frame>
 
 			<Frame BorderColor="Gray" CornerRadius="8" Padding="5" BackgroundColor="White">
@@ -24,11 +25,12 @@
 					   Keyboard="Text"
 					   PlaceholderColor="DimGray" 
 					   IsPassword="True" 
-					   TextColor="Black"/>
+					   TextColor="Black"
+					   Text="{Binding Password}"/>
 			</Frame>
 
 			<Button Text="Login" 
-                    Clicked="OnLoginClicked" 
+                    Command="{Binding LoginCommand}"
                     BackgroundColor="CornflowerBlue"/>
 
 			<Label Text="" 

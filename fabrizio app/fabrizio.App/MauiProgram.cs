@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using fabrizio.App.Services;
+﻿using fabrizio.App.Pages.Auth;
 using fabrizio.App.Pages.Tabs;
+using fabrizio.App.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace fabrizio.App
 {
@@ -23,7 +24,7 @@ namespace fabrizio.App
 #endif
 
 			// 🟢 Services
-
+			builder.Services.AddSingleton<AppShell>();
 			builder.Services.AddSingleton<AuthService>();
 			builder.Services.AddTransient<TokenHandler>();
 
@@ -33,12 +34,14 @@ namespace fabrizio.App
 				client.DefaultRequestHeaders.Add("Accept", "application/json");
 			})
 			.AddHttpMessageHandler<TokenHandler>();
-			
+
 
 			// 🟢 ViewModels
+			builder.Services.AddTransient<LoginViewModel>();
 			builder.Services.AddTransient<TripsViewModel>();
 
 			// 🟢 Pages
+			builder.Services.AddTransient<LoginPage>();
 			builder.Services.AddTransient<TripsPage>();
 
 			return builder.Build();

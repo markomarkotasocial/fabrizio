@@ -8,10 +8,8 @@ namespace fabrizio.App.Services
 	{
 		private readonly ITripService _tripService;
 
-		[ObservableProperty]
-		private Guid tripId;
 
-
+		[ObservableProperty] private Guid tripId;
 
 
 

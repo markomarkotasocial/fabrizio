@@ -1,65 +1,23 @@
-﻿using System.Net.Http;
+﻿using fabrizio.App.Pages.Auth;
+using fabrizio.App.Services;
+using Microsoft.Maui.Storage;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Microsoft.Maui.Storage;
-
-using fabrizio.App.Pages.Auth;
 
 namespace fabrizio.App
 {
 	public partial class App : Application
 	{
-		public App()
+		public static AuthService AuthService { get; private set; }
+
+		public App(AuthService authService)
 		{
 			InitializeComponent();
-
-			MainPage = new ContentPage
-			{
-				Content = new ActivityIndicator
-				{
-					IsRunning = true,
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.Center
-				}
-			};
-
-			InitializeAsync();
+			AuthService = authService;
+			MainPage = new AppShell();
 		}
-
-		private async void InitializeAsync()
-		{
-
-			//// 🔴 DEV ONLY – očisti sve tokene i secure storage
-			//SecureStorage.RemoveAll();
-
-			//// ⛔ odmah pošalji na login i prekini init
-			//MainPage = new LoginPage();
-			//return;
-
-
-
-			try
-			{
-				var token = await SecureStorage.GetAsync("jwt_token");
-
-				if (!string.IsNullOrWhiteSpace(token))
-				{
-					// user je već logiran
-					MainPage = new AppShell();
-				}
-				else
-				{
-					// nema tokena → login
-					MainPage = new LoginPage();
-				}
-			}
-			catch
-			{
-				// SecureStorage može baciti exception (npr. prvi run)
-				MainPage = new LoginPage();
-			}
-		}
-
-
 	}
+
+
 }
