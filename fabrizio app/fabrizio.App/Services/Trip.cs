@@ -17,6 +17,9 @@ namespace fabrizio.App.Services
 		Task DeleteTrip(Guid id);
 	}
 
+
+
+
 	public class TripService : ITripService
 	{
 		private readonly HttpClient _http;
@@ -36,7 +39,6 @@ namespace fabrizio.App.Services
 		{
 			var result = await _http.GetFromJsonAsync<GETTrip>($"api/trips/{id}");
 			if (result == null)	throw new KeyNotFoundException($"Trip with ID {id} not found");
-
 			return result;
 		}
 

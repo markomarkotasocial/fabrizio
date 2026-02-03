@@ -10,7 +10,17 @@ using System.Threading.Tasks;
 
 namespace fabrizio.App.Services
 {
-	public class AuthService
+	public interface IAuthService
+	{
+		Task LoginAsync(string email, string password);
+		Task LogoutAsync();
+		Task<bool> IsAuthenticatedAsync();
+	}
+
+
+
+
+	public class AuthService : IAuthService
 	{
 		private readonly HttpClient _httpClient;
 
@@ -23,7 +33,6 @@ namespace fabrizio.App.Services
 		}
 
 
-
 		private bool _isLoggingOut;
 
 		public async Task LogoutAsync()
@@ -34,7 +43,6 @@ namespace fabrizio.App.Services
 			try
 			{
 				SecureStorage.Remove("jwt_token");
-
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					Application.Current!.MainPage = new LoginPage();
@@ -45,8 +53,7 @@ namespace fabrizio.App.Services
 				_isLoggingOut = false;
 			}
 		}
-
-
+		
 		public async Task LoginAsync(string email, string password)
 		{
 			var response = await _httpClient.PostAsJsonAsync("api/accounts/login", new
@@ -69,6 +76,17 @@ namespace fabrizio.App.Services
 			if (string.IsNullOrWhiteSpace(token)) throw new Exception("Empty token");
 
 			await SecureStorage.SetAsync("jwt_token", token);
+
+			if (Application.Current != null)
+			{
+				Application.Current.MainPage = new AppShell();
+			}
+		}
+
+		public async Task<bool> IsAuthenticatedAsync()
+		{
+			var token = await SecureStorage.GetAsync("jwt_token");
+			return !string.IsNullOrWhiteSpace(token);
 		}
 
 	}

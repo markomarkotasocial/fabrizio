@@ -11,7 +11,6 @@ namespace fabrizio.App.Services
 		private readonly ITripService _tripService;
 
 		public ObservableCollection<GETTrip> Trips { get; } = new();
-
 		
 		[ObservableProperty] private GETTrip selectedTrip;
 		[ObservableProperty] private bool isBusy;
@@ -42,8 +41,8 @@ namespace fabrizio.App.Services
 		private async Task LoadTripsAsync()
 		{
 			if (_isLoading) return;
-
 			_isLoading = true;
+
 			try
 			{
 				IsRefreshing = true;

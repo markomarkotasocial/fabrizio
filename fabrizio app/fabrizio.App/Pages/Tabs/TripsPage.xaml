@@ -18,16 +18,16 @@
 						<Frame CornerRadius="12" 
                                Margin="0,8"
                                HasShadow="True"
-                               Padding="12"
-                               BackgroundColor="White">
+                               Padding="12" 
+							   BackgroundColor="DeepSkyBlue">
 
 							<Frame.GestureRecognizers>
-								<TapGestureRecognizer
+								<!--<TapGestureRecognizer
 									Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenTripCommand}"
-									CommandParameter="{Binding .}" />
+									CommandParameter="{Binding .}" />-->
 							</Frame.GestureRecognizers>
 
-							<VerticalStackLayout>
+							<VerticalStackLayout BackgroundColor="DeepSkyBlue">
 								<Label Text="{Binding Name}" 
                                        FontSize="18" 
                                        FontAttributes="Bold"/>
@@ -47,7 +47,7 @@
 
 				<CollectionView.EmptyView>
 					<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
-						<Label Text="No trips yet :(" 
+						<Label Text="No added trips yet :(" 
                                FontSize="18"
                                TextColor="Gray"
                                FontAttributes="Italic"/>

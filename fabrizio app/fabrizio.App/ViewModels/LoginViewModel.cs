@@ -7,12 +7,14 @@ namespace fabrizio.App.Services
 {
 	public partial class LoginViewModel : ObservableObject
 	{
-		private readonly AuthService _authService;
+		private readonly IAuthService _authService;
+
 
 		[ObservableProperty] private string email;
 		[ObservableProperty] private string password;
 		[ObservableProperty] private string errorMessage;
 		[ObservableProperty] private bool isBusy;
+
 
 		public AsyncRelayCommand LoginCommand { get; }
 
@@ -30,11 +32,6 @@ namespace fabrizio.App.Services
 			try
 			{
 				await _authService.LoginAsync(Email, Password);
-
-				if (Application.Current != null)
-				{
-					Application.Current.MainPage = new AppShell();
-				}
 			}
 			catch (Exception ex)
 			{

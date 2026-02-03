@@ -5,9 +5,15 @@ using fabrizio.DTO;
 
 namespace fabrizio.App.Services
 {
-	public class ProfileViewModel
+	public partial class ProfileViewModel : ObservableObject
 	{
-		private readonly AuthService _authService;
+		private readonly IAuthService _authService;
+
+
+		[ObservableProperty] private string errorMessage;
+		[ObservableProperty] private bool isBusy;
+
+
 
 		public AsyncRelayCommand LogoutCommand { get; }
 
@@ -19,8 +25,26 @@ namespace fabrizio.App.Services
 
 		private async Task LogoutAsync()
 		{
-			await _authService.LogoutAsync();
+			//await _authService.LogoutAsync();
+
+			if (IsBusy) return;
+			IsBusy = true;
+
+			try
+			{
+				await _authService.LogoutAsync();
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
+			finally
+			{
+				IsBusy = false;
+			}
+
 		}
+
 	}
 
 }

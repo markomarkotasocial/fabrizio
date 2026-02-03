@@ -10,10 +10,11 @@
                    TextColor="Black" />
 
 			<Label Text="This content is scrollable..." TextColor="Gray"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
-			<BoxView HeightRequest="100" Color="DeepSkyBlue" CornerRadius="8"/>
+			<BoxView HeightRequest="100" BackgroundColor="White" Color="DeepSkyBlue" CornerRadius="12"/>
+			<BoxView HeightRequest="100" BackgroundColor="White" Color="DeepSkyBlue" CornerRadius="12"/>
+			<BoxView HeightRequest="100" BackgroundColor="White" Color="DeepSkyBlue" CornerRadius="12"/>
+			<BoxView HeightRequest="100" BackgroundColor="White" Color="DeepSkyBlue" CornerRadius="12"/>
+			<BoxView HeightRequest="100" BackgroundColor="White" Color="DeepSkyBlue" CornerRadius="12"/>
 		</VerticalStackLayout>
 	</ScrollView>
 
