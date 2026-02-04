@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fabrizio.App.ViewModels;
 using fabrizio.DTO;
 
 namespace fabrizio.App.Services
 {
-	public partial class AddTripViewModel : ObservableObject
+	public partial class AddTripViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
 

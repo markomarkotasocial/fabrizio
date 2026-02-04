@@ -1,19 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
+using fabrizio.App.ViewModels;
 using fabrizio.DTO;
 
 namespace fabrizio.App.Services
 {
-	public partial class LoginViewModel : ObservableObject
+	public partial class LoginViewModel : BaseViewModel
 	{
 		private readonly IAuthService _authService;
 
 
+		[ObservableProperty] private string? errorMessage;
 		[ObservableProperty] private string email;
 		[ObservableProperty] private string password;
-		[ObservableProperty] private string errorMessage;
-		[ObservableProperty] private bool isBusy;
 
 
 		public AsyncRelayCommand LoginCommand { get; }

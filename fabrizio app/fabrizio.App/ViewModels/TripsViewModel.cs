@@ -3,17 +3,17 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using fabrizio.DTO;
+using fabrizio.App.ViewModels;
 
 namespace fabrizio.App.Services
 {
-	public partial class TripsViewModel : ObservableObject
+	public partial class TripsViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
 
 		public ObservableCollection<GETTrip> Trips { get; } = new();
 		
 		[ObservableProperty] private GETTrip selectedTrip;
-		[ObservableProperty] private bool isBusy;
 		[ObservableProperty] private bool isRefreshing;
 
 

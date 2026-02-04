@@ -1,18 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
+using fabrizio.App.ViewModels;
 using fabrizio.DTO;
 
 namespace fabrizio.App.Services
 {
-	public partial class ProfileViewModel : ObservableObject
+	public partial class ProfileViewModel : BaseViewModel
 	{
 		private readonly IAuthService _authService;
 
 
 		[ObservableProperty] private string errorMessage;
-		[ObservableProperty] private bool isBusy;
-
 
 
 		public AsyncRelayCommand LogoutCommand { get; }
@@ -25,8 +24,6 @@ namespace fabrizio.App.Services
 
 		private async Task LogoutAsync()
 		{
-			//await _authService.LogoutAsync();
-
 			if (IsBusy) return;
 			IsBusy = true;
 
