@@ -1,4 +1,5 @@
-﻿using fabrizio.App.Services;
+﻿using fabrizio.App;
+using fabrizio.App.Services;
 using Microsoft.Maui.Storage;
 using System.Net;
 using System.Net.Http;
@@ -15,20 +16,25 @@ public class TokenHandler : DelegatingHandler
 		_authService = authService;
 	}
 
+
 	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
 		var token = await SecureStorage.GetAsync("jwt_token");
+
 		if (!string.IsNullOrEmpty(token))
 		{
 			request.Headers.Authorization =	new AuthenticationHeaderValue("Bearer", token);
 		}
 
 		var response = await base.SendAsync(request, cancellationToken);
+
 		if (response.StatusCode == HttpStatusCode.Unauthorized)
 		{
 			await _authService.LogoutAsync();
+			throw new UnauthorizedException();
 		}
 
 		return response;
 	}
+
 }

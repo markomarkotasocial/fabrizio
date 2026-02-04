@@ -10,6 +10,7 @@ namespace fabrizio.App.Services
 	public partial class TripsViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
+		private readonly IAuthService _authService;
 
 		public ObservableCollection<GETTrip> Trips { get; } = new();
 		
@@ -25,9 +26,10 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand<GETTrip> OpenTripCommand { get; }
 
 
-		public TripsViewModel(ITripService tripService)
+		public TripsViewModel(ITripService tripService, AuthService authService)
 		{
 			_tripService = tripService;
+			_authService = authService;
 
 			LoadCommand = new AsyncRelayCommand(LoadTripsAsync);
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
@@ -51,6 +53,10 @@ namespace fabrizio.App.Services
 				var list = await _tripService.GetTrips();
 				foreach (var t in list)
 					Trips.Add(t);
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
 			}
 			finally
 			{
