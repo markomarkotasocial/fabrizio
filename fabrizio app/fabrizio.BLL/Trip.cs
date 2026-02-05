@@ -67,7 +67,7 @@ namespace fabrizio.BLL
 				Id = trip.Id,
 				Status = (int)trip.Status,
 				Name = trip.Name,
-				Notes = trip.Notes,
+				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
 				EndDate = trip.EndDate,
 				Destinations = trip.Destinations.Select(tb => new DTO.GETDestination 
@@ -102,11 +102,6 @@ namespace fabrizio.BLL
 					Type = (int)ab.Type
 				}),
 			};
-		}
-
-		public async Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null)
-		{
-			throw new NotImplementedException();
 		}
 
 		public async Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
@@ -150,10 +145,15 @@ namespace fabrizio.BLL
 				Id = trip.Id,
 				Status = (int)trip.Status,
 				Name = trip.Name,
-				Notes = trip.Notes,
+				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
 				EndDate = trip.EndDate,
-				//Destinations = trip.Destinations.Select(),
+				Destinations = trip.Destinations.Select(tb => new DTO.GETDestination
+				{
+					Id = tb.Id,
+					Name = tb.Name,
+					Order = tb.Order,
+				}),
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
 				{
 					Id = tb.Id,
@@ -266,6 +266,87 @@ namespace fabrizio.BLL
 
 			_tripRepository.Delete(trip);
 			await _tripRepository.SaveChangesAsync();
+		}
+
+
+
+
+		public async Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null)
+		{
+			var refDate = (date ?? DateTime.UtcNow).Date;
+
+			var trips = _tripRepository.QueryAll(accountid);
+
+			var current = trips
+				.Where(t => t.StartDate <= refDate && t.EndDate >= refDate)
+				.OrderBy(t => t.StartDate)
+				.FirstOrDefault();
+
+			var previous = trips
+				.Where(t => t.EndDate < refDate)
+				.OrderByDescending(t => t.EndDate)
+				.FirstOrDefault();
+
+			var next = trips
+				.Where(t => t.StartDate > refDate)
+				.OrderBy(t => t.StartDate)
+				.FirstOrDefault();
+
+			return new DTO.GETTripOverview
+			{
+				Previous = previous != null ? MapToGetTrip(previous) : null,
+				Current = current != null ? MapToGetTrip(current) : null,
+				Next = next != null ? MapToGetTrip(next) : null
+			};
+		}
+
+		private DTO.GETTrip MapToGetTrip(Trip trip)
+		{
+			return new DTO.GETTrip
+			{
+				Id = trip.Id,
+				Status = (int)trip.Status,
+				Name = trip.Name,
+				Notes = trip.Notes ?? string.Empty,
+				StartDate = trip.StartDate,
+				EndDate = trip.EndDate,
+
+				Destinations = trip.Destinations
+					.OrderBy(d => d.Order)
+					.Select(d => new DTO.GETDestination
+					{
+						Id = d.Id,
+						Name = d.Name,
+						Order = d.Order
+					}),
+
+				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
+				{
+					Id = tb.Id,
+					TripId = tb.TripId,
+					Arrival = tb.Arrival,
+					Carrier = tb.Carrier,
+					Departure = tb.Departure,
+					Reference = tb.Reference,
+					Note = tb.Note,
+					Destination = tb.Destination,
+					Origin = tb.Origin,
+					Type = (int)tb.Type
+				}),
+
+				AccommodationBookings = trip.AccommodationBookings.Select(ab => new DTO.GETAccommodationBooking
+				{
+					Id = ab.Id,
+					TripId = ab.TripId,
+					From = ab.From,
+					To = ab.To,
+					Location = ab.Location,
+					Name = ab.Name,
+					Note = ab.Note,
+					Reference = ab.Reference,
+					Type = (int)ab.Type
+				})
+			};
 		}
 
 

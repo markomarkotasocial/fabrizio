@@ -1,13 +1,6 @@
 ﻿namespace fabrizio.DTO
 {
-
-	public class GETTripOverview
-	{
-		public GETTrip Previous { get; set; } 
-		public GETTrip Current { get; set; } 
-		public GETTrip Next { get; set; } 
-	}
-
+	
 	public class GETTrip
 	{
 		public Guid Id { get; set; }
