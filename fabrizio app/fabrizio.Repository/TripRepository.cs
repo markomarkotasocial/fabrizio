@@ -13,6 +13,7 @@ namespace fabrizio.Repository
 		IQueryable<Trip> QueryAll(int accountid);
 		Task<Trip?> GetById(Guid id);
 		void Add(Trip trip);
+		Task<bool> HasOverlappingTrip(int accountId, DateTime start, DateTime? end, Guid? excludeTripId = null);
 		void Delete(Trip trip);
 	}
 
@@ -49,6 +50,19 @@ namespace fabrizio.Repository
 			_context.Trips.Add(trip);
 		}
 
+		public async Task<bool> HasOverlappingTrip(int accountId, DateTime start,DateTime? end, Guid? excludeTripId = null)
+		{
+			var normalizedEnd = end ?? DateTime.Today;
+
+			return await _context.Trips.AnyAsync(t =>
+				t.AccountId == accountId
+				&& t.Status != TripStatus.Cancelled
+				&& (excludeTripId == null || t.Id != excludeTripId)
+				&& t.StartDate.HasValue
+				&& t.StartDate.Value <= normalizedEnd
+				&& (t.EndDate ?? DateTime.Today) >= start
+			);
+		}
 
 
 		public void Delete(Trip trip)

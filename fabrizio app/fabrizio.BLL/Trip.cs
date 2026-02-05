@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using fabrizio.DAL;
+﻿using fabrizio.DAL;
 using fabrizio.DAL.Entities;
 using fabrizio.DTO;
 using fabrizio.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using System.Net.NetworkInformation;
+using System.Numerics;
 
 
 namespace fabrizio.BLL
@@ -199,11 +201,14 @@ namespace fabrizio.BLL
 			if (string.IsNullOrWhiteSpace(dto.Name))
 				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
-			if (dto.StartDate != null && dto.EndDate != null)
+			if (dto.EndDate != null)
 			{
 				if (dto.EndDate < dto.StartDate)
 					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
 			}
+
+			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: null);
+			if (hasOverlap) throw new InvalidOperationException("Trip dates overlap with an existing trip.");
 
 			#endregion Validate
 
@@ -213,9 +218,12 @@ namespace fabrizio.BLL
 				Name = dto.Name, 
 				Notes = dto.Notes, 
 				StartDate = dto.StartDate, 
-				EndDate = dto.EndDate, 
-				Status= TripStatus.Planned
+				EndDate = dto.EndDate
 			};
+
+			if (trip.StartDate > DateTime.UtcNow) trip.Status = TripStatus.Planned;
+			else if (trip.EndDate == null || trip.EndDate >= DateTime.UtcNow) trip.Status = TripStatus.Ongoing;
+			else trip.Status = TripStatus.Completed;
 
 			_tripRepository.Add(trip);
 			await _tripRepository.SaveChangesAsync();
@@ -233,7 +241,7 @@ namespace fabrizio.BLL
 			if (string.IsNullOrWhiteSpace(dto.Name))
 				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
-			if (dto.StartDate != null && dto.EndDate != null)
+			if (dto.EndDate != null)
 			{
 				if (dto.EndDate < dto.StartDate)
 					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
@@ -243,12 +251,22 @@ namespace fabrizio.BLL
 			if (trip == null)
 				throw new KeyNotFoundException("There is no trip with the specified ID.");
 
+			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
+			if (hasOverlap) throw new InvalidOperationException("Trip dates overlap with an existing trip.");
+
 			#endregion Validate
 
 			trip.Name = dto.Name;
 			trip.Notes = dto.Notes;
 			trip.StartDate = dto.StartDate;
 			trip.EndDate = dto.EndDate;
+
+			if (trip.Status != TripStatus.Cancelled)
+			{
+				if (trip.StartDate > DateTime.UtcNow) trip.Status = TripStatus.Planned;
+				else if (trip.EndDate == null || trip.EndDate >= DateTime.UtcNow) trip.Status = TripStatus.Ongoing;
+				else trip.Status = TripStatus.Completed;
+			}
 
 			await _tripRepository.SaveChangesAsync();
 		}
@@ -258,7 +276,6 @@ namespace fabrizio.BLL
 			#region Validate
 
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
-
 			Trip? trip = await _tripRepository.GetById(id);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
 
