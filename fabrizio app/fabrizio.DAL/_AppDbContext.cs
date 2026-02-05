@@ -16,6 +16,7 @@ namespace fabrizio.DAL
 		public DbSet<Entities.Trip> Trips { get; set; }
 		public DbSet<Entities.TravelBooking> TravelBookings { get; set; }
 		public DbSet<Entities.AccommodationBooking> AccommodationBookings { get; set; }
+		public DbSet<Entities.Destination> Destinations { get; set; }
 
 
 
@@ -26,6 +27,7 @@ namespace fabrizio.DAL
 			modelBuilder.Entity<Trip>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<AccommodationBooking>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<TravelBooking>().OwnsOne(e => e.Audit);
+			modelBuilder.Entity<Destination>().OwnsOne(e => e.Audit);
 
 			// Apply all IEntityTypeConfiguration<T> in this assembly
 			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -129,8 +131,8 @@ namespace fabrizio.DAL
 			builder.Property(a => a.Name)
 				   .HasMaxLength(100);
 
-			builder.Property(t => t.Destination)
-				   .HasMaxLength(200);
+			builder.Property(t => t.Notes)
+				   .HasMaxLength(4000);
 		}
 	}
 
@@ -182,6 +184,21 @@ namespace fabrizio.DAL
 
 			builder.Property(a => a.Type)
 				   .IsRequired();
+
+		}
+	}
+
+	public class DestinationConfiguration : IEntityTypeConfiguration<Entities.Destination>
+	{
+		public void Configure(EntityTypeBuilder<Entities.Destination> builder)
+		{
+			builder.ToTable("Destinations");
+
+			builder.HasKey(a => a.Id);
+
+			builder.Property(a => a.Name)
+				   .HasMaxLength(100);
+						
 
 		}
 	}

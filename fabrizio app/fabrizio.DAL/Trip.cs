@@ -19,12 +19,14 @@ namespace fabrizio.DAL.Entities
 		public TripStatus Status { get; set; } = TripStatus.Planned;
 
 		public string Name { get; set; } = string.Empty;
-		public string Destination { get; set; } = string.Empty;
+		public string? Notes { get; set; }
+
 		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 
 		public virtual List<AccommodationBooking> AccommodationBookings { get; set; } = new();
 		public virtual List<TravelBooking> TravelBookings { get; set; } = new();
+		public virtual List<Destination> Destinations { get; set; } = new();
 
 		public int AccountId { get; set; }
 		public Account? Account { get; set; }

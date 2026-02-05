@@ -32,11 +32,6 @@
 								FontAttributes="Bold" />
 
 								<Label
-								Text="{Binding Destination}"
-								FontSize="14"
-								TextColor="DarkSlateGray" />
-
-								<Label
 								Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}"
 								FontSize="10"
 								TextColor="Gray" />

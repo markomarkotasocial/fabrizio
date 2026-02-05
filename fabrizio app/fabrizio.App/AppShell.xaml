@@ -8,7 +8,12 @@
 
 	<!-- Bottom Tab Bar -->
 	<TabBar>
-		
+
+		<ShellContent Title="Home"
+					  Icon="home.png" 
+					  ContentTemplate="{DataTemplate tabs:HomePage}"
+					  Route="home"/>
+
 		<ShellContent Title="Trips"
                       Icon="trips.png"
                       ContentTemplate="{DataTemplate tabs:TripsPage}" 
@@ -18,11 +23,6 @@
                       Icon="discover.png"
                       ContentTemplate="{DataTemplate tabs:DiscoverPage}"
 					  Route="discover"/>
-
-		<ShellContent Title="Home"
-					  Icon="home.png" 
-					  ContentTemplate="{DataTemplate tabs:HomePage}"
-					  Route="home"/>
 
 		<ShellContent Title="Add"
 					  Icon="add.png"

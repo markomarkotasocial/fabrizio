@@ -32,20 +32,19 @@ namespace fabrizio.API.Controllers
 		/// <param name="skip"></param>
 		/// <param name="take"></param>
 		/// <param name="name"></param>
-		/// <param name="destination"></param>
 		/// <param name="startdate"></param>
 		/// <param name="enddate"></param>
 		/// <returns></returns>
 		[HttpGet]
 		[Authorize]
 		public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 100,
-												[FromQuery] string? name = null, [FromQuery] string? destination = null, 
+												[FromQuery] string? name = null,
 												[FromQuery] DateTime? startdate = null, [FromQuery] DateTime? enddate = null)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, destination, startdate, enddate);
+			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, startdate, enddate);
 			return Ok(result);
 		}
 
@@ -59,6 +58,22 @@ namespace fabrizio.API.Controllers
 		public async Task<IActionResult> GetById(Guid id)
 		{
 			var result = await _tripsService.GetTripById(id);
+			return Ok(result);
+		}
+
+		/// <summary>
+		/// Get current, previous and next trip overview.
+		/// </summary>
+		/// <param name="date"></param>
+		/// <returns></returns>
+		[HttpGet("overview")]
+		[Authorize]
+		public async Task<IActionResult> GetOverview(DateTime? date = null)
+		{
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			var result = await _tripsService.GetTripOverview(accountId, date);
 			return Ok(result);
 		}
 
@@ -108,6 +123,22 @@ namespace fabrizio.API.Controllers
 
 			var accommodationbooking = await _tripsService.CreateAccommodationBooking(accountId, id, dto);
 			return CreatedAtAction(nameof(CreateAccommodationBooking), new { id = accommodationbooking.Id }, null);
+		}
+
+		/// <summary>
+		/// Create a new destination for a specific trip.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="dto"></param>
+		/// <returns></returns>
+		[HttpPost("{id:Guid}/destination")]
+		public async Task<IActionResult> CreateDestination(Guid id, [FromBody] POSTDestination dto)
+		{
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			var destination = await _tripsService.CreateDestination(accountId, id, dto);
+			return CreatedAtAction(nameof(CreateDestination), new { id = destination.Id }, null);
 		}
 
 		/// <summary>
@@ -162,6 +193,23 @@ namespace fabrizio.API.Controllers
 		}
 
 		/// <summary>
+		/// Update an existing destination for a specific trip.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="dto"></param>
+		/// <returns></returns>
+		[HttpPut("{id:Guid}/destination")]
+		[Authorize]
+		public async Task<IActionResult> UpdateDestination(Guid id, [FromBody] PUTDestination dto)
+		{
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			await _tripsService.UpdateDestination(accountId, id, dto);
+			return NoContent();
+		}
+
+		/// <summary>
 		/// Delete an trip.
 		/// </summary>
 		/// <param name="id"></param>
@@ -208,6 +256,23 @@ namespace fabrizio.API.Controllers
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
 			await _tripsService.DeleteAccommodationBooking(accountId, tripid, accommodationbookingid);
+			return NoContent();
+		}
+
+		/// <summary>
+		/// Delete an destination.
+		/// </summary>
+		/// <param name="tripid"></param>
+		/// <param name="destinationid"></param>
+		/// <returns></returns>
+		[HttpDelete("{tripid:Guid}/destination/{id:Guid}")]
+		[Authorize]
+		public async Task<IActionResult> DeleteDestination(Guid tripid, Guid destinationid)
+		{
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			await _tripsService.DeleteDestination(accountId, tripid, destinationid);
 			return NoContent();
 		}
 

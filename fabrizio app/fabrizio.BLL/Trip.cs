@@ -10,8 +10,9 @@ namespace fabrizio.BLL
 {
 	public interface ITripService
 	{
+		Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null);
 		Task<DTO.GETTrip> GetTripById(Guid id);
-		Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
 		Task<Trip> CreateTrip(int accountid, POSTTrip dto);
 		Task UpdateTrip(int accountid, Guid id, PUTTrip dto);
 		Task DeleteTrip(int accountid, Guid id);
@@ -24,6 +25,10 @@ namespace fabrizio.BLL
 		Task<AccommodationBooking> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto);
 		Task UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto);
 		Task DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid);
+
+		Task<Destination> CreateDestination(int accountid, Guid tripid, POSTDestination dto);
+		Task UpdateDestination(int accountid, Guid tripid, PUTDestination dto);
+		Task DeleteDestination(int accountid, Guid tripid, Guid destinationid);
 	}
 
 
@@ -32,13 +37,15 @@ namespace fabrizio.BLL
 		private readonly ITripRepository _tripRepository;
 		private readonly ITravelBookingRepository _travelBookingRepository;
 		private readonly IAccommodationBookingRepository _accommodationBookingRepository;
+		private readonly IDestinationRepository _destinationRepository;
 		private readonly AppDbContext _context;
 
-		public TripService(ITripRepository repository, ITravelBookingRepository travelBookingRepository, IAccommodationBookingRepository accommodationBookingRepository, AppDbContext context)
+		public TripService(ITripRepository repository, ITravelBookingRepository travelBookingRepository, IAccommodationBookingRepository accommodationBookingRepository, IDestinationRepository destinationRepository, AppDbContext context)
 		{
 			_tripRepository = repository;
 			_travelBookingRepository = travelBookingRepository;
 			_accommodationBookingRepository = accommodationBookingRepository;
+			_destinationRepository = destinationRepository;
 			_context = context;	
 		}
 
@@ -60,9 +67,15 @@ namespace fabrizio.BLL
 				Id = trip.Id,
 				Status = (int)trip.Status,
 				Name = trip.Name,
-				Destination = trip.Destination,
+				Notes = trip.Notes,
 				StartDate = trip.StartDate,
 				EndDate = trip.EndDate,
+				Destinations = trip.Destinations.Select(tb => new DTO.GETDestination 
+				{
+					Id = tb.Id,
+					Name = tb.Name,
+					Order = tb.Order,
+				}),
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
 				{
 					Id = tb.Id,
@@ -91,7 +104,12 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, string? destination = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
 		{
 			#region Validate
 
@@ -114,13 +132,6 @@ namespace fabrizio.BLL
 					query = query.Where(t => t.Name.Contains(trimmedName));
 			}
 
-			if (!string.IsNullOrWhiteSpace(destination))
-			{
-				var trimmedDestination = destination.Trim();
-				if (trimmedDestination.Length > 0)
-					query = query.Where(t => t.Destination.Contains(trimmedDestination));
-			}
-
 			if (startdate.HasValue)
 				query = query.Where(t => t.StartDate >= startdate.Value);
 
@@ -139,9 +150,10 @@ namespace fabrizio.BLL
 				Id = trip.Id,
 				Status = (int)trip.Status,
 				Name = trip.Name,
-				Destination = trip.Destination,
+				Notes = trip.Notes,
 				StartDate = trip.StartDate,
 				EndDate = trip.EndDate,
+				//Destinations = trip.Destinations.Select(),
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
 				{
 					Id = tb.Id,
@@ -199,7 +211,7 @@ namespace fabrizio.BLL
 			{
 				AccountId = accountid,
 				Name = dto.Name, 
-				Destination = dto.Destination, 
+				Notes = dto.Notes, 
 				StartDate = dto.StartDate, 
 				EndDate = dto.EndDate, 
 				Status= TripStatus.Planned
@@ -234,6 +246,7 @@ namespace fabrizio.BLL
 			#endregion Validate
 
 			trip.Name = dto.Name;
+			trip.Notes = dto.Notes;
 			trip.StartDate = dto.StartDate;
 			trip.EndDate = dto.EndDate;
 

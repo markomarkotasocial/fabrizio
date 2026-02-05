@@ -19,6 +19,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<ITravelBookingRepository, TravelBookingRepository>();
 builder.Services.AddScoped<IAccommodationBookingRepository, AccommodationBookingRepository>();
+builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
 
 // Register Services
 builder.Services.AddScoped<IAccountService, AccountService>();
