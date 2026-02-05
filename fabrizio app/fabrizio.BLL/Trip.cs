@@ -278,17 +278,17 @@ namespace fabrizio.BLL
 			var trips = _tripRepository.QueryAll(accountid);
 
 			var current = trips
-				.Where(t => t.StartDate <= refDate && t.EndDate >= refDate)
+				.Where(t => t.StartDate <= refDate && t.EndDate >= refDate && t.Status != TripStatus.Cancelled)
 				.OrderBy(t => t.StartDate)
 				.FirstOrDefault();
 
 			var previous = trips
-				.Where(t => t.EndDate < refDate)
+				.Where(t => t.EndDate < refDate && t.Status != TripStatus.Cancelled)
 				.OrderByDescending(t => t.EndDate)
 				.FirstOrDefault();
 
 			var next = trips
-				.Where(t => t.StartDate > refDate)
+				.Where(t => t.StartDate > refDate && t.Status != TripStatus.Cancelled)
 				.OrderBy(t => t.StartDate)
 				.FirstOrDefault();
 
