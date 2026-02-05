@@ -76,6 +76,7 @@ namespace fabrizio.BLL
 					Id = tb.Id,
 					Name = tb.Name,
 					Order = tb.Order,
+					TripId = tb.TripId,
 				}),
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
 				{
@@ -154,6 +155,7 @@ namespace fabrizio.BLL
 					Id = tb.Id,
 					Name = tb.Name,
 					Order = tb.Order,
+					TripId = tb.TripId,
 				}),
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
 				{
@@ -333,7 +335,8 @@ namespace fabrizio.BLL
 					{
 						Id = d.Id,
 						Name = d.Name,
-						Order = d.Order
+						Order = d.Order, 
+						TripId = d.TripId,
 					}),
 
 				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
