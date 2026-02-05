@@ -27,9 +27,9 @@ namespace fabrizio.App
 			builder.Services.AddSingleton<AppShell>();
 			builder.Services.AddSingleton<AuthService>();
 			builder.Services.AddTransient<TokenHandler>();
+			//builder.Services.AddSingleton<AppState>();
 
 			builder.Services.AddSingleton<IAuthService, AuthService>();
-
 			builder.Services.AddHttpClient<ITripService, TripService>(client =>
 			{
 				client.BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/");

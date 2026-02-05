@@ -16,6 +16,8 @@ namespace fabrizio.App
 			InitializeComponent();
 			AuthService = authService;
 			MainPage = new AppShell();
+
+
 		}
 	}
 

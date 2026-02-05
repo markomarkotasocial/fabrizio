@@ -3,71 +3,90 @@
              x:Class="fabrizio.App.Pages.Tabs.TripsPage"
              Title="Trips">
 
+	
 	<Grid Padding="20">
 
-		<!-- Main content with pull-to-refresh -->
-		<RefreshView IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
-                     Command="{Binding LoadCommand}">
+		<!-- Content -->
+		<RefreshView
+			IsRefreshing="{Binding IsRefreshing}"
+			Command="{Binding RefreshCommand}">
 
-			<CollectionView ItemsSource="{Binding Trips}"
-                            SelectionMode="Single"
-                            SelectedItem="{Binding SelectedTrip, Mode=TwoWay}">
+			<CollectionView
+				ItemsSource="{Binding Trips}"
+				SelectionMode="Single"
+				SelectedItem="{Binding SelectedTrip}">
 
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
-						<Frame CornerRadius="12" 
-                               Margin="0,8"
-                               HasShadow="True"
-                               Padding="12" 
-							   BackgroundColor="DeepSkyBlue">
+						<Frame
+						CornerRadius="12"
+						Margin="0,8"
+						HasShadow="True"
+						Padding="12"
+						BackgroundColor="DeepSkyBlue">
 
-							<Frame.GestureRecognizers>
-								<!--<TapGestureRecognizer
-									Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenTripCommand}"
-									CommandParameter="{Binding .}" />-->
-							</Frame.GestureRecognizers>
+							<VerticalStackLayout>
+								<Label
+								Text="{Binding Name}"
+								FontSize="18"
+								FontAttributes="Bold" />
 
-							<VerticalStackLayout BackgroundColor="DeepSkyBlue">
-								<Label Text="{Binding Name}" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold"/>
-								<Label Text="{Binding Destination}" 
-                                       FontSize="14"
-                                       TextColor="DarkSlateGray"/>
-								<Label Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}"
-                                       FontSize="10"
-                                       TextColor="Gray"/>
-								<Label Text="{Binding EndDate, StringFormat='End: {0:dd.MM.yyyy}'}"
-                                       FontSize="10"
-                                       TextColor="Gray"/>
+								<Label
+								Text="{Binding Destination}"
+								FontSize="14"
+								TextColor="DarkSlateGray" />
+
+								<Label
+								Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}"
+								FontSize="10"
+								TextColor="Gray" />
+
+								<Label
+								Text="{Binding EndDate, StringFormat='End: {0:dd.MM.yyyy}'}"
+								FontSize="10"
+								TextColor="Gray" />
 							</VerticalStackLayout>
+
 						</Frame>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
-
-				<CollectionView.EmptyView>
-					<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
-						<Label Text="No added trips yet :(" 
-                               FontSize="18"
-                               TextColor="Gray"
-                               FontAttributes="Italic"/>
-					</StackLayout>
-				</CollectionView.EmptyView>
-
+				
 			</CollectionView>
+
 		</RefreshView>
 
+
+		<!-- Empty state -->
+		<StackLayout
+			IsVisible="{Binding IsEmpty}"
+			HorizontalOptions="Center"
+			VerticalOptions="Center">
+			<Label Text="No trips added yet :(" />
+		</StackLayout>
+		
+
+		<!-- Initial loading -->
+		<ActivityIndicator
+			IsRunning="{Binding IsBusy}"
+			IsVisible="{Binding IsBusy}"
+			HorizontalOptions="Center"
+			VerticalOptions="Center"/>
+
+		
 		<!-- Floating Action Button -->
-		<Button Text="+"
-                Command="{Binding AddTripCommand}"
-                BackgroundColor="#007AFF"
-                TextColor="White"
-                FontSize="24"
-                WidthRequest="60"
-                HeightRequest="60"
-                CornerRadius="30"
-                VerticalOptions="End"
-                HorizontalOptions="End"
-                Margin="20" />
+		<Button
+			Text="+"
+			Command="{Binding AddTripCommand}"
+			BackgroundColor="#007AFF"
+			TextColor="White"
+			FontSize="24"
+			WidthRequest="60"
+			HeightRequest="60"
+			CornerRadius="30"
+			VerticalOptions="End"
+			HorizontalOptions="End"
+			Margin="20" />
+
 	</Grid>
+
 </ContentPage>

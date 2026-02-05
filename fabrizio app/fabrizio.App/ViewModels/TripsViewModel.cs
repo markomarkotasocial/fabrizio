@@ -12,7 +12,9 @@ namespace fabrizio.App.Services
 		private readonly ITripService _tripService;
 		private readonly IAuthService _authService;
 
+
 		public ObservableCollection<GETTrip> Trips { get; } = new();
+
 		
 		[ObservableProperty] private GETTrip selectedTrip;
 		[ObservableProperty] private bool isRefreshing;
@@ -21,9 +23,13 @@ namespace fabrizio.App.Services
 
 		public AsyncRelayCommand RefreshCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
+
 		public AsyncRelayCommand AddTripCommand { get; }
 		public AsyncRelayCommand<GETTrip> DeleteTripCommand { get; }
 		public AsyncRelayCommand<GETTrip> OpenTripCommand { get; }
+
+
+		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
 
 		public TripsViewModel(ITripService tripService, AuthService authService)
@@ -31,28 +37,45 @@ namespace fabrizio.App.Services
 			_tripService = tripService;
 			_authService = authService;
 
-			LoadCommand = new AsyncRelayCommand(LoadTripsAsync);
+			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
+			RefreshCommand = new AsyncRelayCommand(RefreshAsync);
+
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
 			DeleteTripCommand = new AsyncRelayCommand<GETTrip>(DeleteTripAsync);
 			OpenTripCommand = new AsyncRelayCommand<GETTrip>(OpenTripAsync);
+
+			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
+			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
 		}
 
 
 
-		private bool _isLoading = false;
-		private async Task LoadTripsAsync()
+		public async Task LoadInitialAsync()
 		{
-			if (_isLoading) return;
-			_isLoading = true;
+			if (IsBusy) return;
 
 			try
 			{
-				IsRefreshing = true;
-				Trips.Clear();
+				IsBusy = true;
+				await LoadTripsCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				IsBusy = false;
+				OnPropertyChanged(nameof(IsEmpty));
+			}
+		}
 
-				var list = await _tripService.GetTrips();
-				foreach (var t in list)
-					Trips.Add(t);
+
+		public async Task RefreshAsync()
+		{
+			try
+			{
+				await LoadTripsCoreAsync();
 			}
 			catch (UnauthorizedException)
 			{
@@ -61,9 +84,22 @@ namespace fabrizio.App.Services
 			finally
 			{
 				IsRefreshing = false;
-				_isLoading = false;
+				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
+
+		private async Task LoadTripsCoreAsync()
+		{
+			Trips.Clear();
+			var list = await _tripService.GetTrips();
+			foreach (var t in list)	Trips.Add(t);
+		}
+
+
+
+
+
+
 
 
 		private Task OnAddTripAsync()
@@ -74,7 +110,6 @@ namespace fabrizio.App.Services
 		private Task OpenTripAsync(GETTrip trip)
 		{
 			if (trip == null) return Task.CompletedTask;
-
 			return Shell.Current.GoToAsync($"trip-detail?tripId={trip.Id}");
 		}
 
