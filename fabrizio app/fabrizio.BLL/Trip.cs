@@ -58,7 +58,6 @@ namespace fabrizio.BLL
 			#region Validate
 
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
-
 			Trip? trip = await _tripRepository.GetById(id);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
 
