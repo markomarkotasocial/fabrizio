@@ -209,7 +209,7 @@ namespace fabrizio.BLL
 			}
 
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: null);
-			if (hasOverlap) throw new InvalidOperationException("Trip dates overlap with an existing trip.");
+			if (hasOverlap) throw new ArgumentException("Trip dates overlap with an existing trip.");
 
 			#endregion Validate
 
@@ -253,7 +253,7 @@ namespace fabrizio.BLL
 				throw new KeyNotFoundException("There is no trip with the specified ID.");
 
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
-			if (hasOverlap) throw new InvalidOperationException("Trip dates overlap with an existing trip.");
+			if (hasOverlap) throw new ArgumentException("Trip dates overlap with an existing trip.");
 
 			#endregion Validate
 

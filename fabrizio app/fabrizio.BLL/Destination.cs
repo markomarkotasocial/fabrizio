@@ -23,11 +23,11 @@ namespace fabrizio.BLL
 				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, null);
-			if (hasOverlap) throw new InvalidOperationException("Destination name overlap.");
+			if (hasOverlap) throw new ArgumentException("Destination name overlap.");
 
 			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
+			if (trip == null) throw new ArgumentException("There is no trip with specified ID!");
 			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
 
 			#endregion Validate
@@ -59,12 +59,12 @@ namespace fabrizio.BLL
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, dto.Id);
-			if (hasOverlap) throw new InvalidOperationException("Destination name overlap.");
+			if (hasOverlap) throw new ArgumentException("Destination name overlap.");
 
 			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip.Status == TripStatus.Cancelled) throw new ArgumentException("Cancelled trip is not editable.");
 
 			Destination? destination = trip.Destinations.FirstOrDefault(b => b.Id == dto.Id);
 			if (destination == null) throw new KeyNotFoundException("There is no destination with specified ID!");
