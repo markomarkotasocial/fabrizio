@@ -28,8 +28,8 @@ namespace fabrizio.BLL
 		Task UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto);
 		Task DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid);
 
-		Task<Destination> CreateDestination(int accountid, Guid tripid, POSTDestination dto);
-		Task UpdateDestination(int accountid, Guid tripid, PUTDestination dto);
+		Task<Result<Destination>> CreateDestination(int accountid, Guid tripid, POSTDestination dto);
+		Task<Result> UpdateDestination(int accountid, Guid tripid, PUTDestination dto);
 		Task DeleteDestination(int accountid, Guid tripid, Guid destinationid);
 	}
 

@@ -3,6 +3,7 @@ using fabrizio.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,28 +12,39 @@ namespace fabrizio.BLL
 	public partial class TripService : ITripService
 	{
 
-		public async Task<Destination> CreateDestination(int accountid, Guid tripid, POSTDestination dto)
+		public async Task<Result<Destination>> CreateDestination(int accountid, Guid tripid, POSTDestination dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
-		
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
+
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+			{
+				return Result<Destination>.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
+			}
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, null);
-			if (hasOverlap) throw new ArgumentException("Destination name overlap.");
+			if (hasOverlap)
+			{
+				return Result<Destination>.Fail(new BusinessError("destination_overlap", "Destination name overlap.",409));
+			}
 
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new ArgumentException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result<Destination>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.",404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<Destination>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
 
 			#endregion Validate
 
-			var nextOrder = trip.Destinations.Any()	? trip.Destinations.Max(d => d.Order) + 1: 1;
+			var nextOrder = trip.Destinations.Any()	? trip.Destinations.Max(d => d.Order) + 1 : 1;
 
 			var destination = new Destination
 			{
@@ -44,35 +56,51 @@ namespace fabrizio.BLL
 
 			trip.Destinations.Add(destination);
 			await _travelBookingRepository.SaveChangesAsync();
-			return destination;
+			return Result<Destination>.Success(destination);
 		}
 
-		public async Task UpdateDestination(int accountid, Guid tripid, PUTDestination dto)
+		public async Task<Result> UpdateDestination(int accountid, Guid tripid, PUTDestination dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
+			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
-
-			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			{
+				return Result.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
+			}
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, dto.Id);
-			if (hasOverlap) throw new ArgumentException("Destination name overlap.");
-
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
+			if (hasOverlap)
+			{
+				return Result.Fail(new BusinessError("destination_overlap", "Destination name overlap.", 409));
+			}
+						
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new ArgumentException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
 
 			Destination? destination = trip.Destinations.FirstOrDefault(b => b.Id == dto.Id);
-			if (destination == null) throw new KeyNotFoundException("There is no destination with specified ID!");
+			if (destination == null)
+			{
+				return Result.Fail(new BusinessError("destination_not_found", "There is no destination with specified ID.", 404));
+			}
 
 			#endregion Validate
 
 			destination.Name = dto.Name;
+
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
 		public async Task DeleteDestination(int accountid, Guid tripid, Guid destinationid)

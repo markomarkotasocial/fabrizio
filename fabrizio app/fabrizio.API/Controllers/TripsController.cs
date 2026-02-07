@@ -1,12 +1,14 @@
-﻿using fabrizio.API.Services;
-using fabrizio.BLL;
-using fabrizio.DAL.Entities;
-using fabrizio.DTO;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Security.Claims;
+
+using fabrizio.API.Services;
+using fabrizio.API.Extensions;
+using fabrizio.BLL;
+using fabrizio.DAL.Entities;
+using fabrizio.DTO;
 
 namespace fabrizio.API.Controllers
 {
@@ -22,7 +24,6 @@ namespace fabrizio.API.Controllers
 			_tripsService = tripService;
 			_jwtTokenService = jwtTokenService;
 		}
-
 
 
 
@@ -137,8 +138,9 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var destination = await _tripsService.CreateDestination(accountId, id, dto);
-			return CreatedAtAction(nameof(CreateDestination), new { id = destination.Id }, null);
+			var result = await _tripsService.CreateDestination(accountId, id, dto);
+			if (!result.IsSuccess) return result.ToProblem();
+			return Ok(result.Value);
 		}
 
 		/// <summary>
@@ -205,7 +207,8 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			await _tripsService.UpdateDestination(accountId, id, dto);
+			var result = await _tripsService.UpdateDestination(accountId, id, dto);
+			if (!result.IsSuccess) return result.ToProblem();
 			return NoContent();
 		}
 
