@@ -58,7 +58,10 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetById(Guid id)
 		{
-			var result = await _tripsService.GetTripById(id);
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			var result = await _tripsService.GetTripById(accountId, id);
 			return Ok(result);
 		}
 
@@ -90,8 +93,9 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var trip = await _tripsService.CreateTrip(accountId, dto);
-			return CreatedAtAction(nameof(GetById), new { id = trip.Id }, null);
+			var result = await _tripsService.CreateTrip(accountId, dto);
+			if (!result.IsSuccess) return result.ToProblem();
+			return Ok(result.Value);
 		}
 
 		/// <summary>
@@ -106,8 +110,9 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var travelbooking = await _tripsService.CreateTravelBooking(accountId, id, dto);
-			return CreatedAtAction(nameof(CreateTravelBooking), new { id = travelbooking.Id }, null);
+			var result = await _tripsService.CreateTravelBooking(accountId, id, dto);
+			if (!result.IsSuccess) return result.ToProblem();
+			return Ok(result.Value);
 		}
 
 		/// <summary>
@@ -122,8 +127,9 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var accommodationbooking = await _tripsService.CreateAccommodationBooking(accountId, id, dto);
-			return CreatedAtAction(nameof(CreateAccommodationBooking), new { id = accommodationbooking.Id }, null);
+			var result = await _tripsService.CreateAccommodationBooking(accountId, id, dto);
+			if (!result.IsSuccess) return result.ToProblem();
+			return Ok(result.Value);
 		}
 
 		/// <summary>

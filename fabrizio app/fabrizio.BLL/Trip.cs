@@ -1,36 +1,37 @@
-﻿using fabrizio.DAL;
-using fabrizio.DAL.Entities;
-using fabrizio.DTO;
-using fabrizio.Repository;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System.Net.NetworkInformation;
 using System.Numerics;
+
+using fabrizio.DAL;
+using fabrizio.DAL.Entities;
+using fabrizio.DTO;
+using fabrizio.Repository;
 
 
 namespace fabrizio.BLL
 {
 	public interface ITripService
 	{
-		Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null);
-		Task<DTO.GETTrip> GetTripById(Guid id);
-		Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
-		Task<Trip> CreateTrip(int accountid, POSTTrip dto);
-		Task UpdateTrip(int accountid, Guid id, PUTTrip dto);
-		Task DeleteTrip(int accountid, Guid id);
+		Task<Result<DTO.GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null);
+		Task<Result<DTO.GETTrip>> GetTripById(int accountid, Guid id);
+		Task<Result<PagedResult<DTO.GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Result<Trip>> CreateTrip(int accountid, POSTTrip dto);
+		Task<Result> UpdateTrip(int accountid, Guid id, PUTTrip dto);
+		Task<Result> DeleteTrip(int accountid, Guid id);
 
 
-		Task<TravelBooking> CreateTravelBooking(int accountid, Guid tripid, POSTTravelBooking dto);
-		Task UpdateTravelBooking(int accountid, Guid id, PUTTravelBooking dto);
-		Task DeleteTravelBooking(int accountid, Guid tripid, Guid travelbookingid);
+		Task<Result<TravelBooking>> CreateTravelBooking(int accountid, Guid tripid, POSTTravelBooking dto);
+		Task<Result> UpdateTravelBooking(int accountid, Guid id, PUTTravelBooking dto);
+		Task<Result> DeleteTravelBooking(int accountid, Guid tripid, Guid travelbookingid);
 
-		Task<AccommodationBooking> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto);
-		Task UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto);
-		Task DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid);
+		Task<Result<AccommodationBooking>> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto);
+		Task<Result> UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto);
+		Task<Result> DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid);
 
 		Task<Result<Destination>> CreateDestination(int accountid, Guid tripid, POSTDestination dto);
 		Task<Result> UpdateDestination(int accountid, Guid tripid, PUTDestination dto);
-		Task DeleteDestination(int accountid, Guid tripid, Guid destinationid);
+		Task<Result> DeleteDestination(int accountid, Guid tripid, Guid destinationid);
 	}
 
 
@@ -53,17 +54,25 @@ namespace fabrizio.BLL
 
 
 
-		public async Task<DTO.GETTrip> GetTripById(Guid id)
+		public async Task<Result<DTO.GETTrip>> GetTripById(int accountid, Guid id)
 		{
 			#region Validate
 
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
 			Trip? trip = await _tripRepository.GetById(id);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
+			if (trip == null)
+			{
+				return Result<DTO.GETTrip>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result<DTO.GETTrip>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			#endregion Validate
 
-			return new DTO.GETTrip
+			return Result<DTO.GETTrip>.Success(new DTO.GETTrip
 			{
 				Id = trip.Id,
 				Status = (int)trip.Status,
@@ -103,18 +112,15 @@ namespace fabrizio.BLL
 					Reference = ab.Reference,
 					Type = (int)ab.Type
 				}),
-			};
+			});
 		}
 
-		public async Task<PagedResult<DTO.GETTrip>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<Result<PagedResult<DTO.GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
 		{
 			#region Validate
 
-			if (accountid < 0)
-				throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
-			if (take <= 0)
-				throw new ArgumentException("Take must be greater than zero.", nameof(take));
+			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
+			if (take <= 0) throw new ArgumentException("Take must be greater than zero.", nameof(take));
 			
 			#endregion Validate
 
@@ -133,83 +139,60 @@ namespace fabrizio.BLL
 				query = query.Where(t => t.StartDate >= startdate.Value);
 
 			if (enddate.HasValue)
-				query = query.Where(t => t.EndDate <= enddate.Value);
+				query = query.Where(t => t.EndDate == null || t.EndDate <= enddate.Value);
 
 			#endregion Filters
+
+			query = query.OrderByDescending(t => t.StartDate).ThenBy(t => t.Name);
 
 			// Paging
 			var totalCount = await query.CountAsync();
 			var items = await query.Skip(skip).Take(take).ToListAsync();
 
 			// Map to DTOs
-			var dtoItems = items.Select(trip => new DTO.GETTrip
+			var dtoItems = items.Select(trip => new DTO.GETTripList
 			{
 				Id = trip.Id,
 				Status = (int)trip.Status,
 				Name = trip.Name,
 				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,
-				Destinations = trip.Destinations.Select(tb => new DTO.GETDestination
-				{
-					Id = tb.Id,
-					Name = tb.Name,
-					Order = tb.Order,
-					TripId = tb.TripId,
-				}),
-				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
-				{
-					Id = tb.Id,
-					TripId = tb.TripId,
-					Arrival = tb.Arrival,
-					Carrier = tb.Carrier,
-					Departure = tb.Departure,
-					Reference = tb.Reference,
-					Note = tb.Note,
-					Destination = tb.Destination,
-					Origin = tb.Origin,
-					Type = (int)tb.Type
-				}),
-				AccommodationBookings = trip.AccommodationBookings.Select(ab => new DTO.GETAccommodationBooking
-				{
-					Id = ab.Id,
-					TripId = ab.TripId,
-					From = ab.From,
-					To = ab.To,
-					Location = ab.Location,
-					Name = ab.Name,
-					Note = ab.Note,
-					Reference = ab.Reference,
-					Type = (int)ab.Type
-				})
+				EndDate = trip.EndDate,				
 			});
 
-			return new PagedResult<DTO.GETTrip>
+
+			return Result<PagedResult<DTO.GETTripList>>.Success(new PagedResult<DTO.GETTripList>
 			{
 				TotalCount = totalCount,
 				Items = dtoItems
-			};
+			});
 		}
 
-		public async Task<Trip> CreateTrip(int accountid, POSTTrip dto)
+		public async Task<Result<Trip>> CreateTrip(int accountid, POSTTrip dto)
 		{
 			#region Validate
 
 			if(accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+			{
+				return Result<Trip>.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
+			}
 
 			if (dto.EndDate != null)
 			{
 				if (dto.EndDate < dto.StartDate)
-					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
+				{
+					return Result<Trip>.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+				}
 			}
 
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: null);
-			if (hasOverlap) throw new ArgumentException("Trip dates overlap with an existing trip.");
+			if (hasOverlap)
+			{
+				return Result<Trip>.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
+			}
 
 			#endregion Validate
 
@@ -228,32 +211,45 @@ namespace fabrizio.BLL
 
 			_tripRepository.Add(trip);
 			await _tripRepository.SaveChangesAsync();
-			return trip;
+			return Result<Trip>.Success(trip);
 		}
 
-		public async Task UpdateTrip(int accountid, Guid id, PUTTrip dto)
+		public async Task<Result> UpdateTrip(int accountid, Guid id, PUTTrip dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+			{
+				return Result.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
+			}
 
 			if (dto.EndDate != null)
 			{
 				if (dto.EndDate < dto.StartDate)
-					throw new ArgumentException("End date cannot be earlier than start date.", nameof(dto.EndDate));
+				{
+					return Result.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+				}
 			}
 
 			var trip = await _tripRepository.GetById(id);
 			if (trip == null)
-				throw new KeyNotFoundException("There is no trip with the specified ID.");
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
-			if (hasOverlap) throw new ArgumentException("Trip dates overlap with an existing trip.");
+			if (hasOverlap)
+			{
+				return Result<Trip>.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
+			}
 
 			#endregion Validate
 
@@ -270,26 +266,35 @@ namespace fabrizio.BLL
 			}
 
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
-		public async Task DeleteTrip(int accountid, Guid id)
+		public async Task<Result> DeleteTrip(int accountid, Guid id)
 		{
 			#region Validate
 
+			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
+
 			Trip? trip = await _tripRepository.GetById(id);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
+			if (trip == null)
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			#endregion Validate
 
 			_tripRepository.Delete(trip);
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
-
-
-
-		public async Task<DTO.GETTripOverview> GetTripOverview(int accountid, DateTime? date = null)
+		public async Task<Result<DTO.GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null)
 		{
 			var refDate = (date ?? DateTime.UtcNow).Date;
 
@@ -310,13 +315,15 @@ namespace fabrizio.BLL
 				.OrderBy(t => t.StartDate)
 				.FirstOrDefault();
 
-			return new DTO.GETTripOverview
+			return Result<DTO.GETTripOverview>.Success(new DTO.GETTripOverview
 			{
 				Previous = previous != null ? MapToGetTrip(previous) : null,
 				Current = current != null ? MapToGetTrip(current) : null,
 				Next = next != null ? MapToGetTrip(next) : null
-			};
+			});
 		}
+
+
 
 		private DTO.GETTrip MapToGetTrip(Trip trip)
 		{

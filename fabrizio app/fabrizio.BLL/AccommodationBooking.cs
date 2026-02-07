@@ -1,4 +1,5 @@
 ﻿using fabrizio.DAL.Entities;
+using fabrizio.DAL.Migrations;
 using fabrizio.DTO;
 using fabrizio.Repository;
 using System;
@@ -12,30 +13,49 @@ namespace fabrizio.BLL
 	public partial class TripService : ITripService
 	{
 
-		public async Task<AccommodationBooking> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto)
+		public async Task<Result<AccommodationBooking>> CreateAccommodationBooking(int accountid, Guid tripid, POSTAccommodationBooking dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (string.IsNullOrWhiteSpace(dto.Location))
-				throw new ArgumentException("Location must be provided.", nameof(dto.Location));
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_location_required", "Location must be provided.", 400));
+			}
 
 			if (!Enum.IsDefined(typeof(AccommodationBookingTypes), dto.Type))
-				throw new ArgumentException($"Invalid accommodation booking type: {dto.Type}");
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_type_invalid", "Invalid accommodation booking type.", 400));
+			}
 
 			if (dto.From == null || dto.To == null)
-				throw new ArgumentException("Accommodation booking must have both From and To dates.");
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dated_required", "Accommodation booking must have both from and to dates.", 400));
+			}
 
 			if (dto.From > dto.To)
-				throw new ArgumentException("From date cannot be after To date.");
-
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+			}
+			
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			#endregion Validate
 
@@ -55,40 +75,63 @@ namespace fabrizio.BLL
 			trip.AccommodationBookings.Add(accommodationbooking);
 			trip.Recalculate();
 			await _accommodationBookingRepository.SaveChangesAsync();
-			return accommodationbooking;
+			return Result<AccommodationBooking>.Success(accommodationbooking);
 		}
 
-
-		public async Task UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto)
+		public async Task<Result> UpdateAccommodationBooking(int accountid, Guid tripid, PUTAccommodationBooking dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (string.IsNullOrWhiteSpace(dto.Location))
-				throw new ArgumentException("Location must be provided.", nameof(dto.Location));
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_location_required", "Location must be provided.", 400));
+			}
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_name_required", "Name must be provided.", 400));
+			}
 
 			if (!Enum.IsDefined(typeof(AccommodationBookingTypes), dto.Type))
-				throw new ArgumentException($"Invalid accommodation booking type: {dto.Type}");
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_type_invalid", "Invalid accommodation booking type.", 400));
+			}
 
 			if (dto.From == null || dto.To == null)
-				throw new ArgumentException("Accommodation booking must have both From and To dates.");
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dated_required", "Accommodation booking must have both from and to dates.", 400));
+			}
 
 			if (dto.From > dto.To)
-				throw new ArgumentException("From date cannot be after To date.");
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+			}
 
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result<AccommodationBooking>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			AccommodationBooking? booking = trip.AccommodationBookings.FirstOrDefault(b => b.Id == dto.Id);
-			if (booking == null) throw new KeyNotFoundException("There is no accommodation booking with specified ID!");
+			if (booking == null)
+			{
+				return Result.Fail(new BusinessError("accomodationbooking_not_found", "There is no accommodation booking with specified ID.", 404));
+			}
 
 			#endregion Validate
 
@@ -102,27 +145,40 @@ namespace fabrizio.BLL
 
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
-
-		public async Task DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid)
+		public async Task<Result> DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip ID is not correct.", nameof(tripid));
+			if (accommodationbookingid.Equals(Guid.Empty)) throw new ArgumentException("Accommodation booking ID is not correct.", nameof(accommodationbookingid));
 
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			AccommodationBooking? booking = trip.AccommodationBookings.FirstOrDefault(b => b.Id == accommodationbookingid);
-			if (booking == null) throw new KeyNotFoundException("There is no accommodation booking with specified ID!");
+			if (booking == null)
+			{
+				return Result.Fail(new BusinessError("accomodationbooking_not_found", "There is no accommodation booking with specified ID.", 404));
+			}
 
 			#endregion Validate
 
 			trip.AccommodationBookings.Remove(booking);
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 	}
 }

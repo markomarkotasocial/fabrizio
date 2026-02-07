@@ -42,6 +42,11 @@ namespace fabrizio.BLL
 				return Result<Destination>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
+			if (trip.AccountId != accountid)
+			{
+				return Result<Destination>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
+
 			#endregion Validate
 
 			var nextOrder = trip.Destinations.Any()	? trip.Destinations.Max(d => d.Order) + 1 : 1;
@@ -84,6 +89,11 @@ namespace fabrizio.BLL
 				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
+
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
@@ -103,23 +113,40 @@ namespace fabrizio.BLL
 			return Result.Success();
 		}
 
-		public async Task DeleteDestination(int accountid, Guid tripid, Guid destinationid)
+		public async Task<Result> DeleteDestination(int accountid, Guid tripid, Guid destinationid)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
+			if(tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip ID is not correct.", nameof(tripid));
+			if(destinationid.Equals(Guid.Empty)) throw new ArgumentException("Destination ID is not correct.", nameof(destinationid));
 
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			Destination? destination = trip.Destinations.FirstOrDefault(b => b.Id == destinationid);
-			if (destination == null) throw new KeyNotFoundException("There is no destination with specified ID!");
+			if (destination == null)
+			{
+				return Result.Fail(new BusinessError("destination_not_found", "There is no destination with specified ID.", 404));
+			}
 
 			#endregion Validate
 
 			trip.Destinations.Remove(destination);
+
+			var ordered = trip.Destinations.OrderBy(d => d.Order).ToList();
+			for (int i = 0; i < ordered.Count; i++)	ordered[i].Order = i + 1;
+
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
 	}

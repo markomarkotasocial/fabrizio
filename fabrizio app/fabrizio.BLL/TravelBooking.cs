@@ -1,4 +1,5 @@
 ﻿using fabrizio.DAL.Entities;
+using fabrizio.DAL.Migrations;
 using fabrizio.DTO;
 using System;
 using System.Collections.Generic;
@@ -11,38 +12,52 @@ namespace fabrizio.BLL
 	public partial class TripService : ITripService
 	{
 
-		public async Task<TravelBooking> CreateTravelBooking(int accountid, Guid tripid, POSTTravelBooking dto)
+		public async Task<Result<TravelBooking>> CreateTravelBooking(int accountid, Guid tripid, POSTTravelBooking dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
 			{
-				throw new ArgumentException($"Invalid travel booking type: {dto.Type}");
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_type_invalid", "Invalid travel booking type.", 400));
 			}
 
 			if (string.IsNullOrWhiteSpace(dto.Origin))
-				throw new ArgumentException("Origin must be provided.", nameof(dto.Origin));
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_origin_required", "Origin must be provided.", 400));
+			}
 
 			if (string.IsNullOrWhiteSpace(dto.Destination))
-				throw new ArgumentException("Destination must be provided.", nameof(dto.Destination));
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_destination_required", "Destination must be provided.", 400));
+			}
 
 			if (dto.Departure != null && dto.Departure != null)
 			{
 				if (dto.Arrival < dto.Departure)
-					throw new ArgumentException("Arrival cannot be earlier than departure.", nameof(dto.Arrival));
+				{
+					return Result<TravelBooking>.Fail(new BusinessError("travelbooking_dates_inconsistency", "Arrival cannot be earlier than departure.", 400));
+				}
 			}
 
-			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
-				throw new ArgumentException($"Invalid travel booking type: {dto.Type}");
-
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			#endregion Validate
 
@@ -63,39 +78,61 @@ namespace fabrizio.BLL
 			trip.TravelBookings.Add(travelbooking);
 			trip.Recalculate();
 			await _travelBookingRepository.SaveChangesAsync();
-			return travelbooking;
+			return Result<TravelBooking>.Success(travelbooking);
 		}
 
-		public async Task UpdateTravelBooking(int accountid, Guid tripid ,PUTTravelBooking dto)
+		public async Task<Result> UpdateTravelBooking(int accountid, Guid tripid ,PUTTravelBooking dto)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
+
+			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_type_invalid", "Invalid travel booking type.", 400));
+			}
 
 			if (string.IsNullOrWhiteSpace(dto.Origin))
-				throw new ArgumentException("Origin must be provided.", nameof(dto.Origin));
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_origin_required", "Origin must be provided.", 400));
+			}
 
 			if (string.IsNullOrWhiteSpace(dto.Destination))
-				throw new ArgumentException("Destination must be provided.", nameof(dto.Destination));
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("travelbooking_destination_required", "Destination must be provided.", 400));
+			}
 
 			if (dto.Departure != null && dto.Departure != null)
 			{
 				if (dto.Arrival < dto.Departure)
-					throw new ArgumentException("Arrival cannot be earlier than departure.", nameof(dto.Arrival));
+				{
+					return Result<TravelBooking>.Fail(new BusinessError("travelbooking_dates_inconsistency", "Arrival cannot be earlier than departure.", 400));
+				}
 			}
 
-			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
-				throw new ArgumentException($"Invalid travel booking type: {dto.Type}");
-
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			TravelBooking? booking = trip.TravelBookings.FirstOrDefault(b => b.Id == dto.Id);
-			if (booking == null) throw new KeyNotFoundException("There is no travel booking with specified ID!");
+			if (booking == null)
+			{
+				return Result.Fail(new BusinessError("travelbooking_not_found", "There is no travel booking with specified ID.", 404));
+			}
 
 			#endregion Validate
 
@@ -110,26 +147,40 @@ namespace fabrizio.BLL
 
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
-		public async Task DeleteTravelBooking(int accountid, Guid tripid, Guid travelbookingid)
+		public async Task<Result> DeleteTravelBooking(int accountid, Guid tripid, Guid travelbookingid)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
+			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip ID is not correct.", nameof(tripid));
+			if (travelbookingid.Equals(Guid.Empty)) throw new ArgumentException("Travel booking ID is not correct.", nameof(travelbookingid));
 
 			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
-			if (trip.Status == TripStatus.Cancelled) throw new InvalidOperationException("Cancelled trip is not editable.");
+			if (trip == null)
+			{
+				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+			}
+
+			if (trip.AccountId != accountid)
+			{
+				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+			}
 
 			TravelBooking? booking = trip.TravelBookings.FirstOrDefault(b => b.Id == travelbookingid);
-			if (booking == null) throw new KeyNotFoundException("There is no travel booking with specified ID!");
+			if (booking == null)
+			{
+				return Result.Fail(new BusinessError("travelbooking_not_found", "There is no travel booking with specified ID.", 404));
+			}
 
 			#endregion Validate
 
 			trip.TravelBookings.Remove(booking);
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
+			return Result.Success();
 		}
 
 	}
