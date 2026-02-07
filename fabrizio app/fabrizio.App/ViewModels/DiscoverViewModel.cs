@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
 {

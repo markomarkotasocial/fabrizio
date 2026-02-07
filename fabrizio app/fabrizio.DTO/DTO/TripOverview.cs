@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fabrizio.DTO
+namespace fabrizio.Shared.DTO
 {
 	public class GETTripOverview
 	{

@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\fabrizio.BLL\fabrizio.BLL.csproj" />
-    <ProjectReference Include="..\fabrizio.DTO\fabrizio.DTO.csproj" />
+    <ProjectReference Include="..\fabrizio.DTO\fabrizio.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using fabrizio.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,11 +6,14 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
+using fabrizio.Shared.DTO;
+using fabrizio.Shared.Contracts;
+
 namespace fabrizio.App.Services
 {
 	public interface ITripService
 	{
-		Task<IEnumerable<GETTrip>> GetTrips();
+		Task<Result<IEnumerable<GETTrip>>> GetTrips();
 		Task<GETTrip> GetTrip(Guid id);
 		Task AddTrip(POSTTrip trip);
 		Task UpdateTrip(PUTTrip trip);
@@ -30,10 +32,21 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<IEnumerable<GETTrip>> GetTrips()
+		public async Task<Result<IEnumerable<GETTrip>>> GetTrips()
 		{
-			var result = await _http.GetFromJsonAsync<PagedResult<GETTrip>>("api/trips");
-			return result?.Items ?? Enumerable.Empty<GETTrip>();
+			var result = await _http.GetFromJsonAsync<Result<PagedResult<GETTrip>>>("api/trips");
+
+			if (result == null)
+			{
+				return Result<IEnumerable<GETTrip>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
+
+			if (!result.IsSuccess)
+			{
+				return Result<IEnumerable<GETTrip>>.Fail(result.Error!);
+			}
+
+			return Result<IEnumerable<GETTrip>>.Success(result.Value!.Items);
 		}
 
 		public async Task<GETTrip> GetTrip(Guid id)

@@ -1,6 +1,7 @@
 ﻿using fabrizio.DAL.Entities;
 using fabrizio.DAL.Migrations;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
+using fabrizio.Shared.Contracts;
 using fabrizio.Repository;
 using System;
 using System.Collections.Generic;

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using fabrizio.DAL;
 using fabrizio.DAL.Entities;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 using fabrizio.Repository;
 
 namespace fabrizio.BLL
@@ -11,8 +11,8 @@ namespace fabrizio.BLL
 	public interface IAccountService
 	{
 		Task<Account?> ValidateCredentials(string email, string password);
-		Task<PagedResult<DTO.GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
-		Task<DTO.GETAccount> GetById(int id);
+		Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
+		Task<GETAccount> GetById(int id);
 		Task<Account> Create(POSTAccount dto);
 		Task Update(int id, PUTAccount dto);
 		Task Activate(string token);
@@ -49,7 +49,7 @@ namespace fabrizio.BLL
 			return BCrypt.Net.BCrypt.Verify(password, account.PasswordHash) ? account : null;
 		}
 
-		public async Task<DTO.GETAccount> GetById(int id)
+		public async Task<GETAccount> GetById(int id)
 		{
 			#region Validate
 
@@ -60,7 +60,7 @@ namespace fabrizio.BLL
 
 			#endregion Validate
 
-			return new DTO.GETAccount
+			return new GETAccount
 			{
 				Id = account.Id,
 				Name = account.Name,
@@ -70,7 +70,7 @@ namespace fabrizio.BLL
 			};
 		}
 
-		public async Task<PagedResult<DTO.GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
+		public async Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
 		{
 			#region Validate
 
@@ -104,7 +104,7 @@ namespace fabrizio.BLL
 			var items = await query.Skip(skip).Take(take).ToListAsync();
 
 			// Map to DTOs
-			var dtoItems = items.Select(account => new DTO.GETAccount
+			var dtoItems = items.Select(account => new GETAccount
 			{
 				Id = account.Id,
 				Name = account.Name,
@@ -113,7 +113,7 @@ namespace fabrizio.BLL
 				CreatedAt = account.Audit.AddTime
 			});
 
-			return new PagedResult<DTO.GETAccount>
+			return new PagedResult<GETAccount>
 			{
 				TotalCount = totalCount,
 				Items = dtoItems

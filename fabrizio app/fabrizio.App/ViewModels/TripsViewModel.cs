@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 using fabrizio.App.ViewModels;
 
 namespace fabrizio.App.Services
@@ -91,8 +91,19 @@ namespace fabrizio.App.Services
 		private async Task LoadTripsCoreAsync()
 		{
 			Trips.Clear();
-			var list = await _tripService.GetTrips();
-			foreach (var t in list)	Trips.Add(t);
+
+			var result = await _tripService.GetTrips();
+
+			if (!result.IsSuccess)
+			{
+				// TODO: UI handling (toast, dialog, log...)
+				return;
+			}
+
+			foreach (var t in result.Value!)
+			{
+				Trips.Add(t);
+			}
 		}
 
 

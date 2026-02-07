@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using fabrizio.BLL;
+using fabrizio.Shared.Contracts;
 
 namespace fabrizio.API.Extensions
 {

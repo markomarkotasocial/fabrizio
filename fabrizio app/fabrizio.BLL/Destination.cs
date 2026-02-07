@@ -1,5 +1,6 @@
 ﻿using fabrizio.DAL.Entities;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
+using fabrizio.Shared.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
 using fabrizio.App.ViewModels;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
 {

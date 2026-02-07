@@ -5,7 +5,8 @@ using System.Numerics;
 
 using fabrizio.DAL;
 using fabrizio.DAL.Entities;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
+using fabrizio.Shared.Contracts;
 using fabrizio.Repository;
 
 
@@ -13,9 +14,9 @@ namespace fabrizio.BLL
 {
 	public interface ITripService
 	{
-		Task<Result<DTO.GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null);
-		Task<Result<DTO.GETTrip>> GetTripById(int accountid, Guid id);
-		Task<Result<PagedResult<DTO.GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Result<GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null);
+		Task<Result<GETTrip>> GetTripById(int accountid, Guid id);
+		Task<Result<PagedResult<GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
 		Task<Result<Trip>> CreateTrip(int accountid, POSTTrip dto);
 		Task<Result> UpdateTrip(int accountid, Guid id, PUTTrip dto);
 		Task<Result> DeleteTrip(int accountid, Guid id);
@@ -54,7 +55,7 @@ namespace fabrizio.BLL
 
 
 
-		public async Task<Result<DTO.GETTrip>> GetTripById(int accountid, Guid id)
+		public async Task<Result<GETTrip>> GetTripById(int accountid, Guid id)
 		{
 			#region Validate
 
@@ -62,17 +63,17 @@ namespace fabrizio.BLL
 			Trip? trip = await _tripRepository.GetById(id);
 			if (trip == null)
 			{
-				return Result<DTO.GETTrip>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+				return Result<GETTrip>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
 			if (trip.AccountId != accountid)
 			{
-				return Result<DTO.GETTrip>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result<GETTrip>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			#endregion Validate
 
-			return Result<DTO.GETTrip>.Success(new DTO.GETTrip
+			return Result<GETTrip>.Success(new GETTrip
 			{
 				Id = trip.Id,
 				Status = (int)trip.Status,
@@ -80,14 +81,14 @@ namespace fabrizio.BLL
 				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
 				EndDate = trip.EndDate,
-				Destinations = trip.Destinations.Select(tb => new DTO.GETDestination 
+				Destinations = trip.Destinations.Select(tb => new GETDestination 
 				{
 					Id = tb.Id,
 					Name = tb.Name,
 					Order = tb.Order,
 					TripId = tb.TripId,
 				}),
-				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
+				TravelBookings = trip.TravelBookings.Select(tb => new GETTravelBooking
 				{
 					Id = tb.Id,
 					TripId = tb.TripId,
@@ -100,7 +101,7 @@ namespace fabrizio.BLL
 					Origin = tb.Origin,
 					Type = (int)tb.Type
 				}),
-				AccommodationBookings = trip.AccommodationBookings.Select(ab => new DTO.GETAccommodationBooking
+				AccommodationBookings = trip.AccommodationBookings.Select(ab => new GETAccommodationBooking
 				{
 					Id = ab.Id,
 					TripId = ab.TripId,
@@ -115,7 +116,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result<PagedResult<DTO.GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<Result<PagedResult<GETTripList>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
 		{
 			#region Validate
 
@@ -150,7 +151,7 @@ namespace fabrizio.BLL
 			var items = await query.Skip(skip).Take(take).ToListAsync();
 
 			// Map to DTOs
-			var dtoItems = items.Select(trip => new DTO.GETTripList
+			var dtoItems = items.Select(trip => new GETTripList
 			{
 				Id = trip.Id,
 				Status = (int)trip.Status,
@@ -161,7 +162,7 @@ namespace fabrizio.BLL
 			});
 
 
-			return Result<PagedResult<DTO.GETTripList>>.Success(new PagedResult<DTO.GETTripList>
+			return Result<PagedResult<GETTripList>>.Success(new PagedResult<GETTripList>
 			{
 				TotalCount = totalCount,
 				Items = dtoItems
@@ -294,7 +295,7 @@ namespace fabrizio.BLL
 			return Result.Success();
 		}
 
-		public async Task<Result<DTO.GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null)
+		public async Task<Result<GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null)
 		{
 			var refDate = (date ?? DateTime.UtcNow).Date;
 
@@ -315,7 +316,7 @@ namespace fabrizio.BLL
 				.OrderBy(t => t.StartDate)
 				.FirstOrDefault();
 
-			return Result<DTO.GETTripOverview>.Success(new DTO.GETTripOverview
+			return Result<GETTripOverview>.Success(new GETTripOverview
 			{
 				Previous = previous != null ? MapToGetTrip(previous) : null,
 				Current = current != null ? MapToGetTrip(current) : null,
@@ -325,9 +326,9 @@ namespace fabrizio.BLL
 
 
 
-		private DTO.GETTrip MapToGetTrip(Trip trip)
+		private GETTrip MapToGetTrip(Trip trip)
 		{
-			return new DTO.GETTrip
+			return new GETTrip
 			{
 				Id = trip.Id,
 				Status = (int)trip.Status,
@@ -338,7 +339,7 @@ namespace fabrizio.BLL
 
 				Destinations = trip.Destinations
 					.OrderBy(d => d.Order)
-					.Select(d => new DTO.GETDestination
+					.Select(d => new GETDestination
 					{
 						Id = d.Id,
 						Name = d.Name,
@@ -346,7 +347,7 @@ namespace fabrizio.BLL
 						TripId = d.TripId,
 					}),
 
-				TravelBookings = trip.TravelBookings.Select(tb => new DTO.GETTravelBooking
+				TravelBookings = trip.TravelBookings.Select(tb => new GETTravelBooking
 				{
 					Id = tb.Id,
 					TripId = tb.TripId,
@@ -360,7 +361,7 @@ namespace fabrizio.BLL
 					Type = (int)tb.Type
 				}),
 
-				AccommodationBookings = trip.AccommodationBookings.Select(ab => new DTO.GETAccommodationBooking
+				AccommodationBookings = trip.AccommodationBookings.Select(ab => new GETAccommodationBooking
 				{
 					Id = ab.Id,
 					TripId = ab.TripId,

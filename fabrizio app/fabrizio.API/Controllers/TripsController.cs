@@ -8,7 +8,7 @@ using fabrizio.API.Services;
 using fabrizio.API.Extensions;
 using fabrizio.BLL;
 using fabrizio.DAL.Entities;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 
 namespace fabrizio.API.Controllers
 {

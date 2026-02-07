@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using fabrizio.BLL;
-using fabrizio.DTO;
+using fabrizio.Shared.DTO;
 using fabrizio.API.Services;
 
 namespace fabrizio.API.Controllers
