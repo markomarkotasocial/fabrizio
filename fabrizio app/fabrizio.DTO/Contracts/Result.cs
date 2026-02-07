@@ -12,13 +12,13 @@ namespace fabrizio.Shared.Contracts
 		int HttpStatusCode
 		);
 
-	
+
 	public class Result
 	{
-		public Result() { }
+		public bool IsSuccess { get; set; }
+		public BusinessError? Error { get; set; }
 
-		public bool IsSuccess { get; }
-		public BusinessError? Error { get; }
+		public Result() { }
 
 		protected Result(bool success, BusinessError? error)
 		{
@@ -35,12 +35,16 @@ namespace fabrizio.Shared.Contracts
 		public T? Value { get; set; }
 		public Result() { }
 
-		private Result(bool success, T? value, BusinessError? error) : base(success, error)
+		protected Result(bool success, T? value, BusinessError? error)
+			: base(success, error)
 		{
 			Value = value;
 		}
 
-		public static Result<T> Success(T value) => new(true, value, null);
-		public static Result<T> Fail(BusinessError error) => new(false, default, error);
+		public static Result<T> Success(T value)
+			=> new(true, value, null);
+
+		public new static Result<T> Fail(BusinessError error)
+			=> new(false, default, error);
 	}
 }

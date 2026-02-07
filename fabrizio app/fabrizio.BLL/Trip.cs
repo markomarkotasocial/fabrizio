@@ -161,7 +161,6 @@ namespace fabrizio.BLL
 				EndDate = trip.EndDate,				
 			});
 
-
 			return Result<PagedResult<GETTripList>>.Success(new PagedResult<GETTripList>
 			{
 				TotalCount = totalCount,
