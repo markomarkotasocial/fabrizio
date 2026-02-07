@@ -13,6 +13,7 @@ namespace fabrizio.Repository
 
 		void Add(Destination destination);
 		void Delete(Destination destination);
+		Task<bool> HasOverlappingDestination(int accountId, Guid tripId, string destinationName, Guid? excludeDestinationId = null);
 	}
 
 
@@ -41,6 +42,17 @@ namespace fabrizio.Repository
 		public void Delete(Destination destination)
 		{
 			_context.Destinations.Remove(destination);
+		}
+
+		public async Task<bool> HasOverlappingDestination(int accountId, Guid tripId, string destinationName, Guid? excludeDestinationId = null)
+		{
+			return await _context.Destinations.AnyAsync(t =>
+				t.AccountId == accountId
+				&& t.TripId == tripId				
+				&& t.Name == destinationName
+				&& (excludeDestinationId == null || t.Id != excludeDestinationId)
+			);
+
 		}
 
 

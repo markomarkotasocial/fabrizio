@@ -22,6 +22,9 @@ namespace fabrizio.BLL
 			if (string.IsNullOrWhiteSpace(dto.Name))
 				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
+			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, null);
+			if (hasOverlap) throw new InvalidOperationException("Destination name overlap.");
+
 			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
 			if (trip == null) throw new KeyNotFoundException("There is no trip with specified ID!");
@@ -54,6 +57,9 @@ namespace fabrizio.BLL
 				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
 
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+
+			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, dto.Id);
+			if (hasOverlap) throw new InvalidOperationException("Destination name overlap.");
 
 			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 			Trip? trip = await _tripRepository.GetById(tripid);
