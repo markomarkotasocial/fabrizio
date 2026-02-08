@@ -19,11 +19,11 @@
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
 						<Frame
-						CornerRadius="12"
-						Margin="0,8"
-						HasShadow="True"
-						Padding="12"
-						BackgroundColor="DeepSkyBlue">
+							CornerRadius="12"
+							Margin="0,8"
+							HasShadow="True"
+							Padding="12"
+							BackgroundColor="DeepSkyBlue">
 
 							<VerticalStackLayout>
 								<Label

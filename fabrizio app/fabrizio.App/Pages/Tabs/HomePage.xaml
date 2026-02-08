@@ -3,17 +3,75 @@
              x:Class="fabrizio.App.Pages.Tabs.HomePage"
              Title="Home">
 
+	<!--Loaded="OnPageLoaded"-->
+
 	<Grid Padding="20">
 
-		
-		
-		<Label Text="Welcome to Home Page!"
-			   FontSize="24"
-			   TextColor="Black"
-			   VerticalOptions="Center" 
-			   HorizontalOptions="Center" />
-		
-		
-		
+		<!-- Content --><!--
+		<RefreshView
+			IsRefreshing="{Binding IsRefreshing}"
+			Command="{Binding RefreshCommand}">-->
+
+			
+			<!--<ContentView IsVisible="{Binding HasTrip}">
+				<Frame CornerRadius="16" Padding="20">	
+				</Frame>
+			</ContentView>-->
+
+			
+			
+			<!--<StackLayout
+				IsVisible="{Binding HasTrip}"
+				Spacing="16">
+
+				--><!-- Current trip --><!--
+				<Frame
+					IsVisible="{Binding Current}"
+					Padding="16"
+					CornerRadius="12">
+
+					<StackLayout>
+						<Label Text="Ongoing trip" FontAttributes="Bold" />
+						<Label Text="{Binding Current.Name}" FontSize="18" />
+						<Label Text="{Binding Current.StartDate, StringFormat='Started {0:dd MMM}'}" />
+					</StackLayout>
+				</Frame>
+
+				--><!-- Next trip (fallback) --><!--
+				<Frame
+					IsVisible="{Binding Next}"
+					Padding="16"
+					CornerRadius="12">
+
+					<StackLayout>
+						<Label Text="Next trip" FontAttributes="Bold" />
+						<Label Text="{Binding Next.Name}" FontSize="18" />
+						<Label Text="{Binding Next.StartDate, StringFormat='Starts {0:dd MMM}'}" />
+					</StackLayout>
+				</Frame>
+
+			</StackLayout>-->
+
+
+		<!--</RefreshView>-->
+
+		<!-- Empty state -->
+		<StackLayout
+			IsVisible="{Binding IsEmpty}"
+			HorizontalOptions="Center"
+			VerticalOptions="Center">
+			<Label Text="No upcoming trips yet :(" />
+		</StackLayout>
+
+
+		<!-- Initial loading -->
+		<ActivityIndicator
+			IsRunning="{Binding IsBusy}"
+			IsVisible="{Binding IsBusy}"
+			HorizontalOptions="Center"
+			VerticalOptions="Center"/>
+
+
+
 	</Grid>
 </ContentPage>

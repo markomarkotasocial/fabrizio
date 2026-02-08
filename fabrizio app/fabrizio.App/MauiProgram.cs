@@ -40,12 +40,12 @@ namespace fabrizio.App
 			// 🟢 ViewModels
 			builder.Services.AddTransient<LoginViewModel>();
 			builder.Services.AddTransient<TripsViewModel>();
-			//builder.Services.AddTransient<HomeViewModel>();
+			builder.Services.AddTransient<HomeViewModel>();
 
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
 			builder.Services.AddTransient<TripsPage>();
-			//builder.Services.AddTransient<HomePage>();
+			builder.Services.AddTransient<HomePage>();
 
 			return builder.Build();
 		}
