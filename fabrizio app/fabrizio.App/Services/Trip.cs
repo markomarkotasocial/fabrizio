@@ -14,7 +14,10 @@ namespace fabrizio.App.Services
 	public interface ITripService
 	{
 		Task<Result<IEnumerable<GETTrip>>> GetTrips();
-		Task<GETTrip> GetTrip(Guid id);
+		Task<Result<GETTrip>> GetTrip(Guid id);
+		Task<Result<GETTripOverview>> GetTripsOverview();
+
+
 		Task AddTrip(POSTTrip trip);
 		Task UpdateTrip(PUTTrip trip);
 		Task DeleteTrip(Guid id);
@@ -49,12 +52,45 @@ namespace fabrizio.App.Services
 			return Result<IEnumerable<GETTrip>>.Success(result.Value!.Items);
 		}
 
-		public async Task<GETTrip> GetTrip(Guid id)
+		public async Task<Result<GETTrip>> GetTrip(Guid id)
 		{
-			var result = await _http.GetFromJsonAsync<GETTrip>($"api/trips/{id}");
-			if (result == null)	throw new KeyNotFoundException($"Trip with ID {id} not found");
-			return result;
+			var result = await _http.GetFromJsonAsync<Result<GETTrip>>($"api/trips/{id}");
+
+			if (result == null)
+			{
+				return Result<GETTrip>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
+
+			if (!result.IsSuccess)
+			{
+				return Result<GETTrip>.Fail(result.Error!);
+			}
+
+			return Result<GETTrip>.Success(result.Value!);
 		}
+
+		public async Task<Result<GETTripOverview>> GetTripsOverview()
+		{
+			var result = await _http.GetFromJsonAsync<Result<GETTripOverview>>($"api/trips/overview");
+
+			if (result == null)
+			{
+				return Result<GETTripOverview>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
+
+			if (!result.IsSuccess)
+			{
+				return Result<GETTripOverview>.Fail(result.Error!);
+			}
+
+			return Result<GETTripOverview>.Success(result.Value!);
+		}
+
+
+
+
+
+
 
 		public async Task AddTrip(POSTTrip trip)
 		{

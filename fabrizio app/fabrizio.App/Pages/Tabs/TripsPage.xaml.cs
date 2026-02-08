@@ -19,8 +19,22 @@ namespace fabrizio.App.Pages.Tabs
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
+
 			await _viewModel.LoadCommand.ExecuteAsync(null);
+
+			//if (BindingContext is TripsViewModel vm)
+			//{
+			//	vm.IsRefreshing = false;
+			//}
 		}
+
+		//private async void OnPageLoaded(object sender, EventArgs e)
+		//{
+		//	if (BindingContext is TripsViewModel vm)
+		//	{
+		//		await vm.EnsureLoadedAsync();
+		//	}
+		//}
 
 	}
 }

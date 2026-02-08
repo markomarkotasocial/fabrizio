@@ -31,6 +31,8 @@ namespace fabrizio.App.Services
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
+		private bool _isInitialized;
+
 
 		public TripsViewModel(ITripService tripService, AuthService authService)
 		{
@@ -38,7 +40,7 @@ namespace fabrizio.App.Services
 			_authService = authService;
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
-			RefreshCommand = new AsyncRelayCommand(RefreshAsync);
+			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
 
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
 			DeleteTripCommand = new AsyncRelayCommand<GETTrip>(DeleteTripAsync);
@@ -46,7 +48,17 @@ namespace fabrizio.App.Services
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
+
+			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
 		}
+
+		public async Task EnsureLoadedAsync()
+		{
+			if (_isInitialized)	return;
+			_isInitialized = true;
+			await LoadInitialAsync();
+		}
+
 
 
 
@@ -65,8 +77,11 @@ namespace fabrizio.App.Services
 			}
 			finally
 			{
-				IsBusy = false;
-				OnPropertyChanged(nameof(IsEmpty));
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					IsBusy = false;
+					OnPropertyChanged(nameof(IsEmpty));
+				});
 			}
 		}
 
@@ -83,7 +98,7 @@ namespace fabrizio.App.Services
 			}
 			finally
 			{
-				IsRefreshing = false;
+				IsRefreshing = false; 
 				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
@@ -96,7 +111,6 @@ namespace fabrizio.App.Services
 
 			if (!result.IsSuccess)
 			{
-				// TODO: UI handling (toast, dialog, log...)
 				return;
 			}
 

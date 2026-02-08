@@ -27,7 +27,6 @@ namespace fabrizio.App
 			builder.Services.AddSingleton<AppShell>();
 			builder.Services.AddSingleton<AuthService>();
 			builder.Services.AddTransient<TokenHandler>();
-			//builder.Services.AddSingleton<AppState>();
 
 			builder.Services.AddSingleton<IAuthService, AuthService>();
 			builder.Services.AddHttpClient<ITripService, TripService>(client =>
@@ -41,10 +40,12 @@ namespace fabrizio.App
 			// 🟢 ViewModels
 			builder.Services.AddTransient<LoginViewModel>();
 			builder.Services.AddTransient<TripsViewModel>();
+			//builder.Services.AddTransient<HomeViewModel>();
 
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
 			builder.Services.AddTransient<TripsPage>();
+			//builder.Services.AddTransient<HomePage>();
 
 			return builder.Build();
 		}
