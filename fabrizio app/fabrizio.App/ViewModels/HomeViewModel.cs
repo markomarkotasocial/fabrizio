@@ -39,17 +39,19 @@ namespace fabrizio.App.Services
 			_authService = authService;
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
-			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
+			RefreshCommand = new AsyncRelayCommand(RefreshAsync); //, () => !IsRefreshing);
 
 			//this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing)) RefreshCommand.NotifyCanExecuteChanged(); };
 		}
 
-		//public async Task EnsureLoadedAsync()
-		//{
-		//	if (_isInitialized) return;
-		//	_isInitialized = true;
-		//	await LoadInitialAsync();
-		//}
+
+
+		public async Task EnsureLoadedAsync()
+		{
+			if (_isInitialized) return;
+			_isInitialized = true;
+			await LoadInitialAsync();
+		}
 
 
 
@@ -103,8 +105,8 @@ namespace fabrizio.App.Services
 				Current = null;
 				Next = null;
 
-				OnPropertyChanged(nameof(HasCurrent));
-				OnPropertyChanged(nameof(HasNext));
+				//OnPropertyChanged(nameof(HasCurrent));
+				//OnPropertyChanged(nameof(HasNext));
 
 				return;
 			}
@@ -113,16 +115,16 @@ namespace fabrizio.App.Services
 			{
 				Current = result.Value.Current;
 
-				OnPropertyChanged(nameof(HasCurrent));
-				OnPropertyChanged(nameof(HasNext));
+				//OnPropertyChanged(nameof(HasCurrent));
+				//OnPropertyChanged(nameof(HasNext));
 			}
 
 			if (result.Value?.Next != null)
 			{
 				Next = result.Value.Next;
 
-				OnPropertyChanged(nameof(HasCurrent));
-				OnPropertyChanged(nameof(HasNext));
+				//OnPropertyChanged(nameof(HasCurrent));
+				//OnPropertyChanged(nameof(HasNext));
 			}
 		}
 
