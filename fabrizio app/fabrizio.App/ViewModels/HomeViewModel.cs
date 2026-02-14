@@ -25,8 +25,13 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand LoadCommand { get; }
 
 
-		public bool HasCurrent => Current != null;
-		public bool HasNext => Current == null && Next != null;
+		public bool ShowCurrentSplash => Current != null;
+		public bool ShowNextFollower => Current != null && Next != null;
+		public bool ShowNextSplash => Current == null && Next != null;
+	
+
+
+
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Current == null && Next == null;
 		//public bool HasTrip => Current != null || Next != null;
 
@@ -46,15 +51,32 @@ namespace fabrizio.App.Services
 
 
 
-		public async Task EnsureLoadedAsync()
+		//public async Task EnsureLoadedAsync()
+		//{
+		//	if (_isInitialized) return;
+		//	_isInitialized = true;
+		//	await LoadInitialAsync();
+		//}
+
+		public async Task LoadOnEnterAsync()
 		{
-			if (_isInitialized) return;
-			_isInitialized = true;
-			await LoadInitialAsync();
+			if (IsBusy) return;
+
+			try
+			{
+				IsBusy = true;
+				await LoadOverviewCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				IsBusy = false;
+				OnPropertyChanged(nameof(IsEmpty));
+			}
 		}
-
-
-
 
 		private async Task LoadInitialAsync()
 		{
@@ -93,6 +115,7 @@ namespace fabrizio.App.Services
 			{
 				IsRefreshing = false;
 				OnPropertyChanged(nameof(IsEmpty));
+
 			}
 		}
 
@@ -105,8 +128,10 @@ namespace fabrizio.App.Services
 				Current = null;
 				Next = null;
 
-				//OnPropertyChanged(nameof(HasCurrent));
-				//OnPropertyChanged(nameof(HasNext));
+				OnPropertyChanged(nameof(ShowCurrentSplash));
+				OnPropertyChanged(nameof(ShowNextFollower));
+				OnPropertyChanged(nameof(ShowNextSplash));
+				OnPropertyChanged(nameof(IsEmpty));
 
 				return;
 			}
@@ -115,16 +140,20 @@ namespace fabrizio.App.Services
 			{
 				Current = result.Value.Current;
 
-				//OnPropertyChanged(nameof(HasCurrent));
-				//OnPropertyChanged(nameof(HasNext));
+				OnPropertyChanged(nameof(ShowCurrentSplash));
+				OnPropertyChanged(nameof(ShowNextFollower));
+				OnPropertyChanged(nameof(ShowNextSplash));
+				OnPropertyChanged(nameof(IsEmpty));
 			}
 
 			if (result.Value?.Next != null)
 			{
 				Next = result.Value.Next;
 
-				//OnPropertyChanged(nameof(HasCurrent));
-				//OnPropertyChanged(nameof(HasNext));
+				OnPropertyChanged(nameof(ShowCurrentSplash));
+				OnPropertyChanged(nameof(ShowNextFollower));
+				OnPropertyChanged(nameof(ShowNextSplash));
+				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
 

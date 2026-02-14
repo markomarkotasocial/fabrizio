@@ -15,17 +15,28 @@ namespace fabrizio.App.Pages.Tabs
 		{
 			InitializeComponent();
 			BindingContext = _viewModel = viewModel;
-
 		}
 
 
-		private async void OnPageLoaded(object sender, EventArgs e)
+
+		protected override async void OnAppearing()
 		{
+			base.OnAppearing();
+
 			if (BindingContext is HomeViewModel vm)
 			{
-				await vm.EnsureLoadedAsync();
+				await vm.LoadOnEnterAsync();
 			}
 		}
+
+
+		//private async void OnPageLoaded(object sender, EventArgs e)
+		//{
+		//	if (BindingContext is HomeViewModel vm)
+		//	{
+		//		await vm.EnsureLoadedAsync();
+		//	}
+		//}
 
 
 

@@ -19,16 +19,16 @@
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
 						<Frame
-							CornerRadius="12"
-							Margin="0,8"
+							CornerRadius="18"
+							Margin="0,7"
 							HasShadow="True"
 							Padding="12"
-							BackgroundColor="DeepSkyBlue">
+							BackgroundColor="White">
 
 							<VerticalStackLayout>
 								<Label
 								Text="{Binding Name}"
-								FontSize="18"
+								FontSize="16"
 								FontAttributes="Bold" />
 
 								<Label

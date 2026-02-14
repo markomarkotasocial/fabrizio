@@ -1,11 +1,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.HomePage"
-			 Loaded="OnPageLoaded"
              Title="Home">
-
-	<!--Loaded="OnPageLoaded"-->
-
+	
 	<Grid Padding="20">
 
 		<!-- Content -->
@@ -14,57 +11,94 @@
 			Command="{Binding RefreshCommand}">
 
 
+			<Grid RowDefinitions="*,Auto">
 
-			<ScrollView>
-				<VerticalStackLayout Spacing="12">
-					<!-- privremeni placeholder -->
-					<Label Text="Home content goes here" />
-				</VerticalStackLayout>
-			</ScrollView>
-
-
-
-
-
-			<!--<ContentView IsVisible="{Binding HasTrip}">
-				<Frame CornerRadius="16" Padding="20">	
-				</Frame>
-			</ContentView>-->
-
-			
-			
-			<!--<StackLayout
-				IsVisible="{Binding HasTrip}"
-				Spacing="16">
-
-				--><!-- Current trip --><!--
+				<!-- CURRENT TRIP (90%) -->
 				<Frame
-					IsVisible="{Binding Current}"
-					Padding="16"
-					CornerRadius="12">
+					Grid.Row="0"
+					CornerRadius="18"
+					Margin="0,8"
+					Padding="12"
+					HasShadow="True"
+					BackgroundColor="White"
+					IsVisible="{Binding ShowCurrentSplash}">
 
-					<StackLayout>
-						<Label Text="Ongoing trip" FontAttributes="Bold" />
-						<Label Text="{Binding Current.Name}" FontSize="18" />
-						<Label Text="{Binding Current.StartDate, StringFormat='Started {0:dd MMM}'}" />
-					</StackLayout>
+
+					<Grid RowDefinitions="Auto,*,Auto"
+						  VerticalOptions="Fill">
+
+						<Label
+							Grid.Row="0"
+							FontSize="Large"
+							HorizontalOptions="Center"
+							TextColor="Black"
+							Text="{Binding Current.Name}" />
+
+						
+						<ScrollView Grid.Row="1">
+							<Label
+								Text="{Binding Current.Notes}"
+								LineBreakMode="WordWrap"
+								TextColor="Black" />
+						</ScrollView>
+
+
+						<Grid
+							Grid.Row="2"
+							ColumnDefinitions="Auto,*,Auto">
+
+							<Label
+								Grid.Column="0"
+								Text="{Binding Current.StartDate, StringFormat='{0:dd.MM.yyyy}'}"
+								FontSize="Small"
+								TextColor="Black" />
+						
+							<Label
+								Grid.Column="2"
+								Text="{Binding Current.EndDate, StringFormat='{0:dd.MM.yyyy}'}"
+								FontSize="Small"
+								TextColor="Black" />
+
+						</Grid>
+
+					</Grid>
+
 				</Frame>
 
-				--><!-- Next trip (fallback) --><!--
+				<!-- NEXT TRIP FOLLOWER (10%) -->
 				<Frame
-					IsVisible="{Binding Next}"
-					Padding="16"
-					CornerRadius="12">
+					Grid.Row="1"
+					CornerRadius="18"
+					Margin="0,8"
+					Padding="12"
+					HasShadow="True"
+					BackgroundColor="WhiteSmoke"
+					IsVisible="{Binding ShowNextFollower}">
 
-					<StackLayout>
-						<Label Text="Next trip" FontAttributes="Bold" />
-						<Label Text="{Binding Next.Name}" FontSize="18" />
-						<Label Text="{Binding Next.StartDate, StringFormat='Starts {0:dd MMM}'}" />
-					</StackLayout>
+					<Label
+						HorizontalOptions="Center"
+						FontSize="Small"
+						Text="{Binding Next.Name}" />
+
 				</Frame>
 
-			</StackLayout>-->
+				<!-- NEXT SPLASH (100%) -->
+				<Frame
+					Grid.RowSpan="2"
+					CornerRadius="18"
+					Padding="12"
+					HasShadow="True"
+					BackgroundColor="LightSkyBlue"
+					IsVisible="{Binding ShowNextSplash}">
 
+					<Label
+						HorizontalOptions="Center"
+						FontSize="Medium"
+						Text="{Binding Next.Name}" />
+
+				</Frame>
+
+			</Grid>
 
 		</RefreshView>
 
