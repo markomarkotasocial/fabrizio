@@ -28,4 +28,9 @@ namespace fabrizio.DAL.Entities
 		public DateTime EditTime { get; set; } = DateTime.UtcNow;
 	}
 
+	public interface IAuditable
+	{
+		Audit Audit { get; set; }
+	}
+
 }

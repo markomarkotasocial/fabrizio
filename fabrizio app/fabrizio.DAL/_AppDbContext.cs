@@ -12,7 +12,10 @@ namespace fabrizio.DAL
 		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
 
+		public DbSet<Entities.Location> Locations { get; set; }
 		public DbSet<Entities.Account> Accounts { get; set; }
+		public DbSet<Entities.AccountInfo> AccountInfos { get; set; }
+
 		public DbSet<Entities.Trip> Trips { get; set; }
 		public DbSet<Entities.TravelBooking> TravelBookings { get; set; }
 		public DbSet<Entities.AccommodationBooking> AccommodationBookings { get; set; }
@@ -24,6 +27,9 @@ namespace fabrizio.DAL
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Account>().OwnsOne(e => e.Audit);
+			modelBuilder.Entity<Location>().OwnsOne(e => e.Audit);
+			modelBuilder.Entity<AccountInfo>().OwnsOne(e => e.Audit);
+
 			modelBuilder.Entity<Trip>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<AccommodationBooking>().OwnsOne(e => e.Audit);
 			modelBuilder.Entity<TravelBooking>().OwnsOne(e => e.Audit);
@@ -53,7 +59,6 @@ namespace fabrizio.DAL
 		{
 			// Find all entities that are being Added or Modified, now using only the base classes
 			var entries = ChangeTracker.Entries().Where(e => e.Entity is BaseEntityGuid || e.Entity is BaseEntityInt);
-
 			foreach (var entry in entries)
 			{
 				var entity = entry.Entity;
@@ -65,6 +70,19 @@ namespace fabrizio.DAL
 				else if (entity is BaseEntityInt intEntity)
 				{
 					UpdateAudit(intEntity, entry.State);
+				}
+			}
+
+			var auditableEntries = ChangeTracker.Entries<IAuditable>().Where(e => e.Entity is not BaseEntityGuid &&	e.Entity is not BaseEntityInt);
+			foreach (var entry in auditableEntries)
+			{
+				if (entry.State == EntityState.Added)
+				{
+					entry.Entity.Audit.AddTime = DateTime.UtcNow;
+				}
+				else if (entry.State == EntityState.Modified)
+				{
+					entry.Entity.Audit.EditTime = DateTime.UtcNow;
 				}
 			}
 		}
@@ -120,6 +138,58 @@ namespace fabrizio.DAL
 		}
 	}
 
+	public class AccountInfoConfiguration : IEntityTypeConfiguration<Entities.AccountInfo>
+	{
+		public void Configure(EntityTypeBuilder<Entities.AccountInfo> builder)
+		{
+			builder.ToTable("AccountInfos");
+
+			builder.HasKey(a => a.AccountId);
+
+			builder.HasKey(a => a.AccountId);
+
+			builder.Property(a => a.PreferredLanguage)
+				   .HasMaxLength(10);
+
+			builder.Property(a => a.PreferredCurrency)
+				   .HasMaxLength(10);
+
+			builder.Property(a => a.TimeZone)
+				   .HasMaxLength(100);
+
+			// 1:1 relationship with Account, cascade delete
+			builder.HasOne(a => a.Account)
+				   .WithOne(a => a.AccountInfo)
+				   .HasForeignKey<Entities.AccountInfo>(a => a.AccountId)
+				   .OnDelete(DeleteBehavior.Cascade);
+
+			// Optional relationship with Location for HomeLocation
+			builder.HasOne(a => a.HomeLocation)
+				.WithMany()
+				.HasForeignKey(a => a.HomeLocationId);
+		}
+	}
+
+	public class LocationConfiguration : IEntityTypeConfiguration<Entities.Location>
+	{
+		public void Configure(EntityTypeBuilder<Entities.Location> builder)
+		{
+			builder.ToTable("Locations");
+
+			builder.HasKey(a => a.Id);
+
+			builder.Property(a => a.CountryCode)
+				   .HasMaxLength(10);
+
+
+			builder.HasIndex(x => new { x.CountryCode, x.City });
+		}
+	}
+
+
+
+
+
 	public class TripConfiguration : IEntityTypeConfiguration<Entities.Trip>
 	{
 		public void Configure(EntityTypeBuilder<Entities.Trip> builder)
@@ -135,7 +205,6 @@ namespace fabrizio.DAL
 				   .HasMaxLength(4000);
 		}
 	}
-
 
 	public class TravelBookingConfiguration : IEntityTypeConfiguration<Entities.TravelBooking>
 	{

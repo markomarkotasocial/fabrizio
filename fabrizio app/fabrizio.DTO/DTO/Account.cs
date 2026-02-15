@@ -25,10 +25,21 @@ namespace fabrizio.Shared.DTO
 	public class GETAccount
 	{
 		public int Id { get; set; }
-		public required string Email { get; set; }
+
+
+		// from Account
+		public string Email { get; set; } = string.Empty;
 		public int Status { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
+
+
+		// from AccountInfo
+		public string? PreferredLanguage { get; init; }
+		public string? PreferredCurrency { get; init; }
+		public string? TimeZone { get; init; }
+		public bool IsDarkMode { get; set; }
+		public Guid? HomeLocationId { get; set; }
 
 	}
 

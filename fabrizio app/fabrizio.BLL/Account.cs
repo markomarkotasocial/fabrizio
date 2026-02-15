@@ -5,6 +5,7 @@ using fabrizio.DAL;
 using fabrizio.DAL.Entities;
 using fabrizio.Shared.DTO;
 using fabrizio.Repository;
+using fabrizio.Shared.Contracts;
 
 namespace fabrizio.BLL
 {
@@ -12,7 +13,7 @@ namespace fabrizio.BLL
 	{
 		Task<Account?> ValidateCredentials(string email, string password);
 		Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
-		Task<GETAccount> GetById(int id);
+		Task<Result<GETAccount>> GetAccountInfoById(int id);
 		Task<Account> Create(POSTAccount dto);
 		Task Update(int id, PUTAccount dto);
 		Task Activate(string token);
@@ -49,25 +50,33 @@ namespace fabrizio.BLL
 			return BCrypt.Net.BCrypt.Verify(password, account.PasswordHash) ? account : null;
 		}
 
-		public async Task<GETAccount> GetById(int id)
+		public async Task<Result<GETAccount>> GetAccountInfoById(int id)
 		{
 			#region Validate
 
 			if (id < 0) throw new ArgumentException("Id must be non-negative.", nameof(id));
-
-			Account? account = await _repository.GetById(id);
-			if (account == null) throw new KeyNotFoundException("There is no account with specified ID!");
+			Account? account = await _repository.GetByIdWithInfo(id);
+			if (account == null)
+			{
+				return Result<GETAccount>.Fail(new BusinessError("account_not_found", "There is no account with specified ID.", 404));
+			}
 
 			#endregion Validate
 
-			return new GETAccount
+			return Result<GETAccount>.Success(new GETAccount
 			{
 				Id = account.Id,
 				Name = account.Name,
 				Email = account.Email,
 				Status = (int)account.Status,
-				CreatedAt = account.Audit.AddTime
-			};
+				CreatedAt = account.Audit.AddTime,
+
+				PreferredLanguage = account.AccountInfo?.PreferredLanguage,
+				PreferredCurrency = account.AccountInfo?.PreferredCurrency,
+				TimeZone = account.AccountInfo?.TimeZone,
+				IsDarkMode = account.AccountInfo?.IsDarkMode ?? false,
+				HomeLocationId = account.AccountInfo?.HomeLocationId
+			});
 		}
 
 		public async Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)

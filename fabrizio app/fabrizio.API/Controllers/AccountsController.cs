@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
+﻿using fabrizio.API.Services;
 using fabrizio.BLL;
 using fabrizio.Shared.DTO;
-using fabrizio.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace fabrizio.API.Controllers
 {
@@ -79,8 +79,11 @@ namespace fabrizio.API.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Create([FromBody] POSTAccount dto)
 		{
-			var account = await _accountService.Create(dto);
-			return CreatedAtAction(nameof(GetById), new { id = account.Id }, account);
+
+			throw new NotImplementedException();
+
+			//var account = await _accountService.Create(dto);
+			//return CreatedAtAction(nameof(GetById), new { id = account.Id }, account);
 		}
 
 		/// <summary>
@@ -117,15 +120,17 @@ namespace fabrizio.API.Controllers
 		}
 
 		/// <summary>
-		/// Get account by ID.
+		/// Get account info.
 		/// </summary>
-		/// <param name="id"></param>
 		/// <returns></returns>
-		[HttpGet("{id:int}")]
+		[HttpGet("info")]
 		[Authorize]
-		public async Task<IActionResult> GetById(int id)
+		public async Task<IActionResult> GetInfo()
 		{
-			var result = await _accountService.GetById(id);
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			var result = await _accountService.GetAccountInfoById(accountId);
 			return Ok(result);
 		}
 		

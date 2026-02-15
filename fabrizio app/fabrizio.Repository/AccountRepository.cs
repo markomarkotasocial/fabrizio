@@ -12,6 +12,7 @@ namespace fabrizio.Repository
 
 		IQueryable<Account> QueryAll();
 		Task<Account?> GetById(int id);
+		Task<Account?> GetByIdWithInfo(int id);
 		Task<bool> AnyAsync(string email);
 		void Add(Account account);
 		void Delete(Account account);
@@ -44,6 +45,11 @@ namespace fabrizio.Repository
 		public async Task<Account?> GetById(int id)
 		{
 			return await _context.Accounts.FindAsync(id);
+		}
+
+		public async Task<Account?> GetByIdWithInfo(int id)
+		{
+			return await _context.Accounts.Include(a => a.AccountInfo).SingleOrDefaultAsync(a => a.Id == id);
 		}
 
 		public async Task<bool> AnyAsync(string email)
