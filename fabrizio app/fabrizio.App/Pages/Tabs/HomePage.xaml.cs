@@ -30,14 +30,6 @@ namespace fabrizio.App.Pages.Tabs
 		}
 
 
-		//private async void OnPageLoaded(object sender, EventArgs e)
-		//{
-		//	if (BindingContext is HomeViewModel vm)
-		//	{
-		//		await vm.EnsureLoadedAsync();
-		//	}
-		//}
-
 
 
 	}

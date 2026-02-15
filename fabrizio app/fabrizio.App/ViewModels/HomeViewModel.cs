@@ -51,12 +51,6 @@ namespace fabrizio.App.Services
 
 
 
-		//public async Task EnsureLoadedAsync()
-		//{
-		//	if (_isInitialized) return;
-		//	_isInitialized = true;
-		//	await LoadInitialAsync();
-		//}
 
 		public async Task LoadOnEnterAsync()
 		{

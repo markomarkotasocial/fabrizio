@@ -9,14 +9,22 @@ namespace fabrizio.App.Pages.Tabs
 {
 	public partial class ProfilePage : ContentPage
 	{
-		public ProfilePage()
+		private readonly ProfileViewModel _viewModel;
+
+		public ProfilePage(ProfileViewModel viewModel)
 		{
 			InitializeComponent();
+			BindingContext = _viewModel = viewModel;
 		}
 
-		private async void OnLogoutClicked(object sender, EventArgs e)
+		protected override async void OnAppearing()
 		{
-			await App.AuthService.LogoutAsync();
+			base.OnAppearing();
+
+			if (BindingContext is ProfileViewModel vm)
+			{
+				await vm.LoadOnEnterAsync();
+			}
 		}
 	}
 }

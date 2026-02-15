@@ -8,19 +8,98 @@ namespace fabrizio.App.Services
 {
 	public partial class ProfileViewModel : BaseViewModel
 	{
+		private readonly IProfileService _profileService;
 		private readonly IAuthService _authService;
 
 
+		[ObservableProperty] private bool isRefreshing;
 		[ObservableProperty] private string errorMessage;
+		[ObservableProperty] private GETAccount? account;
 
 
 		public AsyncRelayCommand LogoutCommand { get; }
+		public AsyncRelayCommand LoadCommand { get; }
 
-		public ProfileViewModel(AuthService authService)
+
+		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
+
+
+		public ProfileViewModel(IProfileService profileService, AuthService authService)
 		{
 			_authService = authService;
+			_profileService = profileService;
+
+			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
 		}
+
+
+
+
+		public async Task LoadOnEnterAsync()
+		{
+			if (IsBusy) return;
+
+			try
+			{
+				IsBusy = true;
+				await LoadOverviewCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				IsBusy = false;
+				OnPropertyChanged(nameof(IsEmpty));
+			}
+		}
+
+		private async Task LoadInitialAsync()
+		{
+			if (IsBusy) return;
+
+			try
+			{
+				IsBusy = true;
+				await LoadOverviewCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					IsBusy = false;
+					OnPropertyChanged(nameof(IsEmpty));
+				});
+			}
+		}
+
+		public async Task LoadOverviewCoreAsync()
+		{
+			var result = await _profileService.GetAccount();
+
+			if (!result.IsSuccess)
+			{
+				Account = null;
+				OnPropertyChanged(nameof(IsEmpty));
+				return;
+			}
+
+			if (result.Value != null)
+			{
+				Account = result.Value;
+				OnPropertyChanged(nameof(IsEmpty));
+			}
+		}
+
+
+
+
 
 		private async Task LogoutAsync()
 		{
@@ -39,7 +118,6 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = false;
 			}
-
 		}
 
 	}

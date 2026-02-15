@@ -33,19 +33,26 @@ namespace fabrizio.App
 			{
 				client.BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/");
 				client.DefaultRequestHeaders.Add("Accept", "application/json");
-			})
-			.AddHttpMessageHandler<TokenHandler>();
+			}).AddHttpMessageHandler<TokenHandler>();
+
+			builder.Services.AddHttpClient<IProfileService, ProfileService>(client =>
+			{
+				client.BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/");
+				client.DefaultRequestHeaders.Add("Accept", "application/json");
+			}).AddHttpMessageHandler<TokenHandler>();
 
 
 			// 🟢 ViewModels
 			builder.Services.AddTransient<LoginViewModel>();
 			builder.Services.AddTransient<TripsViewModel>();
 			builder.Services.AddTransient<HomeViewModel>();
+			builder.Services.AddTransient<ProfileViewModel>();
 
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
 			builder.Services.AddTransient<TripsPage>();
 			builder.Services.AddTransient<HomePage>();
+			builder.Services.AddTransient<ProfilePage>();
 
 			return builder.Build();
 		}
