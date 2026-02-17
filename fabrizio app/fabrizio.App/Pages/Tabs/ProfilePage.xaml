@@ -7,15 +7,158 @@
 
 		<!-- Content -->
 		<ScrollView>
-			<VerticalStackLayout Padding="20" Spacing="16">
+			<VerticalStackLayout>
+
+				<!-- HEADER -->
+				<Frame CornerRadius="18"
+					   Margin="0,8"
+					   Padding="12"
+					   HasShadow="True"
+					   BackgroundColor="DimGray">
+
+					<VerticalStackLayout Spacing="6">
+						<Label Text="{Binding Account.Name}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+
+						<Label Text="{Binding Account.Email}"
+                           FontSize="12"
+                           TextColor="White" />
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- ACHIEVEMENTS -->
+				<Frame CornerRadius="18"
+				   Margin="0,8"
+				   Padding="12"
+				   HasShadow="True">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Label Text="Travel achievements"
+						   FontAttributes="Bold"
+						   FontSize="16" />
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Completed trips" />
+							<Label Grid.Column="1" Text="7" HorizontalOptions="End" />
+						</Grid>
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Visited cities" />
+							<Label Grid.Column="1" Text="12" HorizontalOptions="End" />
+						</Grid>
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Visited countries" />
+							<Label Grid.Column="1" Text="3" HorizontalOptions="End" />
+						</Grid>
+
+					</VerticalStackLayout>
+				</Frame>
+
+
+				<!-- MY ACCOUNT -->
+				<Frame CornerRadius="18"
+					   Margin="0,8"
+					   Padding="12"
+					   HasShadow="True">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Label Text="My account"
+							   FontAttributes="Bold"
+							   FontSize="16" />
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Home location" />
+							<Label Grid.Column="1" Text="Zagreb" HorizontalOptions="End" />
+						</Grid>
+
+					</VerticalStackLayout>
+				</Frame>
+
+
+				<!-- SETTINGS -->
+				<Frame CornerRadius="18"
+					   Padding="12"
+					   Margin="0,8"
+					   HasShadow="True">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Label Text="Settings"
+                           FontAttributes="Bold"
+                           FontSize="16" />
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Preferred language" Margin="0,2" />
+							<Label Grid.Column="1"
+								   Text="{Binding Account.PreferredLanguage}"
+								   HorizontalOptions="End" />
+						</Grid>
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Preferred currency" Margin="0,2" />
+							<Label Grid.Column="1"
+								   Text="{Binding Account.PreferredCurrency}"
+								   HorizontalOptions="End" />
+						</Grid>
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Default time zone" Margin="0,2"/>
+							<Label Grid.Column="1"
+								   Text="{Binding Account.TimeZone}"
+								   HorizontalOptions="End" />
+						</Grid>
+
+						<Grid ColumnDefinitions="Auto,*">
+							<Label Text="Dark mode" Margin="0,2"/>
+							<Switch Grid.Column="1"
+                                IsToggled="{Binding Account.IsDarkMode}"
+                                HorizontalOptions="End" />
+						</Grid>
+
+					</VerticalStackLayout>
+				</Frame>
 
 
 
+				<!-- MANAGE ACCOUNT -->
+				<Frame CornerRadius="18"
+					   Padding="12"
+					   Margin="0,8"
+					   HasShadow="True">
 
+					<VerticalStackLayout Spacing="12">
 
+						<Label Text="Manage account"
+                           FontAttributes="Bold"
+                           FontSize="16" />
 
+						<Grid>
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding DeleteAccountCommand}" />
+							</Grid.GestureRecognizers>
 
+							<Label Text="Delete account"
+								   TextColor="DarkBlue"
+								   FontAttributes="Bold" />
+						</Grid>
 
+						<Grid>
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding LogoutCommand}" />
+							</Grid.GestureRecognizers>
+
+							<Label Text="Sign out"
+								   TextColor="Red"
+								   FontAttributes="Bold" />
+						</Grid>
+
+					</VerticalStackLayout>
+				</Frame>
 
 
 

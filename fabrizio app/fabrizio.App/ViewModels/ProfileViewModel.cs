@@ -18,6 +18,7 @@ namespace fabrizio.App.Services
 
 
 		public AsyncRelayCommand LogoutCommand { get; }
+		public AsyncRelayCommand DeleteAccountCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
 
 
@@ -31,6 +32,7 @@ namespace fabrizio.App.Services
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
+			DeleteAccountCommand = new AsyncRelayCommand(DeleteAccountAsync);
 		}
 
 
@@ -118,6 +120,11 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = false;
 			}
+		}
+
+		private async Task DeleteAccountAsync()
+		{
+			
 		}
 
 	}
