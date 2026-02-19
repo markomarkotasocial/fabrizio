@@ -1,11 +1,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.HomePage"
-             Title="Home">
+			 Shell.NavBarIsVisible="False">
 	
 	<Grid Padding="20">
 
-		<!-- Content -->
+		<!-- ### CONTENT ### -->
 		<RefreshView
 			IsRefreshing="{Binding IsRefreshing}"
 			Command="{Binding RefreshCommand}">
@@ -14,6 +14,7 @@
 			<Grid RowDefinitions="*,Auto">
 
 				<!-- CURRENT TRIP (90%) -->
+				<!--When need to make UI card, group selections, visual distinction-->
 				<Frame
 					Grid.Row="0"
 					CornerRadius="18"
@@ -27,6 +28,7 @@
 					<Grid RowDefinitions="Auto,*,Auto"
 						  VerticalOptions="Fill">
 
+						<!--When need to show raw text, usually read only-->
 						<Label
 							Grid.Row="0"
 							FontSize="Large"
@@ -102,7 +104,7 @@
 
 		</RefreshView>
 
-		<!-- Empty state -->
+		<!-- ### EMPTY STATE ### -->
 		<StackLayout
 			IsVisible="{Binding IsEmpty}"
 			HorizontalOptions="Center"
@@ -111,7 +113,7 @@
 		</StackLayout>
 
 
-		<!-- Initial loading -->
+		<!-- ### INITIAL LOADING ### -->
 		<ActivityIndicator
 			IsRunning="{Binding IsBusy}"
 			IsVisible="{Binding IsBusy}"

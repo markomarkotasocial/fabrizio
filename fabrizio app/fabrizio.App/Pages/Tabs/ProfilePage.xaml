@@ -1,15 +1,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.ProfilePage"
-             Title="Profile">
+			 Shell.NavBarIsVisible="False">
 
 	<Grid Padding="20">
 
-		<!-- Content -->
+		<!-- ### CONTENT ### -->
 		<ScrollView>
+			
+			<!--Use for vertical content, sections and simple form layouts-->
 			<VerticalStackLayout>
 
-				<!-- HEADER -->
+				<!-- ### HEADER ### -->
 				<Frame CornerRadius="18"
 					   Margin="0,8"
 					   Padding="12"
@@ -28,7 +30,7 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<!-- ACHIEVEMENTS -->
+				<!-- ### ACHIEVEMENTS ### -->
 				<Frame CornerRadius="18"
 				   Margin="0,8"
 				   Padding="12"
@@ -59,7 +61,7 @@
 				</Frame>
 
 
-				<!-- MY ACCOUNT -->
+				<!-- ### MY ACCOUNT ### -->
 				<Frame CornerRadius="18"
 					   Margin="0,8"
 					   Padding="12"
@@ -80,7 +82,7 @@
 				</Frame>
 
 
-				<!-- SETTINGS -->
+				<!-- ### SETTINGS ### -->
 				<Frame CornerRadius="18"
 					   Padding="12"
 					   Margin="0,8"
@@ -115,7 +117,7 @@
 
 						<Grid ColumnDefinitions="Auto,*">
 							<Label Text="Dark mode" Margin="0,2"/>
-							<Switch Grid.Column="1"
+							<Switch Grid.Column="1" IsEnabled="False"
                                 IsToggled="{Binding Account.IsDarkMode}"
                                 HorizontalOptions="End" />
 						</Grid>
@@ -125,7 +127,7 @@
 
 
 
-				<!-- MANAGE ACCOUNT -->
+				<!-- ### MANAGE ACCOUNT ### -->
 				<Frame CornerRadius="18"
 					   Padding="12"
 					   Margin="0,8"
@@ -167,7 +169,7 @@
 		</ScrollView>
 
 
-		<!-- Empty state -->
+		<!-- ### EMPTY STATE ### -->
 		<StackLayout
 			IsVisible="{Binding IsEmpty}"
 			HorizontalOptions="Center"
@@ -176,7 +178,7 @@
 		</StackLayout>
 
 
-		<!-- Initial loading -->
+		<!-- ### INITIAL LOADING ### -->
 		<ActivityIndicator
 			IsRunning="{Binding IsBusy}"
 			IsVisible="{Binding IsBusy}"

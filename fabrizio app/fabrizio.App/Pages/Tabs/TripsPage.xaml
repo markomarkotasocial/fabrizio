@@ -1,16 +1,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.TripsPage"
-             Title="Trips">
+			 Shell.NavBarIsVisible="False">
 
-	
+	<!--Use when need to make clear distinction between parts of the page-->
+	<!--Rows and columns definitions-->
 	<Grid Padding="20">
 
-		<!-- Content -->
+		<!-- ### CONTENT ### -->
+		<!--Use when pull-to-refresh is needed, otherwise CollectionView directly-->
+		<!--Virtuallized items list, use when have a lot of data (5+), paging, collections, dynamic data from endpoint --> 
 		<RefreshView
 			IsRefreshing="{Binding IsRefreshing}"
 			Command="{Binding RefreshCommand}">
 
+			<!--Supports using with ObservableCollection-->
+			<!--Implement RemainingItemsThreshold TODO -->
 			<CollectionView
 				ItemsSource="{Binding Trips}"
 				SelectionMode="Single"
@@ -51,7 +56,7 @@
 		</RefreshView>
 
 
-		<!-- Empty state -->
+		<!-- ### EMPTY STATE ### -->
 		<StackLayout
 			IsVisible="{Binding IsEmpty}"
 			HorizontalOptions="Center"
@@ -60,7 +65,7 @@
 		</StackLayout>
 		
 
-		<!-- Initial loading -->
+		<!-- ### INITIAL LOADING ### -->
 		<ActivityIndicator
 			IsRunning="{Binding IsBusy}"
 			IsVisible="{Binding IsBusy}"
@@ -68,16 +73,16 @@
 			VerticalOptions="Center"/>
 
 		
-		<!-- Floating Action Button -->
+		<!-- ### FLOATING ACTION BUTTON ### -->
 		<Button
 			Text="+"
 			Command="{Binding AddTripCommand}"
-			BackgroundColor="#007AFF"
+			BackgroundColor="CornflowerBlue"
 			TextColor="White"
-			FontSize="24"
-			WidthRequest="60"
-			HeightRequest="60"
-			CornerRadius="30"
+			FontSize="28"
+			WidthRequest="70"
+			HeightRequest="70"
+			CornerRadius="40"
 			VerticalOptions="End"
 			HorizontalOptions="End"
 			Margin="20" />
