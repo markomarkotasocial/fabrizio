@@ -1,11 +1,11 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
-
 using fabrizio.DAL;
 using fabrizio.DAL.Entities;
-using fabrizio.Shared.DTO;
 using fabrizio.Repository;
 using fabrizio.Shared.Contracts;
+using fabrizio.Shared.DTO;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace fabrizio.BLL
 {
@@ -15,7 +15,7 @@ namespace fabrizio.BLL
 		Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
 		Task<Result<GETAccount>> GetAccountInfoById(int id);
 		Task<Account> Create(POSTAccount dto);
-		Task Update(int id, PUTAccount dto);
+		Task<Result> Update(int id, UpdateAccountProfileRequest dto);
 		Task Activate(string token);
 		Task Delete(int id);
 	}
@@ -161,26 +161,51 @@ namespace fabrizio.BLL
 			return account;
 		}
 
-		public async Task Update(int id, PUTAccount dto)
+		public async Task<Result> Update(int id, UpdateAccountProfileRequest dto)
 		{
 			#region Validate
 
+			if (id <= 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(id));
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
-				throw new ArgumentException("Name must be provided.", nameof(dto.Name));
+			{
+				return Result.Fail(new BusinessError("account_name_required", "Name must be provided.", 400));
+			}
 
-			if (id < 0)
-				throw new ArgumentException("Id must be non-negative.", nameof(id));
+			if (string.IsNullOrWhiteSpace(dto.PreferredLanguage))
+			{
+				return Result.Fail(new BusinessError("account_preferredlanguage_required", "Preferred language must be provided.", 400));
+			}
 
-			var account = await _repository.GetById(id);
+			if (string.IsNullOrWhiteSpace(dto.PreferredCurrency))
+			{
+				return Result.Fail(new BusinessError("account_preferredcurrency_required", "Preferred currency must be provided.", 400));
+			}
+
+			if (string.IsNullOrWhiteSpace(dto.TimeZone))
+			{
+				return Result.Fail(new BusinessError("account_timezone_required", "Time zone must be provided.", 400));
+			}
+
+			var account = await _repository.GetByIdWithInfo(id);
 			if (account == null)
-				throw new KeyNotFoundException("There is no account with the specified ID.");
+			{
+				return Result.Fail(new BusinessError("account_not_found", "There is no account with specified ID.", 404));
+			}
 
 			#endregion Validate
 
 			account.Name = dto.Name;
+
+			// defensive ensure that AccountInfo exists before trying to update it, even AccountInfo should always be created together with Account
+			account.AccountInfo ??= new AccountInfo	{ AccountId = account.Id };
+			account.AccountInfo.PreferredCurrency = dto.PreferredCurrency;
+			account.AccountInfo.PreferredLanguage = dto.PreferredLanguage;
+			account.AccountInfo.TimeZone = dto.TimeZone;
+
 			await _repository.SaveChangesAsync();
+			return Result.Success();
 		}
 
 		public async Task Activate(string token)

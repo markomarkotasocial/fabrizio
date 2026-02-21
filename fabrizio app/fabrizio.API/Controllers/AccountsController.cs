@@ -135,16 +135,19 @@ namespace fabrizio.API.Controllers
 		}
 		
 		/// <summary>
-		/// Update an existing account.
+		/// Update an existing account settings.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="dto"></param>
 		/// <returns></returns>
-		[HttpPut("{id:int}")]
+		[HttpPut("settings")]
 		[Authorize]
-		public async Task<IActionResult> Update(int id, [FromBody] PUTAccount dto)
+		public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountProfileRequest dto)
 		{
-			await _accountService.Update(id, dto);
+			var accountIdClaim = User.FindFirstValue("accountId");
+			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+
+			await _accountService.Update(accountId, dto);
 			return NoContent();
 		}
 		

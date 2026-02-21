@@ -45,14 +45,17 @@ namespace fabrizio.Shared.DTO
 
 	public class POSTAccount
 	{
-		public required string Email { get; set; }
-		public required string Password { get; set; }
+		public required string Email { get; init; }
+		public required string Password { get; init; }
 		public string Name { get; set; } = string.Empty;
 	}
 
-	public class PUTAccount
+	public class UpdateAccountProfileRequest
 	{
-		public string Name { get; set; } = string.Empty;
+		public required string Name { get; init; }
+		public required string PreferredLanguage { get; init; }
+		public required string PreferredCurrency { get; init; }
+		public required string TimeZone { get; init; }
 
 	}
 
