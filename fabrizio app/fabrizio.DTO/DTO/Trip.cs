@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fabrizio.Shared.DTO
 {
-	public class GETTrip
+	public class TripDto
 	{
 		public Guid Id { get; set; }
 		public int Status { get; set; }
@@ -15,13 +15,13 @@ namespace fabrizio.Shared.DTO
 		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 
-		public IEnumerable<GETAccommodationBooking> AccommodationBookings { get; set; } = Enumerable.Empty<GETAccommodationBooking>();
-		public IEnumerable<GETTravelBooking> TravelBookings { get; set; } = Enumerable.Empty<GETTravelBooking>();
-		public IEnumerable<GETDestination> Destinations { get; set; } = Enumerable.Empty<GETDestination>();
+		public IEnumerable<AccommodationBookingDto> AccommodationBookings { get; set; } = Enumerable.Empty<AccommodationBookingDto>();
+		public IEnumerable<TravelBookingDto> TravelBookings { get; set; } = Enumerable.Empty<TravelBookingDto>();
+		public IEnumerable<DestinationDto> Destinations { get; set; } = Enumerable.Empty<DestinationDto>();
 
 	}
 
-	public class GETTripList
+	public class TripListItemDto
 	{
 		public Guid Id { get; set; }
 		public int Status { get; set; }
@@ -32,7 +32,7 @@ namespace fabrizio.Shared.DTO
 
 	}
 
-	public class POSTTrip
+	public class CreateTripRequest
 	{
 		public string Name { get; set; } = string.Empty;
 		public string Notes { get; set; } = string.Empty;
@@ -40,7 +40,7 @@ namespace fabrizio.Shared.DTO
 		public DateTime? EndDate { get; set; }
 	}
 
-	public class PUTTrip
+	public class UpdateTripRequest
 	{
 		public Guid Id { get; set; }
 		public int Status { get; set; }

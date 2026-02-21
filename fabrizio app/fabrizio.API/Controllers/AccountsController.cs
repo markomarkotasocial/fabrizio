@@ -77,7 +77,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPost("register")]
 		[AllowAnonymous]
-		public async Task<IActionResult> Create([FromBody] POSTAccount dto)
+		public async Task<IActionResult> Create([FromBody] CreateAccountRequest dto)
 		{
 
 			throw new NotImplementedException();
@@ -93,7 +93,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPost("activate")]
 		[AllowAnonymous]
-		public async Task<IActionResult> Activate([FromBody] ActivateAccount dto)
+		public async Task<IActionResult> Activate([FromBody] ActivateAccountDto dto)
 		{
 			await _accountService.Activate(dto.Token);
 			return NoContent();

@@ -13,10 +13,10 @@ namespace fabrizio.App.Services
 		private readonly IAuthService _authService;
 
 
-		public ObservableCollection<GETTrip> Trips { get; } = new();
+		public ObservableCollection<TripDto> Trips { get; } = new();
 
 		
-		[ObservableProperty] private GETTrip selectedTrip;
+		[ObservableProperty] private TripDto selectedTrip;
 		[ObservableProperty] private bool isRefreshing;
 
 
@@ -25,8 +25,8 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand LoadCommand { get; }
 
 		public AsyncRelayCommand AddTripCommand { get; }
-		public AsyncRelayCommand<GETTrip> DeleteTripCommand { get; }
-		public AsyncRelayCommand<GETTrip> OpenTripCommand { get; }
+		public AsyncRelayCommand<TripDto> DeleteTripCommand { get; }
+		public AsyncRelayCommand<TripDto> OpenTripCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
@@ -43,8 +43,8 @@ namespace fabrizio.App.Services
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
 
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
-			DeleteTripCommand = new AsyncRelayCommand<GETTrip>(DeleteTripAsync);
-			OpenTripCommand = new AsyncRelayCommand<GETTrip>(OpenTripAsync);
+			DeleteTripCommand = new AsyncRelayCommand<TripDto>(DeleteTripAsync);
+			OpenTripCommand = new AsyncRelayCommand<TripDto>(OpenTripAsync);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
@@ -132,13 +132,13 @@ namespace fabrizio.App.Services
 			return Shell.Current.GoToAsync("add-trip");
 		}
 
-		private Task OpenTripAsync(GETTrip trip)
+		private Task OpenTripAsync(TripDto trip)
 		{
 			if (trip == null) return Task.CompletedTask;
 			return Shell.Current.GoToAsync($"trip-detail?tripId={trip.Id}");
 		}
 
-		private async Task DeleteTripAsync(GETTrip trip)
+		private async Task DeleteTripAsync(TripDto trip)
 		{
 			await _tripService.DeleteTrip(trip.Id);
 		}

@@ -15,9 +15,9 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private bool isRefreshing;
 
-		[ObservableProperty] private GETTrip? current;
+		[ObservableProperty] private TripDto? current;
 
-		[ObservableProperty] private GETTrip? next;
+		[ObservableProperty] private TripDto? next;
 
 
 

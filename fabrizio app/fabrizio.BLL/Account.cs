@@ -12,9 +12,9 @@ namespace fabrizio.BLL
 	public interface IAccountService
 	{
 		Task<Account?> ValidateCredentials(string email, string password);
-		Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
-		Task<Result<GETAccount>> GetAccountInfoById(int id);
-		Task<Account> Create(POSTAccount dto);
+		Task<PagedResult<AccountDto>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
+		Task<Result<AccountDto>> GetAccountInfoById(int id);
+		Task<Account> Create(CreateAccountRequest dto);
 		Task<Result> Update(int id, UpdateAccountProfileRequest dto);
 		Task Activate(string token);
 		Task Delete(int id);
@@ -50,7 +50,7 @@ namespace fabrizio.BLL
 			return BCrypt.Net.BCrypt.Verify(password, account.PasswordHash) ? account : null;
 		}
 
-		public async Task<Result<GETAccount>> GetAccountInfoById(int id)
+		public async Task<Result<AccountDto>> GetAccountInfoById(int id)
 		{
 			#region Validate
 
@@ -58,12 +58,12 @@ namespace fabrizio.BLL
 			Account? account = await _repository.GetByIdWithInfo(id);
 			if (account == null)
 			{
-				return Result<GETAccount>.Fail(new BusinessError("account_not_found", "There is no account with specified ID.", 404));
+				return Result<AccountDto>.Fail(new BusinessError("account_not_found", "There is no account with specified ID.", 404));
 			}
 
 			#endregion Validate
 
-			return Result<GETAccount>.Success(new GETAccount
+			return Result<AccountDto>.Success(new AccountDto
 			{
 				Id = account.Id,
 				Name = account.Name,
@@ -79,7 +79,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<PagedResult<GETAccount>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
+		public async Task<PagedResult<AccountDto>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
 		{
 			#region Validate
 
@@ -113,7 +113,7 @@ namespace fabrizio.BLL
 			var items = await query.Skip(skip).Take(take).ToListAsync();
 
 			// Map to DTOs
-			var dtoItems = items.Select(account => new GETAccount
+			var dtoItems = items.Select(account => new AccountDto
 			{
 				Id = account.Id,
 				Name = account.Name,
@@ -122,14 +122,14 @@ namespace fabrizio.BLL
 				CreatedAt = account.Audit.AddTime
 			});
 
-			return new PagedResult<GETAccount>
+			return new PagedResult<AccountDto>
 			{
 				TotalCount = totalCount,
 				Items = dtoItems
 			};
 		}
 
-		public async Task<Account> Create(POSTAccount dto)
+		public async Task<Account> Create(CreateAccountRequest dto)
 		{
 			#region Validate
 

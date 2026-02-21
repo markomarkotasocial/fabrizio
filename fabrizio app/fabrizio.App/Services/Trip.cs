@@ -13,13 +13,13 @@ namespace fabrizio.App.Services
 {
 	public interface ITripService
 	{
-		Task<Result<IEnumerable<GETTrip>>> GetTrips();
-		Task<Result<GETTrip>> GetTrip(Guid id);
+		Task<Result<IEnumerable<TripDto>>> GetTrips();
+		Task<Result<TripDto>> GetTrip(Guid id);
 		Task<Result<GETTripOverview>> GetTripsOverview();
 
 
-		Task AddTrip(POSTTrip trip);
-		Task UpdateTrip(PUTTrip trip);
+		Task AddTrip(CreateTripRequest trip);
+		Task<Result> UpdateTrip(UpdateTripRequest trip);
 		Task DeleteTrip(Guid id);
 	}
 
@@ -35,55 +35,77 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<Result<IEnumerable<GETTrip>>> GetTrips()
+		public async Task<Result<IEnumerable<TripDto>>> GetTrips()
 		{
-			var result = await _http.GetFromJsonAsync<Result<PagedResult<GETTrip>>>("api/trips");
-
-			if (result == null)
+			try
 			{
-				return Result<IEnumerable<GETTrip>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
+				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripDto>>>("api/trips");
 
-			if (!result.IsSuccess)
+				if (result == null)
+				{
+					return Result<IEnumerable<TripDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+				}
+
+				if (!result.IsSuccess)
+				{
+					return Result<IEnumerable<TripDto>>.Fail(result.Error!);
+				}
+
+				return Result<IEnumerable<TripDto>>.Success(result.Value!.Items);
+			}
+			catch (Exception)
 			{
-				return Result<IEnumerable<GETTrip>>.Fail(result.Error!);
+				return Result<IEnumerable<TripDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
 			}
-
-			return Result<IEnumerable<GETTrip>>.Success(result.Value!.Items);
 		}
 
-		public async Task<Result<GETTrip>> GetTrip(Guid id)
+		public async Task<Result<TripDto>> GetTrip(Guid id)
 		{
-			var result = await _http.GetFromJsonAsync<Result<GETTrip>>($"api/trips/{id}");
-
-			if (result == null)
+			try
 			{
-				return Result<GETTrip>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
+				var result = await _http.GetFromJsonAsync<Result<TripDto>>($"api/trips/{id}");
 
-			if (!result.IsSuccess)
+				if (result == null)
+				{
+					return Result<TripDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+				}
+
+				if (!result.IsSuccess)
+				{
+					return Result<TripDto>.Fail(result.Error!);
+				}
+
+				return Result<TripDto>.Success(result.Value!);
+			}
+			catch (Exception)
 			{
-				return Result<GETTrip>.Fail(result.Error!);
+				return Result<TripDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
 			}
-
-			return Result<GETTrip>.Success(result.Value!);
 		}
 
 		public async Task<Result<GETTripOverview>> GetTripsOverview()
 		{
-			var result = await _http.GetFromJsonAsync<Result<GETTripOverview>>($"api/trips/overview");
+			try
+			{
+				var result = await _http.GetFromJsonAsync<Result<GETTripOverview>>($"api/trips/overview");
 
-			if (result == null)
+				if (result == null)
+				{
+					return Result<GETTripOverview>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+				}
+
+				if (!result.IsSuccess)
+				{
+					return Result<GETTripOverview>.Fail(result.Error!);
+				}
+
+				return Result<GETTripOverview>.Success(result.Value!);
+			}
+			catch (Exception)
 			{
 				return Result<GETTripOverview>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
 			}
-
-			if (!result.IsSuccess)
-			{
-				return Result<GETTripOverview>.Fail(result.Error!);
-			}
-
-			return Result<GETTripOverview>.Success(result.Value!);
+			
 		}
 
 
@@ -92,14 +114,28 @@ namespace fabrizio.App.Services
 
 
 
-		public async Task AddTrip(POSTTrip trip)
+		public async Task AddTrip(CreateTripRequest trip)
 		{
 			await _http.PostAsJsonAsync("api/trips", trip);
 		}
 
-		public async Task UpdateTrip(PUTTrip trip)
+		public async Task<Result> UpdateTrip(UpdateTripRequest request)
 		{
-			await _http.PutAsJsonAsync($"api/trips/{trip.Id}", trip);
+			try
+			{
+				var response = await _http.PutAsJsonAsync($"api/trips/{request.Id}", request);
+				if (!response.IsSuccessStatusCode)
+				{
+					var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+					return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+				}
+
+				return Result.Success();
+			}
+			catch (Exception)
+			{
+				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
 		}
 
 		public async Task DeleteTrip(Guid id)

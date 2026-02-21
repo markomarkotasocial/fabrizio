@@ -14,7 +14,7 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private bool isRefreshing;
 		[ObservableProperty] private string errorMessage;
-		[ObservableProperty] private GETAccount? account;
+		[ObservableProperty] private AccountDto? account;
 
 		[ObservableProperty] private string name;
 		[ObservableProperty] private bool isEditingName;

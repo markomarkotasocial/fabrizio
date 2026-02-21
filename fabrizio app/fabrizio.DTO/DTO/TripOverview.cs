@@ -8,9 +8,9 @@ namespace fabrizio.Shared.DTO
 {
 	public class GETTripOverview
 	{
-		public GETTrip? Previous { get; set; }
-		public GETTrip? Current { get; set; }
-		public GETTrip? Next { get; set; }
+		public TripDto? Previous { get; set; }
+		public TripDto? Current { get; set; }
+		public TripDto? Next { get; set; }
 	}
 
 }

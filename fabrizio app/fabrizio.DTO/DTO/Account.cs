@@ -17,12 +17,12 @@ namespace fabrizio.Shared.DTO
 		public required string Password { get; set; }
 	}
 
-	public class ActivateAccount
+	public class ActivateAccountDto
 	{
 		public string Token { get; set; } = string.Empty;
 	}
 
-	public class GETAccount
+	public class AccountDto
 	{
 		public int Id { get; set; }
 
@@ -43,7 +43,7 @@ namespace fabrizio.Shared.DTO
 
 	}
 
-	public class POSTAccount
+	public class CreateAccountRequest
 	{
 		public required string Email { get; init; }
 		public required string Password { get; init; }

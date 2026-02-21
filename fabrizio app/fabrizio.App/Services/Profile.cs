@@ -11,7 +11,8 @@ namespace fabrizio.App.Services
 {
 	public interface IProfileService
 	{
-		Task<Result<GETAccount>> GetAccount();
+		Task<Result<AccountDto>> GetAccount();
+		Task<Result> UpdateAccount(UpdateAccountProfileRequest request);
 	}
 
 
@@ -24,35 +25,48 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<Result<GETAccount>> GetAccount()
+		public async Task<Result<AccountDto>> GetAccount()
 		{
-			var result = await _http.GetFromJsonAsync<Result<GETAccount>>($"api/accounts/info");
-
-			if (result == null)
+			try
 			{
-				return Result<GETAccount>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
+				var result = await _http.GetFromJsonAsync<Result<AccountDto>>("api/accounts/info");
 
-			if (!result.IsSuccess)
+				if (result == null)
+				{
+					return Result<AccountDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+				}
+
+				if (!result.IsSuccess)
+				{
+					return Result<AccountDto>.Fail(result.Error!);
+				}
+
+				return Result<AccountDto>.Success(result.Value!);
+			}
+			catch (Exception)
 			{
-				return Result<GETAccount>.Fail(result.Error!);
+				return Result<AccountDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
 			}
-
-			return Result<GETAccount>.Success(result.Value!);
 		}
 
 
 		public async Task<Result> UpdateAccount(UpdateAccountProfileRequest request)
 		{
-			var response = await _http.PutAsJsonAsync("api/accounts/info", request);
-
-			if (!response.IsSuccessStatusCode)
+			try
 			{
-				var errorResult = await response.Content.ReadFromJsonAsync<Result>();
-				return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
-			}
+				var response = await _http.PutAsJsonAsync("api/accounts/info", request);
+				if (!response.IsSuccessStatusCode)
+				{
+					var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+					return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+				}
 
-			return Result.Success();
+				return Result.Success();
+			}
+			catch (Exception)
+			{
+				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
 		}
 
 	}

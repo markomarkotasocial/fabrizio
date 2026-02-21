@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fabrizio.Shared.DTO
 {
-	public class GETAccommodationBooking
+	public class AccommodationBookingDto
 	{
 		public Guid Id { get; set; }
 		public int Type { get; set; }
@@ -20,7 +20,7 @@ namespace fabrizio.Shared.DTO
 
 	}
 
-	public class POSTAccommodationBooking
+	public class CreateAccommodationBookingRequest
 	{
 		public int Type { get; set; }
 		public string Location { get; set; } = string.Empty;
@@ -31,7 +31,7 @@ namespace fabrizio.Shared.DTO
 		public DateTime? To { get; set; }
 	}
 
-	public class PUTAccommodationBooking
+	public class UpdateAccommodationBookingRequest
 	{
 		public Guid Id { get; set; }
 		public int Type { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fabrizio.Shared.DTO
 {
-	public class GETTravelBooking
+	public class TravelBookingDto
 	{
 		public Guid Id { get; set; }
 		public int Type { get; set; }
@@ -20,7 +20,7 @@ namespace fabrizio.Shared.DTO
 		public Guid? TripId { get; set; }
 	}
 
-	public class POSTTravelBooking
+	public class CreateTravelBookingRequest
 	{
 		public int Type { get; set; }
 		public string Origin { get; set; } = string.Empty;
@@ -33,7 +33,7 @@ namespace fabrizio.Shared.DTO
 
 	}
 
-	public class PUTTravelBooking
+	public class UpdateTravelBookingRequest
 	{
 		public Guid Id { get; set; }
 		public int Type { get; set; }

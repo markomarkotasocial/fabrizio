@@ -13,7 +13,7 @@ namespace fabrizio.BLL
 	public partial class TripService : ITripService
 	{
 
-		public async Task<Result<GETDestination>> CreateDestination(int accountid, Guid tripid, POSTDestination dto)
+		public async Task<Result<DestinationDto>> CreateDestination(int accountid, Guid tripid, CreateDestinationRequest dto)
 		{
 			#region Validate
 
@@ -23,29 +23,29 @@ namespace fabrizio.BLL
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
 			{
-				return Result<GETDestination>.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
+				return Result<DestinationDto>.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
 			}
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, null);
 			if (hasOverlap)
 			{
-				return Result<GETDestination>.Fail(new BusinessError("destination_overlap", "Destination name overlap.",409));
+				return Result<DestinationDto>.Fail(new BusinessError("destination_overlap", "Destination name overlap.",409));
 			}
 
 			Trip? trip = await _tripRepository.GetById(tripid);
 			if (trip == null)
 			{
-				return Result<GETDestination>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.",404));
+				return Result<DestinationDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.",404));
 			}
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result<GETDestination>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+				return Result<DestinationDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
 			if (trip.AccountId != accountid)
 			{
-				return Result<GETDestination>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result<DestinationDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			#endregion Validate
@@ -62,7 +62,7 @@ namespace fabrizio.BLL
 
 			trip.Destinations.Add(destination);
 			await _travelBookingRepository.SaveChangesAsync();
-			return Result<GETDestination>.Success(new GETDestination 
+			return Result<DestinationDto>.Success(new DestinationDto 
 			{
 				Id = destination.Id,
 				Name = destination.Name, 
@@ -71,7 +71,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result> UpdateDestination(int accountid, Guid tripid, PUTDestination dto)
+		public async Task<Result> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto)
 		{
 			#region Validate
 

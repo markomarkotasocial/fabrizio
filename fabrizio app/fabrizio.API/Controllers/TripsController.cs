@@ -88,7 +88,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPost("")]
 		[Authorize]
-		public async Task<IActionResult> Create([FromBody] POSTTrip dto)
+		public async Task<IActionResult> Create([FromBody] CreateTripRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -105,7 +105,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="dto"></param>
 		/// <returns></returns>
 		[HttpPost("{id:Guid}/travelbooking")]
-		public async Task<IActionResult> CreateTravelBooking(Guid id, [FromBody] POSTTravelBooking dto)
+		public async Task<IActionResult> CreateTravelBooking(Guid id, [FromBody] CreateTravelBookingRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -122,7 +122,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="dto"></param>
 		/// <returns></returns>
 		[HttpPost("{id:Guid}/accommodationbooking")]
-		public async Task<IActionResult> CreateAccommodationBooking(Guid id, [FromBody] POSTAccommodationBooking dto)
+		public async Task<IActionResult> CreateAccommodationBooking(Guid id, [FromBody] CreateAccommodationBookingRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -139,7 +139,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="dto"></param>
 		/// <returns></returns>
 		[HttpPost("{id:Guid}/destination")]
-		public async Task<IActionResult> CreateDestination(Guid id, [FromBody] POSTDestination dto)
+		public async Task<IActionResult> CreateDestination(Guid id, [FromBody] CreateDestinationRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -157,7 +157,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPut("{id:Guid}")]
 		[Authorize]
-		public async Task<IActionResult> Update(Guid id, [FromBody] PUTTrip dto)
+		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTripRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -174,7 +174,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPut("{id:Guid}/travelbooking")]
 		[Authorize]
-		public async Task<IActionResult> UpdateTravelBooking(Guid id, [FromBody] PUTTravelBooking dto)
+		public async Task<IActionResult> UpdateTravelBooking(Guid id, [FromBody] UpdateTravelBookingRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -191,7 +191,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPut("{id:Guid}/accommodationbooking")]
 		[Authorize]
-		public async Task<IActionResult> UpdateAccommodationBooking(Guid id, [FromBody] PUTAccommodationBooking dto)
+		public async Task<IActionResult> UpdateAccommodationBooking(Guid id, [FromBody] UpdateAccommodationBookingRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
@@ -208,7 +208,7 @@ namespace fabrizio.API.Controllers
 		/// <returns></returns>
 		[HttpPut("{id:Guid}/destination")]
 		[Authorize]
-		public async Task<IActionResult> UpdateDestination(Guid id, [FromBody] PUTDestination dto)
+		public async Task<IActionResult> UpdateDestination(Guid id, [FromBody] UpdateDestinationRequest dto)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
