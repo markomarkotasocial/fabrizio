@@ -33,7 +33,7 @@ namespace fabrizio.App.Services
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Current == null && Next == null;
-		//public bool HasTrip => Current != null || Next != null;
+		public bool HasAnyTrip => Current != null || Next != null;
 
 
 		private bool _isInitialized;
@@ -49,6 +49,17 @@ namespace fabrizio.App.Services
 			//this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing)) RefreshCommand.NotifyCanExecuteChanged(); };
 		}
 
+
+
+		partial void OnCurrentChanged(TripDto? value)
+		{
+			OnPropertyChanged(nameof(HasAnyTrip));
+		}
+
+		partial void OnNextChanged(TripDto? value)
+		{
+			OnPropertyChanged(nameof(HasAnyTrip));
+		}
 
 
 

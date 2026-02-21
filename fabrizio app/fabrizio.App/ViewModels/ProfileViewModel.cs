@@ -33,6 +33,7 @@ namespace fabrizio.App.Services
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
 		public bool IsNotEditingName => !IsEditingName;
+		public bool HasAccount => Account != null;
 
 
 		public ProfileViewModel(IProfileService profileService, AuthService authService)
@@ -44,6 +45,18 @@ namespace fabrizio.App.Services
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
 			DeleteAccountCommand = new AsyncRelayCommand(DeleteAccountAsync);
 			SaveAccountCommand = new AsyncRelayCommand(SaveAccountAsync);
+		}
+
+
+
+		partial void OnAccountChanged(AccountDto? value)
+		{
+			OnPropertyChanged(nameof(HasAccount));
+			OnPropertyChanged(nameof(IsEmpty));
+		}
+		partial void OnIsEditingNameChanged(bool value)
+		{
+			OnPropertyChanged(nameof(IsNotEditingName));
 		}
 
 
@@ -89,10 +102,6 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		partial void OnIsEditingNameChanged(bool value)
-		{
-			OnPropertyChanged(nameof(IsNotEditingName));
-		}
 
 
 		public async Task LoadOnEnterAsync()

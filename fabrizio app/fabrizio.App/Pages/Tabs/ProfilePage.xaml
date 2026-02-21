@@ -6,7 +6,7 @@
 	<Grid Padding="20">
 
 		<!-- ### CONTENT ### -->
-		<ScrollView>
+		<ScrollView IsVisible="{Binding HasAccount}">
 			
 			<!--Use for vertical content, sections and simple form layouts-->
 			<VerticalStackLayout>
@@ -150,7 +150,6 @@
 
 					</VerticalStackLayout>
 				</Frame>
-
 
 
 				<!-- ### MANAGE ACCOUNT ### -->

@@ -32,7 +32,9 @@ namespace fabrizio.App.Pages.Tabs
 		private void OnNameTapped(object sender, EventArgs e)
 		{
 			if (BindingContext is ProfileViewModel vm)
+			{
 				vm.IsEditingName = true;
+			}
 		}
 
 		private async void OnNameCompleted(object sender, EventArgs e)

@@ -7,6 +7,7 @@
 
 		<!-- ### CONTENT ### -->
 		<RefreshView
+			IsVisible="{Binding HasAnyTrip}"
 			IsRefreshing="{Binding IsRefreshing}"
 			Command="{Binding RefreshCommand}">
 
