@@ -135,12 +135,12 @@ namespace fabrizio.API.Controllers
 		}
 		
 		/// <summary>
-		/// Update an existing account settings.
+		/// Update an existing account info.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="dto"></param>
 		/// <returns></returns>
-		[HttpPut("settings")]
+		[HttpPut("info")]
 		[Authorize]
 		public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountProfileRequest dto)
 		{

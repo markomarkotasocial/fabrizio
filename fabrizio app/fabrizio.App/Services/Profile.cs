@@ -42,6 +42,18 @@ namespace fabrizio.App.Services
 		}
 
 
+		public async Task<Result> UpdateAccount(UpdateAccountProfileRequest request)
+		{
+			var response = await _http.PutAsJsonAsync("api/accounts/info", request);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+				return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+			}
+
+			return Result.Success();
+		}
 
 	}
 }

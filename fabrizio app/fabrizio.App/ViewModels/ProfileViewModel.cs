@@ -16,10 +16,19 @@ namespace fabrizio.App.Services
 		[ObservableProperty] private string errorMessage;
 		[ObservableProperty] private GETAccount? account;
 
+		[ObservableProperty] private string name;
+		[ObservableProperty] private bool isEditingName;
+
+		[ObservableProperty] private string preferredLanguage;
+		[ObservableProperty] private string preferredCurrency;
+		[ObservableProperty] private string timeZone;
+
 
 		public AsyncRelayCommand LogoutCommand { get; }
 		public AsyncRelayCommand DeleteAccountCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
+
+		public AsyncRelayCommand SaveAccountCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
@@ -33,9 +42,45 @@ namespace fabrizio.App.Services
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
 			DeleteAccountCommand = new AsyncRelayCommand(DeleteAccountAsync);
+			SaveAccountCommand = new AsyncRelayCommand(SaveAccountAsync);
 		}
 
 
+
+		private async Task SaveAccountAsync()
+		{
+			if (IsBusy || Account == null) return;
+
+			try
+			{
+				IsBusy = true;
+
+				var request = new UpdateAccountProfileRequest
+				{
+					Name = Name,
+					PreferredLanguage = Account.PreferredLanguage,
+					PreferredCurrency = Account.PreferredCurrency,
+					TimeZone = Account.TimeZone
+				};
+
+				//var result = await _profileService.UpdateAccount(request);
+
+				//if (!result.IsSuccess)
+				//{
+				//	// rollback za sva polja koja editiraš
+				//	Name = Account.Name;
+				//	return;
+				//}
+
+				//// optimistic sync
+				//Account.Name = Name;
+			}
+			finally
+			{
+				IsBusy = false;
+				//IsEditingName = false;
+			}
+		}
 
 
 		public async Task LoadOnEnterAsync()
@@ -95,6 +140,14 @@ namespace fabrizio.App.Services
 			if (result.Value != null)
 			{
 				Account = result.Value;
+
+				Name = Account.Name;
+				IsEditingName = false;
+
+				PreferredCurrency = Account.PreferredCurrency;
+				PreferredLanguage = Account.PreferredLanguage;
+				TimeZone = Account.TimeZone;
+
 				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
