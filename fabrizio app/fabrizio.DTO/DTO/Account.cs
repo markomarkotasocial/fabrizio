@@ -35,9 +35,9 @@ namespace fabrizio.Shared.DTO
 
 
 		// from AccountInfo
-		public string PreferredLanguage { get; init; }
-		public string PreferredCurrency { get; init; }
-		public string TimeZone { get; init; }
+		public string PreferredLanguage { get; set; } = string.Empty;
+		public string PreferredCurrency { get; set; } = string.Empty;
+		public string TimeZone { get; set; } = string.Empty;
 		public bool IsDarkMode { get; set; }
 		public Guid? HomeLocationId { get; set; }
 

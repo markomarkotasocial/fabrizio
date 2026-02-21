@@ -63,17 +63,23 @@ namespace fabrizio.App.Services
 					TimeZone = Account.TimeZone
 				};
 
-				//var result = await _profileService.UpdateAccount(request);
+				var result = await _profileService.UpdateAccount(request);
 
-				//if (!result.IsSuccess)
-				//{
-				//	// rollback za sva polja koja editiraš
-				//	Name = Account.Name;
-				//	return;
-				//}
+				if (!result.IsSuccess)
+				{
+					// rollback za sva polja koja editiraš
+					Name = Account.Name;
+					PreferredCurrency = Account.PreferredCurrency;
+					PreferredLanguage = Account.PreferredLanguage;
+					TimeZone = Account.TimeZone;
+					return;
+				}
 
-				//// optimistic sync
-				//Account.Name = Name;
+				// optimistic sync
+				Account.Name = Name;
+				Account.PreferredLanguage = PreferredLanguage;
+				Account.PreferredCurrency = PreferredCurrency;
+				Account.TimeZone = TimeZone;
 			}
 			finally
 			{
@@ -143,7 +149,6 @@ namespace fabrizio.App.Services
 
 				Name = Account.Name;
 				IsEditingName = false;
-
 				PreferredCurrency = Account.PreferredCurrency;
 				PreferredLanguage = Account.PreferredLanguage;
 				TimeZone = Account.TimeZone;

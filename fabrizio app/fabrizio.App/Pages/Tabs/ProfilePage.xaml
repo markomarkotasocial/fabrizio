@@ -23,11 +23,6 @@
                            FontSize="20"
                            FontAttributes="Bold"
                            TextColor="White" />
-						<!--<Entry Text="{Binding Name}"
-							   FontSize="20"
-							   FontAttributes="Bold"
-							   TextColor="White"
-							   BackgroundColor="Transparent" />-->
 
 						<Label Text="{Binding Account.Email}"
                            FontSize="12"
