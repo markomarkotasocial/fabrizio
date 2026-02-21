@@ -19,10 +19,36 @@
 					   BackgroundColor="DimGray">
 
 					<VerticalStackLayout Spacing="6">
-						<Label Text="{Binding Account.Name}"
+						<!--<Label Text="{Binding Account.Name}"
                            FontSize="20"
                            FontAttributes="Bold"
-                           TextColor="White" />
+                           TextColor="White" />-->
+
+						<Grid>
+
+							<!-- VIEW MODE -->
+							<Label Text="{Binding Name}"
+								   FontSize="20"
+								   FontAttributes="Bold"
+								   TextColor="White"
+								   IsVisible="{Binding IsNotEditingName}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Tapped="OnNameTapped"/>
+								</Label.GestureRecognizers>
+							</Label>
+
+							<!-- EDIT MODE -->
+							<Entry Text="{Binding Name}"
+								   FontSize="20"
+								   FontAttributes="Bold"
+								   TextColor="White"
+								   BackgroundColor="Transparent"
+								   IsVisible="{Binding IsEditingName}"
+								   Completed="OnNameCompleted"
+								   Unfocused="OnNameUnfocused" />
+						</Grid>
+
+
 
 						<Label Text="{Binding Account.Email}"
                            FontSize="12"

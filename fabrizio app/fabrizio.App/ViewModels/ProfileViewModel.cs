@@ -32,6 +32,7 @@ namespace fabrizio.App.Services
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
+		public bool IsNotEditingName => !IsEditingName;
 
 
 		public ProfileViewModel(IProfileService profileService, AuthService authService)
@@ -58,9 +59,9 @@ namespace fabrizio.App.Services
 				var request = new UpdateAccountProfileRequest
 				{
 					Name = Name,
-					PreferredLanguage = Account.PreferredLanguage,
-					PreferredCurrency = Account.PreferredCurrency,
-					TimeZone = Account.TimeZone
+					PreferredLanguage = PreferredLanguage,
+					PreferredCurrency = PreferredCurrency,
+					TimeZone = TimeZone
 				};
 
 				var result = await _profileService.UpdateAccount(request);
@@ -84,8 +85,13 @@ namespace fabrizio.App.Services
 			finally
 			{
 				IsBusy = false;
-				//IsEditingName = false;
+				IsEditingName = false;
 			}
+		}
+
+		partial void OnIsEditingNameChanged(bool value)
+		{
+			OnPropertyChanged(nameof(IsNotEditingName));
 		}
 
 

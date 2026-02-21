@@ -26,5 +26,32 @@ namespace fabrizio.App.Pages.Tabs
 				await vm.LoadOnEnterAsync();
 			}
 		}
+
+
+
+		private void OnNameTapped(object sender, EventArgs e)
+		{
+			if (BindingContext is ProfileViewModel vm)
+				vm.IsEditingName = true;
+		}
+
+		private async void OnNameCompleted(object sender, EventArgs e)
+		{
+			await TriggerSaveAsync();
+		}
+
+		private async void OnNameUnfocused(object sender, FocusEventArgs e)
+		{
+			await TriggerSaveAsync();
+		}
+
+		private async Task TriggerSaveAsync()
+		{
+			if (BindingContext is ProfileViewModel vm)
+			{
+				await vm.SaveAccountCommand.ExecuteAsync(null);
+			}
+		}
+
 	}
 }
