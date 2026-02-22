@@ -147,6 +147,7 @@ namespace fabrizio.App.Services
 				Current = null;
 				Next = null;
 
+				OnPropertyChanged(nameof(NextTripCountdownText));
 				OnPropertyChanged(nameof(ShowCurrentSplash));
 				OnPropertyChanged(nameof(ShowNextFollower));
 				OnPropertyChanged(nameof(ShowNextSplash));
@@ -159,6 +160,7 @@ namespace fabrizio.App.Services
 			{
 				Current = result.Value.Current;
 
+				OnPropertyChanged(nameof(NextTripCountdownText));
 				OnPropertyChanged(nameof(ShowCurrentSplash));
 				OnPropertyChanged(nameof(ShowNextFollower));
 				OnPropertyChanged(nameof(ShowNextSplash));
@@ -169,6 +171,7 @@ namespace fabrizio.App.Services
 			{
 				Next = result.Value.Next;
 
+				OnPropertyChanged(nameof(NextTripCountdownText));
 				OnPropertyChanged(nameof(ShowCurrentSplash));
 				OnPropertyChanged(nameof(ShowNextFollower));
 				OnPropertyChanged(nameof(ShowNextSplash));
@@ -179,20 +182,6 @@ namespace fabrizio.App.Services
 
 
 
-
-
-		//partial void OnCurrentChanged(GETTrip? value)
-		//{
-		//	OnPropertyChanged(nameof(HasCurrent));
-		//	OnPropertyChanged(nameof(HasNext));
-		//	OnPropertyChanged(nameof(IsEmpty));
-		//}
-
-		//partial void OnNextChanged(GETTrip? value)
-		//{
-		//	OnPropertyChanged(nameof(HasNext));
-		//	OnPropertyChanged(nameof(IsEmpty));
-		//}
 	}
 
 
