@@ -19,10 +19,6 @@
 					   BackgroundColor="DimGray">
 
 					<VerticalStackLayout Spacing="6">
-						<!--<Label Text="{Binding Account.Name}"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="White" />-->
 
 						<Grid>
 
@@ -199,7 +195,7 @@
 			IsVisible="{Binding IsEmpty}"
 			HorizontalOptions="Center"
 			VerticalOptions="Center">
-			<Label Text="Empty state" />
+			<Label Text="" />
 		</StackLayout>
 
 

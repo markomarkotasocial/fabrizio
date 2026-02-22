@@ -81,7 +81,7 @@
 					<Label
 						HorizontalOptions="Center"
 						FontSize="Small"
-						Text="{Binding Next.Name}" />
+						Text="{Binding NextTripCountdownText}" />
 
 				</Frame>
 

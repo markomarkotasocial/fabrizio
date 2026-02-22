@@ -35,6 +35,22 @@ namespace fabrizio.App.Services
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Current == null && Next == null;
 		public bool HasAnyTrip => Current != null || Next != null;
 
+		public string NextTripCountdownText
+		{
+			get
+			{
+				if (Next?.StartDate == null) return string.Empty;
+
+				var today = DateTime.Today;
+				var days = (Next.StartDate.Value.Date - today).Days;
+
+				if (days < 0) return $"Your {Next.Name} trip has started";
+				if (days == 0) return $"Your {Next.Name} trip starts today ✈️";
+				if (days == 1) return $"1 day until your {Next.Name} trip";
+				return $"{days} days until your {Next.Name} trip";
+			}
+		}
+
 
 		private bool _isInitialized;
 
@@ -59,8 +75,8 @@ namespace fabrizio.App.Services
 		partial void OnNextChanged(TripDto? value)
 		{
 			OnPropertyChanged(nameof(HasAnyTrip));
+			OnPropertyChanged(nameof(NextTripCountdownText));
 		}
-
 
 
 		public async Task LoadOnEnterAsync()
