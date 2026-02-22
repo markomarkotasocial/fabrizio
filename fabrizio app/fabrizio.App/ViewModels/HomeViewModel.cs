@@ -24,14 +24,11 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand RefreshCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
 
+		
 
 		public bool ShowCurrentSplash => Current != null;
 		public bool ShowNextFollower => Current != null && Next != null;
-		public bool ShowNextSplash => Current == null && Next != null;
-	
-
-
-
+		public bool ShowNextSplash => Current == null && Next != null;	
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Current == null && Next == null;
 		public bool HasAnyTrip => Current != null || Next != null;
 
@@ -58,9 +55,8 @@ namespace fabrizio.App.Services
 			_authService = authService;
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
-			RefreshCommand = new AsyncRelayCommand(RefreshAsync); //, () => !IsRefreshing);
+			RefreshCommand = new AsyncRelayCommand(RefreshAsync);
 
-			//this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing)) RefreshCommand.NotifyCanExecuteChanged(); };
 		}
 
 
@@ -68,11 +64,17 @@ namespace fabrizio.App.Services
 		partial void OnCurrentChanged(TripDto? value)
 		{
 			OnPropertyChanged(nameof(HasAnyTrip));
+			OnPropertyChanged(nameof(ShowCurrentSplash));
+			OnPropertyChanged(nameof(ShowNextFollower));
+			OnPropertyChanged(nameof(ShowNextSplash));
+			OnPropertyChanged(nameof(IsEmpty));
 		}
-
 		partial void OnNextChanged(TripDto? value)
 		{
 			OnPropertyChanged(nameof(HasAnyTrip));
+			OnPropertyChanged(nameof(ShowNextFollower));
+			OnPropertyChanged(nameof(ShowNextSplash));
+			OnPropertyChanged(nameof(IsEmpty));
 			OnPropertyChanged(nameof(NextTripCountdownText));
 		}
 
@@ -146,36 +148,18 @@ namespace fabrizio.App.Services
 			{
 				Current = null;
 				Next = null;
-
-				OnPropertyChanged(nameof(NextTripCountdownText));
-				OnPropertyChanged(nameof(ShowCurrentSplash));
-				OnPropertyChanged(nameof(ShowNextFollower));
-				OnPropertyChanged(nameof(ShowNextSplash));
-				OnPropertyChanged(nameof(IsEmpty));
-
 				return;
 			}
 
 			if (result.Value?.Current != null)
 			{
 				Current = result.Value.Current;
-
-				OnPropertyChanged(nameof(NextTripCountdownText));
-				OnPropertyChanged(nameof(ShowCurrentSplash));
-				OnPropertyChanged(nameof(ShowNextFollower));
-				OnPropertyChanged(nameof(ShowNextSplash));
-				OnPropertyChanged(nameof(IsEmpty));
 			}
 
 			if (result.Value?.Next != null)
 			{
 				Next = result.Value.Next;
 
-				OnPropertyChanged(nameof(NextTripCountdownText));
-				OnPropertyChanged(nameof(ShowCurrentSplash));
-				OnPropertyChanged(nameof(ShowNextFollower));
-				OnPropertyChanged(nameof(ShowNextSplash));
-				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
 
