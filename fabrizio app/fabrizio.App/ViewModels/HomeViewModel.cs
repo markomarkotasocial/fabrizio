@@ -44,10 +44,8 @@ namespace fabrizio.App.Services
 				var today = DateTime.Today;
 				var days = (Next.StartDate.Value.Date - today).Days;
 
-				if (days < 0) return $"Your {Next.Name} trip has started";
-				if (days == 0) return $"Your {Next.Name} trip starts today ✈️";
-				if (days == 1) return $"1 day until your {Next.Name} trip";
-				return $"{days} days until your {Next.Name} trip";
+				if (days > 0) return $"{Next.Name} in {days} days ✈️"; 
+				else return string.Empty;
 			}
 		}
 
