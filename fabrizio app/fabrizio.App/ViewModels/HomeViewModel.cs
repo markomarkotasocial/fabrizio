@@ -31,6 +31,7 @@ namespace fabrizio.App.Services
 		public bool ShowNextSplash => Current == null && Next != null;	
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Current == null && Next == null;
 		public bool HasAnyTrip => Current != null || Next != null;
+		public string CurrentDateRangeText => Current == null ? string.Empty: $"{Current.StartDate:dd MMM} — {Current.EndDate:dd MMM}";
 
 		public string NextTripCountdownText
 		{
@@ -68,6 +69,7 @@ namespace fabrizio.App.Services
 			OnPropertyChanged(nameof(ShowNextFollower));
 			OnPropertyChanged(nameof(ShowNextSplash));
 			OnPropertyChanged(nameof(IsEmpty));
+			OnPropertyChanged(nameof(CurrentDateRangeText));
 		}
 		partial void OnNextChanged(TripDto? value)
 		{

@@ -1,127 +1,234 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.HomePage"
-			 Shell.NavBarIsVisible="False">
-	
-	<Grid Padding="20">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#101922">
+
+	<Grid Padding="16">
 
 		<!-- ### CONTENT ### -->
 		<RefreshView
-			IsVisible="{Binding HasAnyTrip}"
-			IsRefreshing="{Binding IsRefreshing}"
-			Command="{Binding RefreshCommand}">
-
+            IsVisible="{Binding HasAnyTrip}"
+            IsRefreshing="{Binding IsRefreshing}"
+            Command="{Binding RefreshCommand}">
 
 			<Grid RowDefinitions="*,Auto">
 
-				<!-- CURRENT TRIP (90%) -->
-				<!--When need to make UI card, group selections, visual distinction-->
+				<!-- ================= CURRENT TRIP CARD ================= -->
 				<Frame
-					Grid.Row="0"
-					CornerRadius="18"
-					Margin="0,8"
-					Padding="12"
-					HasShadow="True"
-					BackgroundColor="White"
-					IsVisible="{Binding ShowCurrentSplash}">
+                    Grid.Row="0"
+                    CornerRadius="28"
+                    Padding="20"
+                    Margin="0,8"
+                    HasShadow="False"
+                    BackgroundColor="#1B2633"
+                    BorderColor="#2A3646"
+                    IsVisible="{Binding ShowCurrentSplash}">
 
+					<Grid RowDefinitions="Auto,Auto,*"
+                          RowSpacing="14">
 
-					<Grid RowDefinitions="Auto,*,Auto"
-						  VerticalOptions="Fill">
+						<!-- HEADER -->
+						<Grid Grid.Row="0" ColumnDefinitions="*,Auto">
 
-						<!--When need to show raw text, usually read only-->
-						<Label
-							Grid.Row="0"
-							FontSize="Large"
-							HorizontalOptions="Center"
-							TextColor="Black"
-							Text="{Binding Current.Name}" />
+							<VerticalStackLayout Spacing="2">
 
-						
-						<ScrollView Grid.Row="1">
-							<Label
-								Text="{Binding Current.Notes}"
-								LineBreakMode="WordWrap"
-								TextColor="Black" />
-						</ScrollView>
+								<Label
+                                    Text="CURRENT TRIP"
+                                    FontSize="10"
+                                    FontAttributes="Bold"
+                                    TextColor="#137fec"
+                                    CharacterSpacing="2" />
 
+								<Label
+                                    Text="{Binding Current.Name}"
+                                    FontSize="26"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    LineBreakMode="WordWrap" />
 
-						<Grid
-							Grid.Row="2"
-							ColumnDefinitions="Auto,*,Auto">
+							</VerticalStackLayout>
 
-							<Label
-								Grid.Column="0"
-								Text="{Binding Current.StartDate, StringFormat='{0:dd.MM.yyyy}'}"
-								FontSize="Small"
-								TextColor="Black" />
-						
-							<Label
-								Grid.Column="2"
-								Text="{Binding Current.EndDate, StringFormat='{0:dd.MM.yyyy}'}"
-								FontSize="Small"
-								TextColor="Black" />
+							<!-- search circle placeholder -->
+							<Frame
+                                Grid.Column="1"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                CornerRadius="2222"
+                                BackgroundColor="#243244"
+                                HasShadow="False"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start" />
 
 						</Grid>
 
+						<!-- DATE + DESTINATIONS -->
+						<VerticalStackLayout Grid.Row="1" Spacing="8">
+
+							<!-- DATE PILL -->
+							<Frame
+                                Padding="10,4"
+                                CornerRadius="18"
+                                BackgroundColor="#243244"
+                                HasShadow="False"
+                                HorizontalOptions="Start">
+
+								<Label
+									Text="{Binding CurrentDateRangeText}"
+									FontSize="11"
+									FontAttributes="Bold"
+									TextColor="White" />
+								
+							</Frame>
+
+							<!-- DESTINATIONS -->
+							<CollectionView
+                                ItemsSource="{Binding Current.Destinations}"
+                                ItemsLayout="HorizontalList"
+                                HeightRequest="34"
+                                SelectionMode="None">
+
+								<CollectionView.ItemTemplate>
+									<DataTemplate>
+										<Frame
+                                            Padding="12,8"
+                                            Margin="0,0,6,0"
+                                            CornerRadius="18"
+                                            BackgroundColor="#2A3646"
+                                            BorderColor="#3A4758"
+                                            HasShadow="False">
+
+											<Label
+                                                Text="{Binding Name}"
+                                                FontSize="11"
+                                                TextColor="#E6EEF8" />
+										</Frame>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+
+						</VerticalStackLayout>
+
+						<!-- QUICK NOTES PANEL -->
+						<Frame
+							Grid.Row="2"
+							CornerRadius="18"
+							BackgroundColor="#16202B"
+							BorderColor="#2A3646"
+							HasShadow="False"
+							Padding="16"
+							MinimumHeightRequest="120">
+
+							<VerticalStackLayout Spacing="12">
+
+								<!-- HEADER -->
+								<HorizontalStackLayout Spacing="8">
+
+									<!-- icon placeholder -->
+									<BoxView
+										WidthRequest="14"
+										HeightRequest="14"
+										Color="#137fec"
+										VerticalOptions="Center" />
+
+									<Label
+										Text="QUICK NOTES"
+										FontSize="11"
+										FontAttributes="Bold"
+										TextColor="#9FB3C8"
+										CharacterSpacing="1.5"
+										VerticalOptions="Center" />
+
+								</HorizontalStackLayout>
+
+								<!-- CONTENT PLACEHOLDER -->
+								<Grid HeightRequest="70" />
+
+							</VerticalStackLayout>
+
+						</Frame>
+
 					</Grid>
-
 				</Frame>
 
-				<!-- NEXT TRIP FOLLOWER (10%) -->
+				<!-- ================= NEXT TRIP FOLLOWER ================= -->
 				<Frame
-					Grid.Row="1"
-					CornerRadius="18"
-					Margin="0,8"
-					Padding="12"
-					HasShadow="True"
-					BackgroundColor="WhiteSmoke"
-					IsVisible="{Binding ShowNextFollower}">
+                    Grid.Row="1"
+                    CornerRadius="20"
+                    Padding="16"
+                    Margin="0,8"
+                    BackgroundColor="#1B2633"
+                    BorderColor="#2A3646"
+                    HasShadow="False"
+                    IsVisible="{Binding ShowNextFollower}">
 
-					<Label
-						HorizontalOptions="Center"
-						FontSize="Small"
-						Text="{Binding NextTripCountdownText}" />
+					<Grid ColumnDefinitions="*,Auto">
 
+						<VerticalStackLayout Spacing="2">
+
+							<Label
+                                Text="NEXT ADVENTURE"
+                                FontSize="9"
+                                FontAttributes="Bold"
+                                TextColor="#7F93A8"
+                                CharacterSpacing="1.5" />
+
+							<Label
+                                Text="{Binding Next.Name}"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+						</VerticalStackLayout>
+
+						<Label
+                            Grid.Column="1"
+                            Text="{Binding NextTripCountdownText}"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="#137fec"
+                            VerticalOptions="Center" />
+
+					</Grid>
 				</Frame>
 
-				<!-- NEXT SPLASH (100%) -->
+				<!-- ================= NEXT SPLASH ================= -->
 				<Frame
-					Grid.RowSpan="2"
-					CornerRadius="18"
-					Padding="12"
-					HasShadow="True"
-					BackgroundColor="LightSkyBlue"
-					IsVisible="{Binding ShowNextSplash}">
+                    Grid.RowSpan="2"
+                    CornerRadius="28"
+                    Padding="20"
+                    BackgroundColor="#137fec"
+                    HasShadow="False"
+                    IsVisible="{Binding ShowNextSplash}">
 
 					<Label
-						HorizontalOptions="Center"
-						FontSize="Medium"
-						Text="{Binding Next.Name}" />
-
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        FontSize="Medium"
+                        TextColor="White"
+                        Text="{Binding Next.Name}" />
 				</Frame>
 
 			</Grid>
-
 		</RefreshView>
 
-		<!-- ### EMPTY STATE ### -->
+		<!-- EMPTY STATE -->
 		<StackLayout
-			IsVisible="{Binding IsEmpty}"
-			HorizontalOptions="Center"
-			VerticalOptions="Center">
-			<Label Text="No upcoming trips yet :(" />
+            IsVisible="{Binding IsEmpty}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+			<Label TextColor="White" Text="No upcoming trips yet :(" />
 		</StackLayout>
 
-
-		<!-- ### INITIAL LOADING ### -->
+		<!-- LOADING -->
 		<ActivityIndicator
-			IsRunning="{Binding IsBusy}"
-			IsVisible="{Binding IsBusy}"
-			HorizontalOptions="Center"
-			VerticalOptions="Center"/>
-
-
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Color="White" />
 
 	</Grid>
 </ContentPage>
+	
+
