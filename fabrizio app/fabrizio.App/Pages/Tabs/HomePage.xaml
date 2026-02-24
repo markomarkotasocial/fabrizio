@@ -63,7 +63,7 @@
 						</Grid>
 
 						<!-- DATE + DESTINATIONS -->
-						<VerticalStackLayout Grid.Row="1" Spacing="8">
+						<VerticalStackLayout Grid.Row="1" Spacing="12" >
 
 							<!-- DATE PILL -->
 							<Frame
@@ -217,7 +217,6 @@
             IsVisible="{Binding IsEmpty}"
             HorizontalOptions="Center"
             VerticalOptions="Center">
-			<Label TextColor="White" Text="No upcoming trips yet :(" />
 		</StackLayout>
 
 		<!-- LOADING -->
