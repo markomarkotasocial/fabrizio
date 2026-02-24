@@ -103,7 +103,7 @@
 							BackgroundColor="#121A23"
 							BorderColor="#2A3646"
 							HasShadow="False"
-							HeightRequest="150">
+							HeightRequest="180">
 
 							<VerticalStackLayout Spacing="10">
 
@@ -111,11 +111,11 @@
 								<Grid ColumnDefinitions="*,Auto">
 
 									<Label
-                                    Text="{Binding Name}"
-                                    FontSize="18"
-                                    FontAttributes="Bold"
-                                    TextColor="White"
-                                    LineBreakMode="TailTruncation" />
+										Text="{Binding Name}"
+										FontSize="18"
+										FontAttributes="Bold"
+										TextColor="White"
+										LineBreakMode="TailTruncation" />
 
 									<!-- NOW badge placeholder -->
 									<Frame
@@ -144,30 +144,49 @@
 									 />
 
 								<!-- DESTINATIONS -->
-								<CollectionView
-									ItemsSource="{Binding Current.Destinations}"
-									ItemsLayout="HorizontalList"
-									HeightRequest="34"
-									SelectionMode="None">
+								<HorizontalStackLayout Spacing="6">
 
-									<CollectionView.ItemTemplate>
-										<DataTemplate>
-											<Frame
-                                            Padding="10,4"
-                                            Margin="0,0,8,0"
-                                            CornerRadius="16"
-                                            BackgroundColor="#FFFFFF14"
-                                            BorderColor="#FFFFFF22"
-                                            HasShadow="False">
+									<!-- VISIBLE DESTINATIONS -->
+									<CollectionView
+										ItemsSource="{Binding VisibleDestinations}"
+										ItemsLayout="HorizontalList"
+										SelectionMode="None"
+										HeightRequest="28">
 
-												<Label
-                                                Text="{Binding Name}"
-                                                FontSize="11"
-                                                TextColor="White" />
-											</Frame>
-										</DataTemplate>
-									</CollectionView.ItemTemplate>
-								</CollectionView>
+										<CollectionView.ItemTemplate>
+											<DataTemplate>
+												<Frame
+													Padding="10,3"
+													CornerRadius="14"
+													BackgroundColor="#FFFFFF14"
+													BorderColor="#FFFFFF22"
+													HasShadow="False">
+
+													<Label
+														Text="{Binding Name}"
+														FontSize="10"
+														TextColor="White" />
+												</Frame>
+											</DataTemplate>
+										</CollectionView.ItemTemplate>
+									</CollectionView>
+
+									<!-- +N CHIP -->
+									<Frame
+										IsVisible="{Binding HasHiddenDestinations}"
+										Padding="10,3"
+										CornerRadius="14"
+										BackgroundColor="#FFFFFF14"
+										BorderColor="#FFFFFF22"
+										HasShadow="False">
+
+										<Label
+											Text="{Binding HiddenDestinationsCount, StringFormat='+{0}'}"
+											FontSize="10"
+											TextColor="White" />
+									</Frame>
+
+								</HorizontalStackLayout>
 
 								<!-- DAYS LEFT -->
 								<Grid ColumnDefinitions="*,Auto">
@@ -175,9 +194,9 @@
 									<Grid />
 
 									<VerticalStackLayout
-                                    Grid.Column="1"
-                                    Spacing="0"
-                                    IsVisible="{Binding ShowCountdown}">
+										Grid.Column="1"
+										Spacing="0"
+										IsVisible="{Binding ShowCountdown}">
 
 										<Label
 											Text="{Binding DaysLeft}"

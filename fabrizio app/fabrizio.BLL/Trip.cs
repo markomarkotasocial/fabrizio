@@ -158,7 +158,16 @@ namespace fabrizio.BLL
 				Name = trip.Name,
 				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,				
+				EndDate = trip.EndDate,		
+				Destinations = trip.Destinations
+					.OrderBy(d => d.Order)
+					.Select(d => new DestinationDto
+					{
+						Id = d.Id,
+						Name = d.Name,
+						Order = d.Order,
+						TripId = d.TripId,
+					})
 			});
 
 			return Result<PagedResult<TripListItemDto>>.Success(new PagedResult<TripListItemDto>

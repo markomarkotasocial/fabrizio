@@ -51,6 +51,7 @@
 
 							<!-- search circle placeholder -->
 							<Frame
+
                                 Grid.Column="1"
                                 WidthRequest="44"
                                 HeightRequest="44"
@@ -59,6 +60,7 @@
                                 HasShadow="False"
                                 HorizontalOptions="End"
                                 VerticalOptions="Start" />
+		
 
 						</Grid>
 

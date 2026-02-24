@@ -13,10 +13,10 @@ namespace fabrizio.App.Services
 		private readonly IAuthService _authService;
 
 
-		public ObservableCollection<TripDto> Trips { get; } = new();
+		public ObservableCollection<TripListItemDto> Trips { get; } = new();
 
 		
-		[ObservableProperty] private TripDto selectedTrip;
+		[ObservableProperty] private TripListItemDto selectedTrip;
 		[ObservableProperty] private bool isRefreshing;
 
 
@@ -25,8 +25,8 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand LoadCommand { get; }
 
 		public AsyncRelayCommand AddTripCommand { get; }
-		public AsyncRelayCommand<TripDto> DeleteTripCommand { get; }
-		public AsyncRelayCommand<TripDto> OpenTripCommand { get; }
+		public AsyncRelayCommand<TripListItemDto> DeleteTripCommand { get; }
+		public AsyncRelayCommand<TripListItemDto> OpenTripCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
@@ -43,8 +43,8 @@ namespace fabrizio.App.Services
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
 
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
-			DeleteTripCommand = new AsyncRelayCommand<TripDto>(DeleteTripAsync);
-			OpenTripCommand = new AsyncRelayCommand<TripDto>(OpenTripAsync);
+			DeleteTripCommand = new AsyncRelayCommand<TripListItemDto>(DeleteTripAsync);
+			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripAsync);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
@@ -132,13 +132,13 @@ namespace fabrizio.App.Services
 			return Shell.Current.GoToAsync("add-trip");
 		}
 
-		private Task OpenTripAsync(TripDto trip)
+		private Task OpenTripAsync(TripListItemDto trip)
 		{
 			if (trip == null) return Task.CompletedTask;
 			return Shell.Current.GoToAsync($"trip-detail?tripId={trip.Id}");
 		}
 
-		private async Task DeleteTripAsync(TripDto trip)
+		private async Task DeleteTripAsync(TripListItemDto trip)
 		{
 			await _tripService.DeleteTrip(trip.Id);
 		}
