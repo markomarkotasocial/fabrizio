@@ -82,15 +82,15 @@
 
 		<!-- CONTENT -->
 		<RefreshView
-			Grid.Row="1"
-			IsRefreshing="{Binding IsRefreshing}"
-			Command="{Binding RefreshCommand}">
+	Grid.Row="1"
+	IsRefreshing="{Binding IsRefreshing}"
+	Command="{Binding RefreshCommand}">
 
 			<CollectionView
-				ItemsSource="{Binding Trips}"
-				SelectedItem="{Binding SelectedTrip}"
-				SelectionMode="Single"				
-				Margin="0,10,0,80">
+		ItemsSource="{Binding Trips}"
+		SelectedItem="{Binding SelectedTrip}"
+		SelectionMode="Single"				
+		Margin="0,10,0,80">
 
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
@@ -99,29 +99,32 @@
 						<Frame
 							CornerRadius="18"
 							Margin="0,0,0,14"
-							Padding="16"
+							Padding="18"
 							BackgroundColor="#121A23"
-							BorderColor="#2A3646"
+							BorderColor="#2A3646"							
 							HasShadow="False"
 							HeightRequest="180">
 
-							<VerticalStackLayout Spacing="10">
+							<!-- 🔥 KLJUČNI GRID -->
+							<Grid RowDefinitions="Auto,Auto,*,Auto">
 
 								<!-- NAME + BADGE -->
-								<Grid ColumnDefinitions="*,Auto">
+								<Grid
+									Grid.Row="0"
+									ColumnDefinitions="*,Auto">
 
 									<Label
 										Text="{Binding Name}"
+										Margin="0,0,0,4"
 										FontSize="18"
 										FontAttributes="Bold"
-										TextColor="White"
-										LineBreakMode="TailTruncation" />
+										TextColor="White" />
 
-									<!-- NOW badge placeholder -->
+									<!-- NOW badge -->
 									<Frame
 										Grid.Column="1"
-										Padding="8,2"
-										CornerRadius="10"
+										Padding="10,8"
+										CornerRadius="16"
 										BackgroundColor="#137fec33"
 										BorderColor="#137fec"
 										HasShadow="False"
@@ -138,69 +141,82 @@
 
 								<!-- DATE -->
 								<Label
+									Grid.Row="1"
 									Text="{Binding DateRangeText}"
 									FontSize="12"
-									TextColor="#9FB3C8"
-									 />
+									TextColor="#9FB3C8"/>
 
-								<!-- DESTINATIONS -->
-								<HorizontalStackLayout Spacing="6">
+								<!-- 🔥 SPACER (prazan red koji gura dolje) -->
+								<BoxView Grid.Row="2" Opacity="0" />
 
-									<!-- VISIBLE DESTINATIONS -->
-									<CollectionView
-										ItemsSource="{Binding VisibleDestinations}"
-										ItemsLayout="HorizontalList"
-										SelectionMode="None"
-										HeightRequest="28">
+								<!-- DESTINATIONS + DAYS LEFT (ZAKUCANO NA DNO) -->
+								<Grid
+									Grid.Row="3"
+									ColumnDefinitions="*,Auto"
+									VerticalOptions="End">
 
-										<CollectionView.ItemTemplate>
-											<DataTemplate>
-												<Frame
-													Padding="10,3"
-													CornerRadius="14"
-													BackgroundColor="#FFFFFF14"
-													BorderColor="#FFFFFF22"
-													HasShadow="False">
+									<!-- LEFT: DESTINATIONS -->
+									<HorizontalStackLayout
+										Grid.Column="0"
+										Spacing="0"
+										VerticalOptions="Center">
 
-													<Label
-														Text="{Binding Name}"
-														FontSize="10"
-														TextColor="White" />
-												</Frame>
-											</DataTemplate>
-										</CollectionView.ItemTemplate>
-									</CollectionView>
+										<CollectionView
+											ItemsSource="{Binding VisibleDestinations}"
+											ItemsLayout="HorizontalList"
+											SelectionMode="None"
+											HorizontalOptions="Start"
+											VerticalOptions="Center">
 
-									<!-- +N CHIP -->
-									<Frame
-										IsVisible="{Binding HasHiddenDestinations}"
-										Padding="10,3"
-										CornerRadius="14"
-										BackgroundColor="#FFFFFF14"
-										BorderColor="#FFFFFF22"
-										HasShadow="False">
+											<CollectionView.ItemTemplate>
+												<DataTemplate>
+													<Frame
+														Padding="10,8"
+														Margin="0,0,6,0"
+														CornerRadius="16"
+														BackgroundColor="Transparent"
+														BorderColor="White"
+														HasShadow="False"
+														VerticalOptions="Center">
 
-										<Label
-											Text="{Binding HiddenDestinationsCount, StringFormat='+{0}'}"
-											FontSize="10"
-											TextColor="White" />
-									</Frame>
+														<Label
+															Text="{Binding Name}"
+															FontSize="10"
+															TextColor="White" />
+													</Frame>
+												</DataTemplate>
+											</CollectionView.ItemTemplate>
+										</CollectionView>
 
-								</HorizontalStackLayout>
+										<!-- +N CHIP -->
+										<Frame
+											IsVisible="{Binding HasHiddenDestinations}"
+											Padding="10,8"
+											CornerRadius="16"
+											BackgroundColor="Transparent"
+											BorderColor="White"
+											HasShadow="False"
+											VerticalOptions="Center">
 
-								<!-- DAYS LEFT -->
-								<Grid ColumnDefinitions="*,Auto">
+											<Label
+												Text="{Binding HiddenDestinationsCount, StringFormat='+{0}'}"
+												FontSize="10"
+												TextColor="White" />
+										</Frame>
 
-									<Grid />
+									</HorizontalStackLayout>
 
+									<!-- RIGHT: DAYS LEFT -->
 									<VerticalStackLayout
 										Grid.Column="1"
 										Spacing="0"
-										IsVisible="{Binding ShowCountdown}">
+										IsVisible="{Binding ShowCountdown}"
+										HorizontalOptions="End"
+										VerticalOptions="Center">
 
 										<Label
 											Text="{Binding DaysLeft}"
-											FontSize="18"
+											FontSize="20"
 											FontAttributes="Bold"
 											TextColor="#137fec"
 											HorizontalOptions="End" />
@@ -215,7 +231,7 @@
 
 								</Grid>
 
-							</VerticalStackLayout>
+							</Grid>
 
 						</Frame>
 
@@ -267,95 +283,3 @@
 	
 	
 	
-	<!--<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fabrizio.App.Pages.Tabs.TripsPage"
-			 Shell.NavBarIsVisible="False">
-
-	--><!--Use when need to make clear distinction between parts of the page-->
-	<!--Rows and columns definitions--><!--
-	<Grid Padding="20">
-
-		--><!-- ### CONTENT ### -->
-		<!--Use when pull-to-refresh is needed, otherwise CollectionView directly-->
-		<!--Virtuallized items list, use when have a lot of data (5+), paging, collections, dynamic data from endpoint --><!-- 
-		<RefreshView
-			IsRefreshing="{Binding IsRefreshing}"
-			Command="{Binding RefreshCommand}">
-
-			--><!--Supports using with ObservableCollection-->
-			<!--Implement RemainingItemsThreshold TODO --><!--
-			<CollectionView
-				ItemsSource="{Binding Trips}"
-				SelectionMode="Single"
-				SelectedItem="{Binding SelectedTrip}">
-
-				<CollectionView.ItemTemplate>
-					<DataTemplate>
-						<Frame
-							CornerRadius="18"
-							Margin="0,7"
-							HasShadow="True"
-							Padding="12"
-							BackgroundColor="White">
-
-							<VerticalStackLayout>
-								<Label
-								Text="{Binding Name}"
-								FontSize="16"
-								FontAttributes="Bold" />
-
-								<Label
-								Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}"
-								FontSize="10"
-								TextColor="Gray" />
-
-								<Label
-								Text="{Binding EndDate, StringFormat='End: {0:dd.MM.yyyy}'}"
-								FontSize="10"
-								TextColor="Gray" />
-							</VerticalStackLayout>
-
-						</Frame>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-				
-			</CollectionView>
-
-		</RefreshView>
-
-
-		--><!-- ### EMPTY STATE ### --><!--
-		<StackLayout
-			IsVisible="{Binding IsEmpty}"
-			HorizontalOptions="Center"
-			VerticalOptions="Center">
-			<Label Text="No trips added yet :(" />
-		</StackLayout>
-		
-
-		--><!-- ### INITIAL LOADING ### --><!--
-		<ActivityIndicator
-			IsRunning="{Binding IsBusy}"
-			IsVisible="{Binding IsBusy}"
-			HorizontalOptions="Center"
-			VerticalOptions="Center"/>
-
-		
-		--><!-- ### FLOATING ACTION BUTTON ### --><!--
-		<Button
-			Text="+"
-			Command="{Binding AddTripCommand}"
-			BackgroundColor="CornflowerBlue"
-			TextColor="White"
-			FontSize="28"
-			WidthRequest="70"
-			HeightRequest="70"
-			CornerRadius="40"
-			VerticalOptions="End"
-			HorizontalOptions="End"
-			Margin="20" />
-
-	</Grid>
-
-</ContentPage>-->
