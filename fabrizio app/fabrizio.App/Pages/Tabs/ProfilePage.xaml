@@ -26,19 +26,19 @@
                    HasShadow="False"
                    Padding="0">
 						<Image Source="notifications.png"
-                       WidthRequest="20"
-                       HeightRequest="20"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center" />
 					</Frame>
 				</Grid>
 
 				<!-- PROFILE CARD -->
 				<Frame CornerRadius="24"
-               Padding="16"
-               BackgroundColor="#1E293B"
-               BorderColor="#334155"
-               HasShadow="False">
+					   Padding="16"
+					   BackgroundColor="#1E293B"
+					   BorderColor="#334155"
+					   HasShadow="False">
 
 					<HorizontalStackLayout Spacing="14">
 
@@ -49,26 +49,26 @@
                            Padding="0"
                            HasShadow="False">
 								<Label Text="MM"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
-                               FontAttributes="Bold"
-                               FontSize="20"
-                               TextColor="White"/>
+									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   FontAttributes="Bold"
+									   FontSize="20"
+									   TextColor="White"/>
 							</Frame>
 
 							<Frame WidthRequest="18"
-                           HeightRequest="18"
-                           CornerRadius="9"
-                           BackgroundColor="#22C55E"
-                           BorderColor="#1E293B"
-                           HorizontalOptions="End"
-                           VerticalOptions="End"
-                           Padding="0"
-                           HasShadow="False"/>
+								   HeightRequest="18"
+								   CornerRadius="9"
+								   BackgroundColor="#22C55E"
+								   BorderColor="#1E293B"
+								   HorizontalOptions="End"
+								   VerticalOptions="End"
+								   Padding="0"
+								   HasShadow="False"/>
 						</Grid>
 
 						<!-- NAME + EMAIL -->
-						<VerticalStackLayout Spacing="2" HorizontalOptions="FillAndExpand">
+						<VerticalStackLayout Spacing="2">
 
 							<Grid>
 								<!-- VIEW -->
@@ -84,25 +84,25 @@
 
 								<!-- EDIT -->
 								<Entry Text="{Binding Name}"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               BackgroundColor="Transparent"
-                               IsVisible="{Binding IsEditingName}"
-                               Completed="OnNameCompleted"
-                               Unfocused="OnNameUnfocused"/>
+									   FontSize="18"
+									   FontAttributes="Bold"
+									   TextColor="White"
+									   BackgroundColor="Transparent"
+									   IsVisible="{Binding IsEditingName}"
+									   Completed="OnNameCompleted"
+									   Unfocused="OnNameUnfocused"/>
 							</Grid>
 
 							<Label Text="{Binding Account.Email}"
-                           FontSize="12"
-                           TextColor="#94A3B8"/>
+								   FontSize="12"
+								   TextColor="#94A3B8"/>
 						</VerticalStackLayout>
 
 						<!-- EDIT ICON -->
 						<Image Source="edit.png"
-                       WidthRequest="20"
-                       HeightRequest="20"
-                       VerticalOptions="Center"/>
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   VerticalOptions="Center"/>
 					</HorizontalStackLayout>
 				</Frame>
 
@@ -111,20 +111,20 @@
 
 					<Grid ColumnDefinitions="*,Auto">
 						<Label Text="TRAVEL ACHIEVEMENTS"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       TextColor="#94A3B8"/>
+							   FontSize="12"
+							   FontAttributes="Bold"
+							   TextColor="#94A3B8"/>
 
 						<Frame Grid.Column="1"
-                       Padding="8,2"
-                       CornerRadius="10"
-                       BackgroundColor="#6366F122"
-                       BorderColor="#6366F1"
-                       HasShadow="False">
+							   Padding="8,2"
+							   CornerRadius="10"
+							   BackgroundColor="#1E293B"
+							   BorderColor="#1E293B"
+							   HasShadow="False">
 							<Label Text="Elite Member"
-                           FontSize="10"
-                           TextColor="#6366F1"
-                           FontAttributes="Bold"/>
+								   FontSize="10"
+								   TextColor="#6366F1"
+								   FontAttributes="Bold"/>
 						</Frame>
 					</Grid>
 
@@ -132,64 +132,65 @@
 
 						<!-- Trips -->
 						<Frame Grid.Column="0"
-                       CornerRadius="20"
-                       BackgroundColor="#1E293B"
-                       BorderColor="#334155"
-                       HasShadow="False"
-                       Padding="14">
-							<VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+							   CornerRadius="20"
+							   BackgroundColor="#1E293B"
+							   BorderColor="#334155"
+							   HasShadow="False"
+							   Padding="14">
+							<VerticalStackLayout Spacing="2" 
+												 HorizontalOptions="Center">
 								<Label Text="7"
-                               FontSize="22"
-                               FontAttributes="Bold"
-                               TextColor="#6366F1"
-                               HorizontalOptions="Center"/>
+									   FontSize="22"
+									   FontAttributes="Bold"
+									   TextColor="#6366F1"
+									   HorizontalOptions="Center"/>
 								<Label Text="TRIPS&#10;COMPLETED"
-                               FontSize="10"
-                               HorizontalTextAlignment="Center"
-                               TextColor="#94A3B8"
-                               FontAttributes="Bold"/>
+									   FontSize="10"
+									   HorizontalTextAlignment="Center"
+									   TextColor="#94A3B8"
+									   FontAttributes="Bold"/>
 							</VerticalStackLayout>
 						</Frame>
 
 						<!-- Cities -->
 						<Frame Grid.Column="1"
-                       CornerRadius="20"
-                       BackgroundColor="#1E293B"
-                       BorderColor="#334155"
-                       HasShadow="False"
-                       Padding="14">
+							   CornerRadius="20"
+							   BackgroundColor="#1E293B"
+							   BorderColor="#334155"
+							   HasShadow="False"
+							   Padding="14">
 							<VerticalStackLayout Spacing="2" HorizontalOptions="Center">
 								<Label Text="12"
-                               FontSize="22"
-                               FontAttributes="Bold"
-                               TextColor="#6366F1"
-                               HorizontalOptions="Center"/>
+									   FontSize="22"
+									   FontAttributes="Bold"
+									   TextColor="#6366F1"
+									   HorizontalOptions="Center"/>
 								<Label Text="CITIES&#10;VISITED"
-                               FontSize="10"
-                               HorizontalTextAlignment="Center"
-                               TextColor="#94A3B8"
+									   FontSize="10"
+									   HorizontalTextAlignment="Center"
+									   TextColor="#94A3B8"
                                FontAttributes="Bold"/>
 							</VerticalStackLayout>
 						</Frame>
 
 						<!-- Countries -->
 						<Frame Grid.Column="2"
-                       CornerRadius="20"
-                       BackgroundColor="#1E293B"
-                       BorderColor="#334155"
-                       HasShadow="False"
-                       Padding="14">
+							   CornerRadius="20"
+							   BackgroundColor="#1E293B"
+							   BorderColor="#334155"
+							   HasShadow="False"
+							   Padding="14">
 							<VerticalStackLayout Spacing="2" HorizontalOptions="Center">
 								<Label Text="3"
-                               FontSize="22"
-                               FontAttributes="Bold"
-                               TextColor="#6366F1"
-                               HorizontalOptions="Center"/>
+									   FontSize="22"
+									   FontAttributes="Bold"
+									   TextColor="#6366F1"
+									   HorizontalOptions="Center"/>
 								<Label Text="COUNTRIES&#10;EXPLORED"
-                               FontSize="10"
-                               HorizontalTextAlignment="Center"
-                               TextColor="#94A3B8"
-                               FontAttributes="Bold"/>
+									   FontSize="10"
+									   HorizontalTextAlignment="Center"
+									   TextColor="#94A3B8"
+									   FontAttributes="Bold"/>
 							</VerticalStackLayout>
 						</Frame>
 
@@ -204,10 +205,10 @@
                    TextColor="#94A3B8"/>
 
 					<Frame CornerRadius="20"
-                   BackgroundColor="#1E293B"
-                   BorderColor="#334155"
-                   HasShadow="False"
-                   Padding="16">
+						   BackgroundColor="#1E293B"
+						   BorderColor="#334155"
+						   HasShadow="False"
+						   Padding="16">
 
 						<Grid ColumnDefinitions="Auto,*,Auto">
 							<Label Text="📍" FontSize="16"/>
@@ -224,25 +225,31 @@
 				<!-- APP SETTINGS -->
 				<VerticalStackLayout Spacing="6">
 					<Label Text="APP SETTINGS"
-                   FontSize="12"
-                   FontAttributes="Bold"
-                   TextColor="#94A3B8"/>
+						   FontSize="12"
+						   FontAttributes="Bold"
+						   TextColor="#94A3B8"/>
 
 					<Frame CornerRadius="20"
-                   BackgroundColor="#1E293B"
-                   BorderColor="#334155"
-                   HasShadow="False"
-                   Padding="0">
+						   BackgroundColor="#1E293B"
+						   BorderColor="#334155"
+						   HasShadow="False"
+						   Padding="0">
 
 						<VerticalStackLayout Spacing="0">
 
 							<!-- Language -->
 							<Grid Padding="16" ColumnDefinitions="*,Auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding EditLanguageCommand}" />
+								</Grid.GestureRecognizers>
+
 								<Label Text="Preferred language" TextColor="White"/>
+
 								<Label Grid.Column="1"
-                               Text="{Binding Account.PreferredLanguage}"
-                               TextColor="#94A3B8"/>
+									   Text="{Binding PreferredLanguageDisplay}"
+									   TextColor="#94A3B8"/>
 							</Grid>
+
 
 							<BoxView HeightRequest="1" Color="#334155"/>
 
@@ -281,15 +288,15 @@
 				<!-- MANAGE ACCOUNT -->
 				<VerticalStackLayout Spacing="6" Padding="0,0,0,30">
 					<Label Text="MANAGE ACCOUNT"
-                   FontSize="12"
-                   FontAttributes="Bold"
-                   TextColor="#94A3B8"/>
+						   FontSize="12"
+						   FontAttributes="Bold"
+						   TextColor="#94A3B8"/>
 
 					<Frame CornerRadius="20"
-                   BackgroundColor="#1E293B"
-                   BorderColor="#334155"
-                   HasShadow="False"
-                   Padding="0">
+						   BackgroundColor="#1E293B"
+						   BorderColor="#334155"
+						   HasShadow="False"
+						   Padding="0">
 
 						<VerticalStackLayout>
 
@@ -298,8 +305,8 @@
 									<TapGestureRecognizer Command="{Binding DeleteAccountCommand}" />
 								</Grid.GestureRecognizers>
 								<Label Text="Delete account"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+									   TextColor="White"
+									   FontAttributes="Bold"/>
 							</Grid>
 
 							<BoxView HeightRequest="1" Color="#334155"/>
@@ -309,8 +316,8 @@
 									<TapGestureRecognizer Command="{Binding LogoutCommand}" />
 								</Grid.GestureRecognizers>
 								<Label Text="Sign out"
-                               TextColor="#FB7185"
-                               FontAttributes="Bold"/>
+									   TextColor="#FB7185"
+									   FontAttributes="Bold"/>
 							</Grid>
 
 						</VerticalStackLayout>
@@ -338,6 +345,5 @@
 			VerticalOptions="Center"/>
 
 	</Grid>
-
 
 </ContentPage>

@@ -78,6 +78,9 @@
 	  <Compile Update="Pages\Auth\RegisterPage.xaml.cs">
 	    <DependentUpon>RegisterPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\Flows\EditLanguagePage.xaml.cs">
+	    <DependentUpon>EditLanguagePage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\Tabs\AddPage.xaml.cs">
 	    <DependentUpon>AddPage.xaml</DependentUpon>
 	  </Compile>
@@ -103,6 +106,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Auth\RegisterPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Flows\EditLanguagePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Tabs\AddPage.xaml">

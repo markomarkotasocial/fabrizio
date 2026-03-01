@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
 using fabrizio.App.ViewModels;
+using fabrizio.App.Resources.Lookups;
 using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
@@ -29,11 +30,14 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand LoadCommand { get; }
 
 		public AsyncRelayCommand SaveAccountCommand { get; }
+		public AsyncRelayCommand EditLanguageCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
 		public bool IsNotEditingName => !IsEditingName;
 		public bool HasAccount => Account != null;
+
+		public string PreferredLanguageDisplay => LanguageData.All.FirstOrDefault(x => x.Code == PreferredLanguage)?.Name ?? PreferredLanguage ?? string.Empty;
 
 
 		public ProfileViewModel(IProfileService profileService, AuthService authService)
@@ -45,6 +49,8 @@ namespace fabrizio.App.Services
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
 			DeleteAccountCommand = new AsyncRelayCommand(DeleteAccountAsync);
 			SaveAccountCommand = new AsyncRelayCommand(SaveAccountAsync);
+
+			EditLanguageCommand = new AsyncRelayCommand(EditLanguageAsync);
 		}
 
 
@@ -57,7 +63,12 @@ namespace fabrizio.App.Services
 		partial void OnIsEditingNameChanged(bool value)
 		{
 			OnPropertyChanged(nameof(IsNotEditingName));
+		}		
+		partial void OnPreferredLanguageChanged(string value)
+		{
+			OnPropertyChanged(nameof(PreferredLanguageDisplay));
 		}
+
 
 
 
@@ -172,6 +183,10 @@ namespace fabrizio.App.Services
 			}
 		}
 
+		private Task EditLanguageAsync()
+		{
+			return Shell.Current.GoToAsync("edit-language");
+		}
 
 
 

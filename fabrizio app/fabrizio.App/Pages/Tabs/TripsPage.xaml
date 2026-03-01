@@ -271,7 +271,7 @@
 			CornerRadius="32"
 			VerticalOptions="End"
 			HorizontalOptions="End"
-			Margin="0,0,6,24"
+			Margin="0,0,6,22"
 			ZIndex="10" />
 	</Grid>
 
