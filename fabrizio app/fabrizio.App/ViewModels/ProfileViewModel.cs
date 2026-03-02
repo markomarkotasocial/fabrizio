@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Pages.Flows;
 using fabrizio.App.Resources.Lookups;
+using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
@@ -183,9 +184,14 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		private Task EditLanguageAsync()
+		private async Task EditLanguageAsync()
 		{
-			return Shell.Current.GoToAsync("edit-language");
+			
+			await Shell.Current.GoToAsync(nameof(EditLanguagePage),
+				new Dictionary<string, object>
+				{
+					["currentLanguage"] = Account.PreferredLanguage
+				});
 		}
 
 

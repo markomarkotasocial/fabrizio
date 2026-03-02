@@ -10,6 +10,9 @@ namespace fabrizio.App.Resources.Lookups
 	{
 		public string Code { get; set; } = default!;
 		public string Name { get; set; } = default!;
+
+		// runtime flag
+		public bool IsSelected { get; set; }
 	}
 
 	public static class LanguageData

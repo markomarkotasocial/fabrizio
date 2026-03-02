@@ -1,6 +1,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Flows.EditLanguagePage"
+			 x:Name="ThisPage"
              Title="Select your language"
              BackgroundColor="#101922">
 
@@ -12,7 +13,7 @@
 		<CollectionView.ItemTemplate>
 			<DataTemplate>
 				<Grid Padding="14"
-                      ColumnDefinitions="Auto,*"
+                      ColumnDefinitions="Auto,*,Auto"
                       ColumnSpacing="12">
 
 					<!-- Placeholder za buduću zastavu -->
@@ -27,11 +28,19 @@
                            FontSize="16"
                            VerticalOptions="Center" />
 
+					<!-- ✅ CHECKMARK -->
+					<Label Grid.Column="2"
+                           Text="✓"
+                           FontSize="16"
+                           TextColor="#22C55E"
+                           VerticalOptions="Center"
+                           IsVisible="{Binding IsSelected}" />
+
 					<!-- Tap gesture -->
 					<Grid.GestureRecognizers>
 						<TapGestureRecognizer
-							Command="{Binding BindingContext.SelectLanguage, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-							CommandParameter="{Binding .}" />
+                            Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.SelectLanguageCommand}"
+                            CommandParameter="{Binding .}" />
 					</Grid.GestureRecognizers>
 
 				</Grid>

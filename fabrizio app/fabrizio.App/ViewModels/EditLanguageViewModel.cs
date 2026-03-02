@@ -23,13 +23,32 @@ namespace fabrizio.App.Services
 		{
 			_profileService = profileService;
 
+			MarkSelectedLanguage();
 		}
+
+
+		partial void OnSelectedLanguageChanged(string value)
+		{
+			MarkSelectedLanguage();
+		}
+		private void MarkSelectedLanguage()
+		{
+			foreach (var lang in Languages)
+				lang.IsSelected = lang.Code == SelectedLanguage;
+		}
+
 
 
 		[RelayCommand]
 		private async Task SelectLanguage(LanguageOption language)
 		{
 			if (IsBusy || language == null) return;
+
+
+			foreach (var lang in Languages)
+				lang.IsSelected = false;
+
+			language.IsSelected = true;
 
 			try
 			{
@@ -41,10 +60,17 @@ namespace fabrizio.App.Services
 				};
 
 				var result = await _profileService.UpdateAccount(request);
-
 				if (!result.IsSuccess) return;
 
-				// await Shell.Current.GoToAsync("..");
+				// ✅ lokalni update (VAŽNO za checkmark)
+				SelectedLanguage = language.Code;
+
+				// ✅ refresh svih itema
+				foreach (var lang in Languages)
+					lang.IsSelected = lang.Code == SelectedLanguage;
+
+				// ✅ povratak na ProfilePage
+				await Shell.Current.GoToAsync("..");
 			}
 			finally
 			{

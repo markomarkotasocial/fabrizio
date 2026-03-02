@@ -6,17 +6,13 @@ using fabrizio.App.Services;
 
 namespace fabrizio.App.Pages.Flows
 {
+
+	[QueryProperty(nameof(CurrentLanguage), "currentLanguage")]
 	public partial class EditLanguagePage : ContentPage
 	{
 		private readonly EditLanguageViewModel _viewModel;
 
-
-
-		//public EditLanguagePage()
-		//{
-		//	InitializeComponent();
-		//}
-
+		
 		public EditLanguagePage(EditLanguageViewModel viewModel)
 		{
 			InitializeComponent();
@@ -25,9 +21,24 @@ namespace fabrizio.App.Pages.Flows
 
 		protected override void OnAppearing()
 		{
-			base.OnAppearing();
-			
+			base.OnAppearing();			
 		}
+
+
+		// set parameter for edit page
+		public string CurrentLanguage
+		{
+			set
+			{
+				if (_viewModel != null)
+				{
+					_viewModel.SelectedLanguage = value;
+				}
+			}
+		}
+
+
+
 
 	}
 }
