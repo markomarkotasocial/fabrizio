@@ -1,39 +1,55 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fabrizio.App.Resources.Lookups;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
+using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
 {
 	public partial class EditLanguageViewModel : BaseViewModel
 	{
-		private readonly ITripService _tripService;
-
-
-		[ObservableProperty] private Guid tripId;
+		private readonly IProfileService _profileService;
 
 
 
-
-		public AsyncRelayCommand SaveCommand { get; }
-		public AsyncRelayCommand CancelCommand { get; }
+		[ObservableProperty] private string selectedLanguage;
 
 
-		public EditLanguageViewModel(ITripService tripService)
+		public ObservableCollection<LanguageOption> Languages { get; } = new(LanguageData.All);
+
+
+		public EditLanguageViewModel(IProfileService profileService)
 		{
-			_tripService = tripService;
+			_profileService = profileService;
 
-			SaveCommand = new AsyncRelayCommand(SaveChangesAsync);
-			CancelCommand = new AsyncRelayCommand(CancelChanges);
 		}
 
 
-		public async Task SaveChangesAsync()
+		[RelayCommand]
+		private async Task SelectLanguage(LanguageOption language)
 		{
-		}
+			if (IsBusy || language == null) return;
 
-		public async Task CancelChanges()
-		{
+			try
+			{
+				IsBusy = true;
+
+				var request = new UpdateAccountProfileRequest
+				{
+					PreferredLanguage = language.Code
+				};
+
+				var result = await _profileService.UpdateAccount(request);
+
+				if (!result.IsSuccess) return;
+
+				// await Shell.Current.GoToAsync("..");
+			}
+			finally
+			{
+				IsBusy = false;
+			}
 		}
 
 	}

@@ -52,10 +52,10 @@ namespace fabrizio.Shared.DTO
 
 	public class UpdateAccountProfileRequest
 	{
-		public required string Name { get; init; }
-		public required string PreferredLanguage { get; init; }
-		public required string PreferredCurrency { get; init; }
-		public required string TimeZone { get; init; }
+		public string? Name { get; init; }
+		public string? PreferredLanguage { get; init; }
+		public string? PreferredCurrency { get; init; }
+		public string? TimeZone { get; init; }
 
 	}
 

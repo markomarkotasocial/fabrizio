@@ -12,10 +12,10 @@ namespace fabrizio.App.Pages.Flows
 
 
 
-		public EditLanguagePage()
-		{
-			InitializeComponent();
-		}
+		//public EditLanguagePage()
+		//{
+		//	InitializeComponent();
+		//}
 
 		public EditLanguagePage(EditLanguageViewModel viewModel)
 		{

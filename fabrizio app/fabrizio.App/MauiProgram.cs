@@ -1,4 +1,5 @@
 ﻿using fabrizio.App.Pages.Auth;
+using fabrizio.App.Pages.Flows;
 using fabrizio.App.Pages.Tabs;
 using fabrizio.App.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,11 +49,15 @@ namespace fabrizio.App
 			builder.Services.AddTransient<HomeViewModel>();
 			builder.Services.AddTransient<ProfileViewModel>();
 
+			builder.Services.AddTransient<EditLanguageViewModel>();
+
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
 			builder.Services.AddTransient<TripsPage>();
 			builder.Services.AddTransient<HomePage>();
 			builder.Services.AddTransient<ProfilePage>();
+
+			builder.Services.AddTransient<EditLanguagePage>();
 
 			return builder.Build();
 		}
