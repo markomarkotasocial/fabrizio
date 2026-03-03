@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.Resources.Lookups;
+using fabrizio.App.Services.Abstractions;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
 
@@ -10,6 +11,7 @@ namespace fabrizio.App.Services
 {
 	public partial class ProfileViewModel : BaseViewModel
 	{
+		private readonly IAccountState _accountState;
 		private readonly IProfileService _profileService;
 		private readonly IAuthService _authService;
 
@@ -41,10 +43,11 @@ namespace fabrizio.App.Services
 		public string PreferredLanguageDisplay => LanguageData.All.FirstOrDefault(x => x.Code == PreferredLanguage)?.Name ?? PreferredLanguage ?? string.Empty;
 
 
-		public ProfileViewModel(IProfileService profileService, AuthService authService)
+		public ProfileViewModel(IAccountState accountState, IProfileService profileService, AuthService authService)
 		{
-			_authService = authService;
+			_accountState = accountState;
 			_profileService = profileService;
+			_authService = authService;
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			LogoutCommand = new AsyncRelayCommand(LogoutAsync);
@@ -166,22 +169,23 @@ namespace fabrizio.App.Services
 			if (!result.IsSuccess)
 			{
 				Account = null;
-				OnPropertyChanged(nameof(IsEmpty));
-				return;
 			}
-
-			if (result.Value != null)
+			else
 			{
 				Account = result.Value;
 
-				Name = Account.Name;
-				IsEditingName = false;
-				PreferredCurrency = Account.PreferredCurrency;
-				PreferredLanguage = Account.PreferredLanguage;
-				TimeZone = Account.TimeZone;
-
-				OnPropertyChanged(nameof(IsEmpty));
+				if (Account != null)
+				{
+					Name = Account.Name;
+					IsEditingName = false;
+					PreferredCurrency = Account.PreferredCurrency;
+					PreferredLanguage = Account.PreferredLanguage;
+					TimeZone = Account.TimeZone;
+				}
 			}
+
+			_accountState.Account = Account; // ✅ single source of truth
+			OnPropertyChanged(nameof(IsEmpty));
 		}
 
 		private async Task EditLanguageAsync()

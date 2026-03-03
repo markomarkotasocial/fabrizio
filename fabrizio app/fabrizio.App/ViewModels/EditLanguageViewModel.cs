@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Resources.Lookups;
+using fabrizio.App.Services.Abstractions;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
@@ -9,8 +10,8 @@ namespace fabrizio.App.Services
 {
 	public partial class EditLanguageViewModel : BaseViewModel
 	{
+		private readonly IAccountState _accountState;
 		private readonly IProfileService _profileService;
-
 
 
 		[ObservableProperty] private string selectedLanguage;
@@ -19,9 +20,12 @@ namespace fabrizio.App.Services
 		public ObservableCollection<LanguageOption> Languages { get; } = new(LanguageData.All);
 
 
-		public EditLanguageViewModel(IProfileService profileService)
+		public EditLanguageViewModel(IAccountState accountState, IProfileService profileService)
 		{
 			_profileService = profileService;
+			_accountState = accountState;
+
+			SelectedLanguage = _accountState.Account?.PreferredLanguage;
 
 			MarkSelectedLanguage();
 		}
@@ -44,11 +48,8 @@ namespace fabrizio.App.Services
 		{
 			if (IsBusy || language == null) return;
 
-
-			foreach (var lang in Languages)
-				lang.IsSelected = false;
-
-			language.IsSelected = true;
+			var acc = _accountState.Account;
+			if (acc == null) return;
 
 			try
 			{
@@ -56,20 +57,21 @@ namespace fabrizio.App.Services
 
 				var request = new UpdateAccountProfileRequest
 				{
-					PreferredLanguage = language.Code
+					Name = acc.Name,
+					PreferredLanguage = language.Code,
+					PreferredCurrency = acc.PreferredCurrency,
+					TimeZone = acc.TimeZone
 				};
 
 				var result = await _profileService.UpdateAccount(request);
 				if (!result.IsSuccess) return;
 
-				// ✅ lokalni update (VAŽNO za checkmark)
+				// ✅ single source of truth
 				SelectedLanguage = language.Code;
 
-				// ✅ refresh svih itema
-				foreach (var lang in Languages)
-					lang.IsSelected = lang.Code == SelectedLanguage;
+				// ✅ update global state
+				acc.PreferredLanguage = language.Code;
 
-				// ✅ povratak na ProfilePage
 				await Shell.Current.GoToAsync("..");
 			}
 			finally

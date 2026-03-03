@@ -2,6 +2,7 @@
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.Pages.Tabs;
 using fabrizio.App.Services;
+using fabrizio.App.Services.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -28,6 +29,8 @@ namespace fabrizio.App
 			builder.Services.AddSingleton<AppShell>();
 			builder.Services.AddSingleton<AuthService>();
 			builder.Services.AddTransient<TokenHandler>();
+
+			builder.Services.AddSingleton<IAccountState, AccountState>();
 
 			builder.Services.AddSingleton<IAuthService, AuthService>();
 			builder.Services.AddHttpClient<ITripService, TripService>(client =>
