@@ -13,18 +13,18 @@
 				<!-- HEADER TITLE -->
 				<Grid ColumnDefinitions="*,Auto" Padding="0,4">
 					<Label Text="Profile"
-                   FontSize="26"
-                   FontAttributes="Bold"
-                   TextColor="White" />
+						   FontSize="26"
+						   FontAttributes="Bold"
+						   TextColor="White" />
 
 					<Frame Grid.Column="1"
-                   WidthRequest="40"
-                   HeightRequest="40"
-                   CornerRadius="20"
-                   BackgroundColor="#1E293B"
-                   BorderColor="#334155"
-                   HasShadow="False"
-                   Padding="0">
+						   WidthRequest="40"
+						   HeightRequest="40"
+						   CornerRadius="20"
+						   BackgroundColor="#1E293B"
+						   BorderColor="#334155"
+						   HasShadow="False"
+						   Padding="0">
 						<Image Source="notifications.png"
 							   WidthRequest="20"
 							   HeightRequest="20"
@@ -45,9 +45,9 @@
 						<!-- AVATAR -->
 						<Grid WidthRequest="64" HeightRequest="64">
 							<Frame CornerRadius="18"
-                           BackgroundColor="#6366F1"
-                           Padding="0"
-                           HasShadow="False">
+								   BackgroundColor="#6366F1"
+								   Padding="0"
+								   HasShadow="False">
 								<Label Text="MM"
 									   HorizontalOptions="Center"
 									   VerticalOptions="Center"
@@ -270,9 +270,14 @@
 
 							<!-- Time zone -->
 							<Grid Padding="16" ColumnDefinitions="*,Auto">
+
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding EditTimeZoneCommand}" />
+								</Grid.GestureRecognizers>
+
 								<Label Text="Default time zone" TextColor="White"/>
 								<Label Grid.Column="1"
-									   Text="{Binding Account.TimeZone}"
+									   Text="{Binding TimeZoneDisplay}"
 									   TextColor="#94A3B8"/>
 							</Grid>
 

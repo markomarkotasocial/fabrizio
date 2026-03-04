@@ -54,6 +54,7 @@ namespace fabrizio.App
 
 			builder.Services.AddTransient<EditLanguageViewModel>();
 			builder.Services.AddTransient<EditCurrencyViewModel>();
+			builder.Services.AddTransient<EditTimeZoneViewModel>();
 
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
@@ -63,6 +64,7 @@ namespace fabrizio.App
 
 			builder.Services.AddTransient<EditLanguagePage>();
 			builder.Services.AddTransient<EditCurrencyPage>();
+			builder.Services.AddTransient<EditTimeZonePage>();
 
 			return builder.Build();
 		}

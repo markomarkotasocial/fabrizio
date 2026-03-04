@@ -31,10 +31,11 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand LogoutCommand { get; }
 		public AsyncRelayCommand DeleteAccountCommand { get; }
 		public AsyncRelayCommand LoadCommand { get; }
-
 		public AsyncRelayCommand SaveAccountCommand { get; }
+
 		public AsyncRelayCommand EditLanguageCommand { get; }
 		public AsyncRelayCommand EditCurrencyCommand { get; }
+		public AsyncRelayCommand EditTimeZoneCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
@@ -44,6 +45,7 @@ namespace fabrizio.App.Services
 
 		public string PreferredLanguageDisplay => LanguageData.All.FirstOrDefault(x => x.Code == PreferredLanguage)?.Name ?? PreferredLanguage ?? string.Empty;
 		public string PreferredCurrencyDisplay => CurrencyData.All.FirstOrDefault(x => x.Code == PreferredCurrency) is { } c? $"{c.Symbol} | {c.Code}" : PreferredCurrency ?? "";
+		public string TimeZoneDisplay => TimeZoneData.All.FirstOrDefault(x => x.Id == TimeZone)?.DisplayName ?? TimeZone ?? string.Empty;
 
 
 
@@ -60,6 +62,7 @@ namespace fabrizio.App.Services
 
 			EditLanguageCommand = new AsyncRelayCommand(EditLanguageAsync);
 			EditCurrencyCommand = new AsyncRelayCommand(EditCurrencyAsync);
+			EditTimeZoneCommand = new AsyncRelayCommand(EditTimeZoneAsync);
 		}
 
 
@@ -80,6 +83,10 @@ namespace fabrizio.App.Services
 		partial void OnPreferredCurrencyChanged(string value)
 		{
 			OnPropertyChanged(nameof(PreferredCurrencyDisplay));
+		}
+		partial void OnTimeZoneChanged(string value)
+		{
+			OnPropertyChanged(nameof(TimeZoneDisplay));
 		}
 
 
@@ -199,21 +206,30 @@ namespace fabrizio.App.Services
 
 
 		private async Task EditLanguageAsync()
-		{			
-			await Shell.Current.GoToAsync(nameof(EditLanguagePage),
-				new Dictionary<string, object>
-				{
-					["currentLanguage"] = Account.PreferredLanguage
-				});
+		{
+			await Shell.Current.GoToAsync(nameof(EditLanguagePage)); //,
+				//new Dictionary<string, object>
+				//{
+				//	["currentLanguage"] = Account.PreferredLanguage
+				//});
 		}
 
 		private async Task EditCurrencyAsync()
 		{
-			await Shell.Current.GoToAsync(nameof(EditCurrencyPage),
-				new Dictionary<string, object>
-				{
-					["currentCurrency"] = Account.PreferredCurrency
-				});
+			await Shell.Current.GoToAsync(nameof(EditCurrencyPage)); //,
+				//new Dictionary<string, object>
+				//{
+				//	["currentCurrency"] = Account.PreferredCurrency
+				//});
+		}
+
+		private async Task EditTimeZoneAsync()
+		{
+			await Shell.Current.GoToAsync(nameof(EditTimeZonePage)); //,
+				//new Dictionary<string, object>
+				//{
+				//	["currentTimeZone"] = Account.TimeZone
+				//});
 		}
 
 
