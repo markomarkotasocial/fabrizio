@@ -12,6 +12,7 @@ namespace fabrizio.App
 
 			// Flow / detail routes (NOT in TabBar)
 			Routing.RegisterRoute(nameof(EditLanguagePage), typeof(EditLanguagePage));
+			Routing.RegisterRoute(nameof(EditCurrencyPage), typeof(EditCurrencyPage));
 			Routing.RegisterRoute("add-trip", typeof(AddTripPage));
 			Routing.RegisterRoute("trip-detail", typeof(TripDetailPage));
 

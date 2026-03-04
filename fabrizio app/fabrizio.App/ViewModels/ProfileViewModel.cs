@@ -34,13 +34,17 @@ namespace fabrizio.App.Services
 
 		public AsyncRelayCommand SaveAccountCommand { get; }
 		public AsyncRelayCommand EditLanguageCommand { get; }
+		public AsyncRelayCommand EditCurrencyCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Account == null;
 		public bool IsNotEditingName => !IsEditingName;
 		public bool HasAccount => Account != null;
 
+
 		public string PreferredLanguageDisplay => LanguageData.All.FirstOrDefault(x => x.Code == PreferredLanguage)?.Name ?? PreferredLanguage ?? string.Empty;
+		public string PreferredCurrencyDisplay => CurrencyData.All.FirstOrDefault(x => x.Code == PreferredCurrency) is { } c? $"{c.Symbol} | {c.Code}" : PreferredCurrency ?? "";
+
 
 
 		public ProfileViewModel(IAccountState accountState, IProfileService profileService, AuthService authService)
@@ -55,6 +59,7 @@ namespace fabrizio.App.Services
 			SaveAccountCommand = new AsyncRelayCommand(SaveAccountAsync);
 
 			EditLanguageCommand = new AsyncRelayCommand(EditLanguageAsync);
+			EditCurrencyCommand = new AsyncRelayCommand(EditCurrencyAsync);
 		}
 
 
@@ -71,6 +76,10 @@ namespace fabrizio.App.Services
 		partial void OnPreferredLanguageChanged(string value)
 		{
 			OnPropertyChanged(nameof(PreferredLanguageDisplay));
+		}
+		partial void OnPreferredCurrencyChanged(string value)
+		{
+			OnPropertyChanged(nameof(PreferredCurrencyDisplay));
 		}
 
 
@@ -96,7 +105,7 @@ namespace fabrizio.App.Services
 
 				if (!result.IsSuccess)
 				{
-					// rollback za sva polja koja editiraš
+					// rollback all fields
 					Name = Account.Name;
 					PreferredCurrency = Account.PreferredCurrency;
 					PreferredLanguage = Account.PreferredLanguage;
@@ -188,15 +197,28 @@ namespace fabrizio.App.Services
 			OnPropertyChanged(nameof(IsEmpty));
 		}
 
+
 		private async Task EditLanguageAsync()
-		{
-			
+		{			
 			await Shell.Current.GoToAsync(nameof(EditLanguagePage),
 				new Dictionary<string, object>
 				{
 					["currentLanguage"] = Account.PreferredLanguage
 				});
 		}
+
+		private async Task EditCurrencyAsync()
+		{
+			await Shell.Current.GoToAsync(nameof(EditCurrencyPage),
+				new Dictionary<string, object>
+				{
+					["currentCurrency"] = Account.PreferredCurrency
+				});
+		}
+
+
+
+
 
 
 

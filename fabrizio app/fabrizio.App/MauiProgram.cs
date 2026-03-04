@@ -53,6 +53,7 @@ namespace fabrizio.App
 			builder.Services.AddTransient<ProfileViewModel>();
 
 			builder.Services.AddTransient<EditLanguageViewModel>();
+			builder.Services.AddTransient<EditCurrencyViewModel>();
 
 			// 🟢 Pages
 			builder.Services.AddTransient<LoginPage>();
@@ -61,6 +62,7 @@ namespace fabrizio.App
 			builder.Services.AddTransient<ProfilePage>();
 
 			builder.Services.AddTransient<EditLanguagePage>();
+			builder.Services.AddTransient<EditCurrencyPage>();
 
 			return builder.Build();
 		}

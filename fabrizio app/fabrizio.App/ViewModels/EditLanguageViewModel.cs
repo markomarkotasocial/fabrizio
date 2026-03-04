@@ -27,8 +27,11 @@ namespace fabrizio.App.Services
 
 			SelectedLanguage = _accountState.Account?.PreferredLanguage;
 
+			ReorderLanguages();
 			MarkSelectedLanguage();
 		}
+
+
 
 
 		partial void OnSelectedLanguageChanged(string value)
@@ -40,6 +43,8 @@ namespace fabrizio.App.Services
 			foreach (var lang in Languages)
 				lang.IsSelected = lang.Code == SelectedLanguage;
 		}
+
+
 
 
 
@@ -78,6 +83,22 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = false;
 			}
+		}
+
+		private void ReorderLanguages()
+		{
+			if (string.IsNullOrEmpty(SelectedLanguage)) return;
+
+			var selected = LanguageData.All.FirstOrDefault(x => x.Code == SelectedLanguage);
+
+			if (selected == null) return;
+
+			var rest = LanguageData.All.Where(x => x.Code != SelectedLanguage);
+
+			Languages.Clear();
+			Languages.Add(selected);
+
+			foreach (var language in rest) Languages.Add(language);
 		}
 
 	}
