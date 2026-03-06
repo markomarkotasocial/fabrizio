@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fabrizio.App.Pages.Flows;
+using fabrizio.App.ViewModels;
+using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using fabrizio.Shared.DTO;
-using fabrizio.App.ViewModels;
 
 namespace fabrizio.App.Services
 {
@@ -16,9 +17,7 @@ namespace fabrizio.App.Services
 		public ObservableCollection<TripListItemDto> Trips { get; } = new();
 
 		
-		[ObservableProperty] private TripListItemDto selectedTrip;
 		[ObservableProperty] private bool isRefreshing;
-
 
 
 		public AsyncRelayCommand RefreshCommand { get; }
@@ -34,7 +33,7 @@ namespace fabrizio.App.Services
 		private bool _isInitialized;
 
 
-		public TripsViewModel(ITripService tripService, AuthService authService)
+		public TripsViewModel(ITripService tripService, IAuthService authService)
 		{
 			_tripService = tripService;
 			_authService = authService;
@@ -42,9 +41,11 @@ namespace fabrizio.App.Services
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
 
-			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);
+			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);			
+			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripDetailAsync);
+
 			DeleteTripCommand = new AsyncRelayCommand<TripListItemDto>(DeleteTripAsync);
-			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripAsync);
+
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
@@ -129,13 +130,27 @@ namespace fabrizio.App.Services
 
 		private Task OnAddTripAsync()
 		{
-			return Shell.Current.GoToAsync("add-trip");
+			return Shell.Current.GoToAsync("trip-form");
 		}
 
-		private Task OpenTripAsync(TripListItemDto trip)
+
+		// double tap protection
+		private bool _isOpeningDetail;
+		private async Task OpenTripDetailAsync(TripListItemDto trip)
 		{
-			if (trip == null) return Task.CompletedTask;
-			return Shell.Current.GoToAsync($"trip-detail?tripId={trip.Id}");
+			if (trip == null || _isOpeningDetail) return;
+			try
+			{
+				_isOpeningDetail = true;
+				await Shell.Current.GoToAsync("trip-detail", new Dictionary<string, object>
+				{
+					["tripId"] = trip.Id
+				});
+			}
+			finally
+			{
+				_isOpeningDetail = false;
+			}
 		}
 
 		private async Task DeleteTripAsync(TripListItemDto trip)

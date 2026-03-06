@@ -6,33 +6,34 @@ using fabrizio.App.Services;
 
 namespace fabrizio.App.Pages.Flows
 {
-	[QueryProperty(nameof(TripId), "tripId")]
+	//[QueryProperty(nameof(TripId), "tripId")]
 	public partial class TripDetailPage : ContentPage
 	{
-		private readonly AddTripViewModel _viewModel;
+		private readonly TripDetailViewModel _viewModel;
 
-		public Guid TripId
-		{
-			set
-			{
-				if (value != Guid.Empty)
-				{
-					_viewModel.LoadTrip(value);
-				}
-			}
-		}
-
-		public TripDetailPage(AddTripViewModel viewModel)
+		public TripDetailPage(TripDetailViewModel viewModel)
 		{
 			InitializeComponent();
 			BindingContext = _viewModel = viewModel;
 		}
 
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			
-		}
+
+		//public Guid TripId
+		//{
+		//	set
+		//	{
+		//		if (value != Guid.Empty)
+		//		{
+		//			_viewModel.LoadTrip(value);
+		//		}
+		//	}
+		//}
+
+
+		//protected override void OnAppearing()
+		//{
+		//	base.OnAppearing();			
+		//}
 
 	}
 }

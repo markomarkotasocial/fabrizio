@@ -52,6 +52,9 @@ namespace fabrizio.App
 			builder.Services.AddTransient<HomeViewModel>();
 			builder.Services.AddTransient<ProfileViewModel>();
 
+			builder.Services.AddTransient<TripFormViewModel>();
+			builder.Services.AddTransient<TripDetailViewModel>();
+
 			builder.Services.AddTransient<EditLanguageViewModel>();
 			builder.Services.AddTransient<EditCurrencyViewModel>();
 			builder.Services.AddTransient<EditTimeZoneViewModel>();
@@ -61,6 +64,9 @@ namespace fabrizio.App
 			builder.Services.AddTransient<TripsPage>();
 			builder.Services.AddTransient<HomePage>();
 			builder.Services.AddTransient<ProfilePage>();
+
+			builder.Services.AddTransient<TripDetailPage>();
+			builder.Services.AddTransient<TripFormPage>();
 
 			builder.Services.AddTransient<EditLanguagePage>();
 			builder.Services.AddTransient<EditCurrencyPage>();

@@ -14,8 +14,8 @@ namespace fabrizio.App
 			Routing.RegisterRoute(nameof(EditTimeZonePage), typeof(EditTimeZonePage));
 			Routing.RegisterRoute(nameof(EditLanguagePage), typeof(EditLanguagePage));
 			Routing.RegisterRoute(nameof(EditCurrencyPage), typeof(EditCurrencyPage));
-			Routing.RegisterRoute("add-trip", typeof(AddTripPage));
 			Routing.RegisterRoute("trip-detail", typeof(TripDetailPage));
+			Routing.RegisterRoute("trip-form", typeof(TripFormPage));
 
 			Routing.RegisterRoute("login", typeof(LoginPage));
 			Routing.RegisterRoute("register", typeof(RegisterPage));

@@ -5,7 +5,7 @@ using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
 {
-	public partial class AddTripViewModel : BaseViewModel
+	public partial class TripFormViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
 
@@ -19,7 +19,7 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand CancelCommand { get; }
 
 
-		public AddTripViewModel(ITripService tripService)
+		public TripFormViewModel(ITripService tripService)
 		{
 			_tripService = tripService;
 

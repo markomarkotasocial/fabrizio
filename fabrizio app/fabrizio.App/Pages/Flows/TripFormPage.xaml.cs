@@ -7,9 +7,9 @@ using fabrizio.App.Services;
 namespace fabrizio.App.Pages.Flows
 {
 	[QueryProperty(nameof(TripId), "tripId")]
-	public partial class AddTripPage : ContentPage
+	public partial class TripFormPage : ContentPage
 	{
-		private readonly AddTripViewModel _viewModel;
+		private readonly TripFormViewModel _viewModel;
 
 		public Guid TripId
 		{
@@ -22,12 +22,7 @@ namespace fabrizio.App.Pages.Flows
 			}
 		}
 
-		public AddTripPage()
-		{
-			InitializeComponent();
-		}
-
-		public AddTripPage(AddTripViewModel viewModel)
+		public TripFormPage(TripFormViewModel viewModel)
 		{
 			InitializeComponent();
 			BindingContext = _viewModel = viewModel;
@@ -35,8 +30,7 @@ namespace fabrizio.App.Pages.Flows
 
 		protected override void OnAppearing()
 		{
-			base.OnAppearing();
-			
+			base.OnAppearing();			
 		}
 
 	}
