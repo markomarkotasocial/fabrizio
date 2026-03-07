@@ -14,7 +14,7 @@
 
 				<Label
 					Text="My Trips"
-					FontSize="28"
+					FontSize="26"
 					FontAttributes="Bold"
 					TextColor="White"
 					VerticalOptions="Center" />

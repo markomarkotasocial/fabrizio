@@ -1,12 +1,304 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Flows.TripDetailPage"
+             BackgroundColor="#101922"
              Title="Trip details">
 
-	
-	
-	
-	
-	
-	
+	<ScrollView>
+
+		<VerticalStackLayout 
+			Spacing="24" 
+			Padding="20">
+
+			<!-- HERO CARD -->
+			<Frame CornerRadius="20"
+				   Padding="0"
+				   IsClippedToBounds="True"
+				   HasShadow="False"
+				   BorderColor="#243342">
+
+				<Grid HeightRequest="220">
+
+					<!-- Image placeholder -->
+					<BoxView Color="#1B2633"/>
+
+					<!-- Overlay -->
+					<BoxView BackgroundColor="#66000000" CornerRadius="20"/>
+
+					<VerticalStackLayout
+						VerticalOptions="End"
+						Padding="20"
+						Spacing="3">
+
+						<Frame BackgroundColor="#137fec33"
+							   BorderColor="#137fec"
+							   Padding="10,8"
+							   CornerRadius="20"
+							   HasShadow="False"
+							   HorizontalOptions="Start">
+
+							<Label Text="UPCOMING"
+								   FontSize="10"
+								   FontAttributes="Bold"
+								   TextColor="#137fec"/>
+						</Frame>
+
+						<Label Text="{Binding Name}"
+							   FontSize="22"
+							   FontAttributes="Bold"
+							   TextColor="White"/>
+
+						<Label Text="{Binding DateRangeText}"
+							   FontSize="13"
+							   TextColor="#D0D6DC"/>
+
+						<Label Text="{Binding SummaryText}"
+							   FontSize="13"
+							   TextColor="#D0D6DC"/>
+
+					</VerticalStackLayout>
+
+				</Grid>
+
+			</Frame>
+
+
+			<!-- DESTINATIONS -->
+			<VerticalStackLayout Spacing="12">
+
+				<Grid ColumnDefinitions="*,Auto">
+
+					<Label Text="Destinations"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+					<Button Grid.Column="1"
+                            Text="+ Add destination"
+							CornerRadius="22"
+							Padding="4,4"
+                            FontSize="14"
+							FontAttributes="Bold"
+                            BackgroundColor="Transparent"
+                            TextColor="#137fec"/>
+
+				</Grid>
+
+				<CollectionView
+                    ItemsSource="{Binding Destinations}"
+                    ItemsLayout="HorizontalList"
+                    SelectionMode="None"
+                    HorizontalScrollBarVisibility="Never">
+
+					<CollectionView.ItemTemplate>
+
+						<DataTemplate>
+
+							<Frame Padding="14,8"
+                                   Margin="0,0,8,0"
+                                   CornerRadius="20"
+                                   BackgroundColor="#1B2633"
+                                   BorderColor="#2C3A4A">
+
+								<HorizontalStackLayout Spacing="6">
+
+									<Label Text="📍"/>
+
+									<Label Text="{Binding .}"
+                                           TextColor="White"
+                                           FontSize="14"/>
+
+								</HorizontalStackLayout>
+
+							</Frame>
+
+						</DataTemplate>
+
+					</CollectionView.ItemTemplate>
+
+				</CollectionView>
+
+			</VerticalStackLayout>
+
+
+			<!-- STAYS -->
+			<VerticalStackLayout Spacing="12">
+
+				<Grid ColumnDefinitions="*,Auto">
+
+					<Label Text="Stays"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+					<Button Grid.Column="1"
+                            Text="+ Add"
+							FontAttributes="Bold"
+                            BackgroundColor="#1B2633"
+                            TextColor="#137fec"
+                            CornerRadius="22"
+                            Padding="22,4"
+							Command="{Binding AddAccomodation}"/>
+
+				</Grid>
+
+				<CollectionView
+                    ItemsSource="{Binding Accommodations}"
+                    SelectionMode="None">
+
+					<CollectionView.ItemTemplate>
+
+						<DataTemplate>
+
+							<Frame Padding="0"
+                                   Margin="0,0,0,12"
+                                   CornerRadius="16"
+                                   BackgroundColor="#16202A"
+                                   BorderColor="#243342">
+
+								<VerticalStackLayout>
+
+									<!-- Image placeholder -->
+									<BoxView HeightRequest="120"
+                                             Color="#1B2633"/>
+
+									<VerticalStackLayout Padding="14">
+
+										<Label Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="White"/>
+
+										<HorizontalStackLayout Spacing="10">
+
+											<Label Text="{Binding CheckIn}"
+                                                   FontSize="12"
+                                                   TextColor="#B0BAC5"/>
+
+											<Label Text="•"
+                                                   TextColor="#B0BAC5"/>
+
+											<Label Text="{Binding CheckOut}"
+                                                   FontSize="12"
+                                                   TextColor="#B0BAC5"/>
+
+										</HorizontalStackLayout>
+
+									</VerticalStackLayout>
+
+								</VerticalStackLayout>
+
+							</Frame>
+
+						</DataTemplate>
+
+					</CollectionView.ItemTemplate>
+
+				</CollectionView>
+
+			</VerticalStackLayout>
+
+
+			<!-- TRANSPORT -->
+			<VerticalStackLayout Spacing="12">
+
+				<Grid ColumnDefinitions="*,Auto">
+
+					<Label Text="Transport"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+
+					<Button Grid.Column="1"
+                            Text="+ Add"
+							FontAttributes="Bold"
+                            BackgroundColor="#1B2633"
+                            TextColor="#137fec"
+                            CornerRadius="22"
+                            Padding="22,4"
+							Command="{Binding AddTravel}"/>
+
+				</Grid>
+
+				<CollectionView
+                    ItemsSource="{Binding Travels}"
+                    SelectionMode="None">
+
+					<CollectionView.ItemTemplate>
+
+						<DataTemplate>
+
+							<Frame CornerRadius="16"
+                                   Padding="16"
+                                   Margin="0,0,0,12"
+                                   BackgroundColor="#16202A"
+                                   BorderColor="#243342">
+
+								<VerticalStackLayout Spacing="10">
+
+									<Grid ColumnDefinitions="*,Auto">
+
+										<Label Text="{Binding Carrier}"
+                                               FontAttributes="Bold"
+                                               TextColor="White"/>
+
+										<Label Grid.Column="1"
+                                               Text="{Binding Date}"
+                                               FontSize="12"
+                                               TextColor="#B0BAC5"/>
+
+									</Grid>
+
+									<Grid ColumnDefinitions="*,*,*">
+
+										<VerticalStackLayout>
+
+											<Label Text="{Binding FromCode}"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"/>
+
+											<Label Text="{Binding FromCity}"
+                                                   FontSize="11"
+                                                   TextColor="#B0BAC5"/>
+
+										</VerticalStackLayout>
+
+										<Label Grid.Column="1"
+                                               Text="✈"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="#137fec"/>
+
+										<VerticalStackLayout Grid.Column="2">
+
+											<Label Text="{Binding ToCode}"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"/>
+
+											<Label Text="{Binding ToCity}"
+                                                   FontSize="11"
+                                                   TextColor="#B0BAC5"/>
+
+										</VerticalStackLayout>
+
+									</Grid>
+
+								</VerticalStackLayout>
+
+							</Frame>
+
+						</DataTemplate>
+
+					</CollectionView.ItemTemplate>
+
+				</CollectionView>
+
+			</VerticalStackLayout>
+
+		</VerticalStackLayout>
+
+	</ScrollView>
+
 </ContentPage>

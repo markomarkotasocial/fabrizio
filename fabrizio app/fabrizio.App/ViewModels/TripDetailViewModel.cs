@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Security;
 
 namespace fabrizio.App.Services
 {
@@ -13,13 +16,9 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private Guid tripId;
 
-
 		[ObservableProperty] string name;
-
 		[ObservableProperty] DateTime? startDate;
-
 		[ObservableProperty] DateTime? endDate;
-
 		[ObservableProperty] string notes;
 		[ObservableProperty] int status;
 
@@ -29,12 +28,38 @@ namespace fabrizio.App.Services
 
 
 
-		public TripDetailViewModel(ITripService tripService)
+		public string DateRangeText => StartDate.HasValue && EndDate.HasValue ? $"{StartDate:dd MMM} — {EndDate:dd MMM}" : string.Empty;
+		public string SummaryText
 		{
-			_tripService = tripService;
+			get
+			{
+				var parts = new List<string>();
+				if (StartDate.HasValue && EndDate.HasValue)
+				{
+					int days = (EndDate.Value - StartDate.Value).Days;
+					parts.Add($"{days} days");
+				}
+				if (Destinations?.Count > 0)
+				{
+					parts.Add($"{Destinations.Count} destinations");
+				}
+				return string.Join(" • ", parts);
+			}
 		}
 
 
+
+		public AsyncRelayCommand AddAccomodation { get; }
+		public AsyncRelayCommand AddTravel { get; }
+
+
+		public TripDetailViewModel(ITripService tripService)
+		{
+			_tripService = tripService;
+
+			AddAccomodation = new AsyncRelayCommand(AddAccomodationAsync);
+			AddTravel = new AsyncRelayCommand(AddTravelAsync);
+		}
 
 
 		partial void OnTripIdChanged(Guid value)
@@ -44,6 +69,81 @@ namespace fabrizio.App.Services
 				LoadTrip(value);
 			}
 		}
+
+
+		partial void OnStartDateChanged(DateTime? value)
+		{
+			OnPropertyChanged(nameof(DateRangeText));
+			OnPropertyChanged(nameof(SummaryText));
+		}
+
+		partial void OnEndDateChanged(DateTime? value)
+		{
+			OnPropertyChanged(nameof(DateRangeText));
+			OnPropertyChanged(nameof(SummaryText));
+		}
+		partial void OnDestinationsChanged(ObservableCollection<string> value)
+		{
+			if (value != null)
+			{
+				value.CollectionChanged += (s, e) =>
+				{
+					OnPropertyChanged(nameof(SummaryText));
+				};
+			}
+			OnPropertyChanged(nameof(SummaryText));
+		}
+
+
+
+
+
+		[RelayCommand]
+		private async Task AddAccomodationAsync()
+		{
+			var action = await Shell.Current.DisplayActionSheet(
+				"Add accomodation",
+				"Cancel",
+				null,
+				"Enter manually",
+				"Scan document");
+
+			if (action == "Enter manually")
+			{
+				// kasnije:
+				// await Shell.Current.GoToAsync("accommodationbooking-form");
+			}
+
+			if (action == "Scan document")
+			{
+				// kasnije:
+				// await Shell.Current.GoToAsync("accommodationbooking-ai");
+			}
+		}
+
+		[RelayCommand]
+		private async Task AddTravelAsync()
+		{
+			var action = await Shell.Current.DisplayActionSheet(
+				"Add transport",
+				"Cancel",
+				null,
+				"Enter manually",
+				"Scan document");
+
+			if (action == "Enter manually")
+			{
+				// kasnije:
+				// await Shell.Current.GoToAsync("travelbooking-form");
+			}
+
+			if (action == "Scan document")
+			{
+				// kasnije:
+				// await Shell.Current.GoToAsync("travelbooking-ai");
+			}
+		}
+
 
 
 

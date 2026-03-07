@@ -49,6 +49,8 @@ namespace fabrizio.Shared.DTO
 
 		public bool HasHiddenDestinations => HiddenDestinationsCount > 0;
 
+		public string DateRangeText => (StartDate.HasValue && EndDate.HasValue) ? ((StartDate.Value.Year != DateTime.UtcNow.Year || EndDate.Value.Year != DateTime.UtcNow.Year) ? $"{StartDate:dd MMM yyyy} — {EndDate:dd MMM yyyy}" : $"{StartDate:dd MMM} — {EndDate:dd MMM}") : string.Empty;
+
 
 		#endregion UI Getters
 

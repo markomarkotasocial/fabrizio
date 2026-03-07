@@ -1,6 +1,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Flows.TripFormPage"
+			 BackgroundColor="#101922"
              Title="Add / Edit trip">
 
 	
