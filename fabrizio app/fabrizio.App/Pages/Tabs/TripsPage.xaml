@@ -40,20 +40,13 @@
 
 			<!-- FILTER CHIPS (UI only za sada) -->
 			<CollectionView
+				ItemsSource="{Binding Filters}"
 				SelectionMode="None"
 				HeightRequest="34"
 				Margin="0,0,0,12">
 
-				<CollectionView.ItemsSource>
-					<x:Array Type="{x:Type x:String}">
-						<x:String>All</x:String>
-						<x:String>Upcoming</x:String>
-						<x:String>Past</x:String>
-					</x:Array>
-				</CollectionView.ItemsSource>
-
 				<CollectionView.ItemsLayout>
-					<LinearItemsLayout Orientation="Horizontal" />
+					<LinearItemsLayout Orientation="Horizontal"/>
 				</CollectionView.ItemsLayout>
 
 				<CollectionView.ItemTemplate>
@@ -62,15 +55,40 @@
 							Padding="12,8"
 							Margin="0,0,6,0"
 							CornerRadius="18"
-							BackgroundColor="#1A222C"
 							BorderColor="#2A3646"
+							BackgroundColor="#1B2633"
 							HasShadow="False">
+
+							<Frame.GestureRecognizers>
+								<TapGestureRecognizer
+									Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SetFilterCommand}"
+									CommandParameter="{Binding .}" />
+							</Frame.GestureRecognizers>
+
+							<Frame.Triggers>
+								<DataTrigger
+									TargetType="Frame"
+									Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedFilter}"
+									Value="{Binding .}">
+
+									<Setter Property="BackgroundColor" Value="#2E7DFF"/>
+									<Setter Property="BorderColor" Value="#2E7DFF"/>
+								</DataTrigger>
+
+								<DataTrigger
+									TargetType="Frame"
+									Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedFilter}"
+									Value="{x:Null}">
+
+									<Setter Property="BackgroundColor" Value="#1B2633"/>
+								</DataTrigger>
+							</Frame.Triggers>
 
 							<Label
 								Text="{Binding .}"
 								FontSize="12"
 								TextColor="#9FB3C8"
-								FontAttributes="Bold" />
+								FontAttributes="Bold"/>
 						</Frame>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>

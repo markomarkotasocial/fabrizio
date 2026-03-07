@@ -129,7 +129,7 @@ namespace fabrizio.App.Services
 				"Cancel",
 				null,
 				"Enter manually",
-				"Scan document");
+				"Scan ticket");
 
 			if (action == "Enter manually")
 			{
@@ -137,7 +137,7 @@ namespace fabrizio.App.Services
 				// await Shell.Current.GoToAsync("travelbooking-form");
 			}
 
-			if (action == "Scan document")
+			if (action == "Scan ticket")
 			{
 				// kasnije:
 				// await Shell.Current.GoToAsync("travelbooking-ai");

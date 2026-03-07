@@ -13,7 +13,7 @@ namespace fabrizio.App.Services
 {
 	public interface ITripService
 	{
-		Task<Result<IEnumerable<TripListItemDto>>> GetTrips();
+		Task<Result<IEnumerable<TripListItemDto>>> GetTrips(DateTime? startDate = null, DateTime? endDate = null);
 		Task<Result<TripDto>> GetTrip(Guid id);
 		Task<Result<GETTripOverview>> GetTripsOverview();
 
@@ -35,12 +35,19 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips()
+		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(DateTime? startDate = null, DateTime? endDate = null)
 		{
 			try
 			{
-				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripListItemDto>>>("api/trips");
+				var url = "api/trips";
 
+				var query = new List<string>();
+
+				if (startDate.HasValue)	query.Add($"startDate={startDate.Value:yyyy-MM-dd}");
+				if (endDate.HasValue) query.Add($"endDate={endDate.Value:yyyy-MM-dd}");
+				if (query.Count > 0) url += "?" + string.Join("&", query);
+
+				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripListItemDto>>>(url);
 				if (result == null)
 				{
 					return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
@@ -55,7 +62,8 @@ namespace fabrizio.App.Services
 			}
 			catch (Exception)
 			{
-				return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+				return Result<IEnumerable<TripListItemDto>>.Fail(
+					new BusinessError("network_error", "Unable to reach server.", 0));
 			}
 		}
 

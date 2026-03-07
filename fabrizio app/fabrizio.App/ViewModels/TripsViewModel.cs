@@ -16,7 +16,7 @@ namespace fabrizio.App.Services
 
 		public ObservableCollection<TripListItemDto> Trips { get; } = new();
 
-		
+		[ObservableProperty] string selectedFilter;
 		[ObservableProperty] private bool isRefreshing;
 
 
@@ -26,11 +26,14 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand AddTripCommand { get; }
 		public AsyncRelayCommand<TripListItemDto> DeleteTripCommand { get; }
 		public AsyncRelayCommand<TripListItemDto> OpenTripCommand { get; }
+		public IRelayCommand<string> SetFilterCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
 		private bool _isInitialized;
+
+		public List<string> Filters { get; } = new() { "All", "Upcoming", "Past" };
 
 
 		public TripsViewModel(ITripService tripService, IAuthService authService)
@@ -38,20 +41,51 @@ namespace fabrizio.App.Services
 			_tripService = tripService;
 			_authService = authService;
 
+			SelectedFilter = "All";
+
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
-
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);			
 			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripDetailAsync);
-
 			DeleteTripCommand = new AsyncRelayCommand<TripListItemDto>(DeleteTripAsync);
-
+			SetFilterCommand = new RelayCommand<string>(SetFilter);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
-
 			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
 		}
+
+
+		private void SetFilter(string filter)
+		{
+			if (SelectedFilter == filter)
+				return;
+
+			SelectedFilter = filter;
+		}
+		partial void OnSelectedFilterChanged(string value)
+		{
+			_ = ApplyFilter();
+		}
+		private async Task ApplyFilter()
+		{
+			DateTime? startDate = null;
+			DateTime? endDate = null;
+
+			if (SelectedFilter == "Upcoming")
+			{
+				startDate = DateTime.Today;
+			}
+			else if (SelectedFilter == "Past")
+			{
+				endDate = DateTime.Today;
+			}
+
+			await LoadTripsCoreAsync(startDate, endDate);
+		}
+
+
+
 
 		public async Task EnsureLoadedAsync()
 		{
@@ -60,9 +94,6 @@ namespace fabrizio.App.Services
 			await LoadInitialAsync();
 		}
 
-
-
-
 		public async Task LoadInitialAsync()
 		{
 			if (IsBusy) return;
@@ -70,7 +101,7 @@ namespace fabrizio.App.Services
 			try
 			{
 				IsBusy = true;
-				await LoadTripsCoreAsync();
+				await LoadTripsCoreAsync(null, null);
 			}
 			catch (UnauthorizedException)
 			{
@@ -86,12 +117,11 @@ namespace fabrizio.App.Services
 			}
 		}
 
-
 		public async Task RefreshAsync()
 		{
 			try
 			{
-				await LoadTripsCoreAsync();
+				await LoadTripsCoreAsync(null, null);
 			}
 			catch (UnauthorizedException)
 			{
@@ -104,11 +134,11 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		private async Task LoadTripsCoreAsync()
+		private async Task LoadTripsCoreAsync(DateTime? startDate = null, DateTime? endDate = null)
 		{
 			Trips.Clear();
 
-			var result = await _tripService.GetTrips();
+			var result = await _tripService.GetTrips(startDate, endDate);
 
 			if (!result.IsSuccess)
 			{
@@ -120,8 +150,6 @@ namespace fabrizio.App.Services
 				Trips.Add(t);
 			}
 		}
-
-
 
 
 
