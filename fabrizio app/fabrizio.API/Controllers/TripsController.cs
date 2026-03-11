@@ -40,12 +40,12 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 100,
 												[FromQuery] string? name = null,
-												[FromQuery] DateTime? startdate = null, [FromQuery] DateTime? enddate = null)
+												[FromQuery] TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, startdate, enddate);
+			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, filter);
 			return Ok(result);
 		}
 

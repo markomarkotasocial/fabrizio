@@ -13,7 +13,7 @@ namespace fabrizio.App.Services
 {
 	public interface ITripService
 	{
-		Task<Result<IEnumerable<TripListItemDto>>> GetTrips(DateTime? startDate = null, DateTime? endDate = null);
+		Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter);
 		Task<Result<TripDto>> GetTrip(Guid id);
 		Task<Result<GETTripOverview>> GetTripsOverview();
 
@@ -35,17 +35,11 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(DateTime? startDate = null, DateTime? endDate = null)
+		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter)
 		{
 			try
 			{
-				var url = "api/trips";
-
-				var query = new List<string>();
-
-				if (startDate.HasValue)	query.Add($"startDate={startDate.Value:yyyy-MM-dd}");
-				if (endDate.HasValue) query.Add($"endDate={endDate.Value:yyyy-MM-dd}");
-				if (query.Count > 0) url += "?" + string.Join("&", query);
+				var url = $"api/trips?filter={filter}";
 
 				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripListItemDto>>>(url);
 				if (result == null)

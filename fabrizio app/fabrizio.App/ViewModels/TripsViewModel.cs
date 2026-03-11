@@ -33,15 +33,13 @@ namespace fabrizio.App.Services
 
 		private bool _isInitialized;
 
-		public List<string> Filters { get; } = new() { "All", "Upcoming", "Past" };
+		public List<string> Filters { get; } = new() { "Upcoming", "Past", "All" };
 
 
 		public TripsViewModel(ITripService tripService, IAuthService authService)
 		{
 			_tripService = tripService;
 			_authService = authService;
-
-			SelectedFilter = "All";
 
 			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
@@ -53,6 +51,8 @@ namespace fabrizio.App.Services
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
 			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
+
+			SelectedFilter = "Upcoming";
 		}
 
 
@@ -69,19 +69,14 @@ namespace fabrizio.App.Services
 		}
 		private async Task ApplyFilter()
 		{
-			DateTime? startDate = null;
-			DateTime? endDate = null;
-
-			if (SelectedFilter == "Upcoming")
+			TripFilter filter = SelectedFilter switch
 			{
-				startDate = DateTime.Today;
-			}
-			else if (SelectedFilter == "Past")
-			{
-				endDate = DateTime.Today;
-			}
+				"Upcoming" => TripFilter.CurrentAndUpcoming,
+				"Past" => TripFilter.Past,
+				_ => TripFilter.All
+			};
 
-			await LoadTripsCoreAsync(startDate, endDate);
+			await LoadTripsCoreAsync(filter);
 		}
 
 
@@ -101,7 +96,7 @@ namespace fabrizio.App.Services
 			try
 			{
 				IsBusy = true;
-				await LoadTripsCoreAsync(null, null);
+				await LoadTripsCoreAsync();
 			}
 			catch (UnauthorizedException)
 			{
@@ -121,7 +116,8 @@ namespace fabrizio.App.Services
 		{
 			try
 			{
-				await LoadTripsCoreAsync(null, null);
+				await ApplyFilter();
+				//await LoadTripsCoreAsync();
 			}
 			catch (UnauthorizedException)
 			{
@@ -134,11 +130,11 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		private async Task LoadTripsCoreAsync(DateTime? startDate = null, DateTime? endDate = null)
+		private async Task LoadTripsCoreAsync(TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
 			Trips.Clear();
 
-			var result = await _tripService.GetTrips(startDate, endDate);
+			var result = await _tripService.GetTrips(filter);
 
 			if (!result.IsSuccess)
 			{

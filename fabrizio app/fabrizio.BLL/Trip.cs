@@ -16,7 +16,7 @@ namespace fabrizio.BLL
 	{
 		Task<Result<GETTripOverview>> GetTripOverview(int accountid, DateTime? date = null);
 		Task<Result<TripDto>> GetTripById(int accountid, Guid id);
-		Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null, DateTime? enddate = null);
+		Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, TripFilter filter = TripFilter.CurrentAndUpcoming);
 		Task<Result<TripDto>> CreateTrip(int accountid, CreateTripRequest dto);
 		Task<Result> UpdateTrip(int accountid, Guid id, UpdateTripRequest dto);
 		Task<Result> DeleteTrip(int accountid, Guid id);
@@ -116,13 +116,13 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, DateTime? startdate = null,  DateTime? enddate = null)
+		public async Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			if (take <= 0) throw new ArgumentException("Take must be greater than zero.", nameof(take));
-			
+
 			#endregion Validate
 
 			var query = _tripRepository.QueryAll(accountid);
@@ -136,15 +136,36 @@ namespace fabrizio.BLL
 					query = query.Where(t => t.Name.Contains(trimmedName));
 			}
 
-			if (startdate.HasValue)
-				query = query.Where(t => t.StartDate >= startdate.Value);
+			var today = DateTime.UtcNow.Date;
 
-			if (enddate.HasValue)
-				query = query.Where(t => t.EndDate == null || t.EndDate <= enddate.Value);
+			switch (filter)
+			{
+				case TripFilter.Past:
+					query = query.Where(t => t.EndDate != null && t.EndDate < today);
+					break;
+
+				case TripFilter.CurrentAndUpcoming:
+					query = query.Where(t => t.EndDate == null || t.EndDate >= today);
+					break;
+
+				case TripFilter.Wishlist:
+					query = query.Where(t => t.StartDate == null && t.EndDate == null);
+					break;
+
+				case TripFilter.All:
+				default:
+					// no date filtering
+					break;
+			}
 
 			#endregion Filters
 
-			query = query.OrderByDescending(t => t.StartDate).ThenBy(t => t.Name);
+			query = query.OrderBy(t =>
+			t.StartDate != null && t.StartDate <= today && (t.EndDate == null || t.EndDate >= today) ? 0 :
+			t.StartDate != null && t.StartDate > today ? 1 : 2)
+				.ThenBy(t => t.StartDate)
+				.ThenBy(t => t.EndDate)
+				.ThenBy(t => t.Name);
 
 			// Paging
 			var totalCount = await query.CountAsync();
@@ -158,7 +179,7 @@ namespace fabrizio.BLL
 				Name = trip.Name,
 				Notes = trip.Notes ?? string.Empty,
 				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,		
+				EndDate = trip.EndDate,
 				Destinations = trip.Destinations
 					.OrderBy(d => d.Order)
 					.Select(d => new DestinationDto

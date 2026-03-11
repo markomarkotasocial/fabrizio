@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace fabrizio.Shared.DTO
 {
+	public enum TripFilter
+	{
+		All = 0,
+		Past = 1,
+		CurrentAndUpcoming = 2,
+		Wishlist = 3
+	}
 	public class TripDto
 	{
 		public Guid Id { get; set; }
