@@ -20,7 +20,14 @@ namespace fabrizio.App.Pages.Tabs
 		{
 			base.OnAppearing();
 			await _viewModel.LoadCommand.ExecuteAsync(null);
+		}
 
+		private async void OnChipTapped(object sender, TappedEventArgs e)
+		{
+			if (sender is not Frame frame) return;
+
+			await frame.ScaleTo(0.92, 70);
+			await frame.ScaleTo(1.0, 70);
 		}
 
 

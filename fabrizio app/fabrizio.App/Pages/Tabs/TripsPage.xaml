@@ -42,7 +42,7 @@
 			<CollectionView
 				ItemsSource="{Binding Filters}"
 				SelectionMode="None"
-				HeightRequest="34"
+				HeightRequest="34"   
 				Margin="0,0,0,12">
 
 				<CollectionView.ItemsLayout>
@@ -52,6 +52,7 @@
 				<CollectionView.ItemTemplate>
 					<DataTemplate>
 						<Frame
+							x:Name="ChipFrame"
 							Padding="12,8"
 							Margin="0,0,6,0"
 							CornerRadius="18"
@@ -61,6 +62,7 @@
 
 							<Frame.GestureRecognizers>
 								<TapGestureRecognizer
+									Tapped="OnChipTapped"
 									Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SetFilterCommand}"
 									CommandParameter="{Binding .}" />
 							</Frame.GestureRecognizers>
@@ -70,7 +72,6 @@
 									TargetType="Frame"
 									Binding="{Binding IsSelected}"
 									Value="True">
-
 									<Setter Property="BackgroundColor" Value="#2E7DFF"/>
 									<Setter Property="BorderColor" Value="#2E7DFF"/>
 								</DataTrigger>
@@ -80,7 +81,19 @@
 								Text="{Binding Name}"
 								FontSize="12"
 								TextColor="#9FB3C8"
-								FontAttributes="Bold"/>
+								FontAttributes="Bold">
+
+								<Label.Triggers>
+									<DataTrigger
+										TargetType="Label"
+										Binding="{Binding IsSelected}"
+										Value="True">
+										<Setter Property="TextColor" Value="White"/>
+									</DataTrigger>
+								</Label.Triggers>
+
+							</Label>
+
 						</Frame>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
@@ -88,7 +101,6 @@
 			</CollectionView>
 
 		</VerticalStackLayout>
-
 
 		<!-- CONTENT -->
 		<RefreshView
@@ -255,7 +267,6 @@
 			</CollectionView>
 
 		</RefreshView>
-
 
 		<!-- EMPTY -->
 		<StackLayout

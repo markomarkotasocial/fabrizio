@@ -65,7 +65,11 @@ namespace fabrizio.App.Services
 		{
 			if (chip.IsSelected) return;
 			foreach (var f in Filters) f.IsSelected = f == chip;
-			_ = ApplyFilter();
+			_ = Task.Run(async () =>
+			{
+				await Task.Delay(80);
+				await ApplyFilter();
+			});
 		}
 
 
