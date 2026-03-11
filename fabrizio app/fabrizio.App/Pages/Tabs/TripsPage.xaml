@@ -68,24 +68,16 @@
 							<Frame.Triggers>
 								<DataTrigger
 									TargetType="Frame"
-									Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedFilter}"
-									Value="{Binding .}">
+									Binding="{Binding IsSelected}"
+									Value="True">
 
 									<Setter Property="BackgroundColor" Value="#2E7DFF"/>
 									<Setter Property="BorderColor" Value="#2E7DFF"/>
 								</DataTrigger>
-
-								<DataTrigger
-									TargetType="Frame"
-									Binding="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SelectedFilter}"
-									Value="{x:Null}">
-
-									<Setter Property="BackgroundColor" Value="#1B2633"/>
-								</DataTrigger>
 							</Frame.Triggers>
 
 							<Label
-								Text="{Binding .}"
+								Text="{Binding Name}"
 								FontSize="12"
 								TextColor="#9FB3C8"
 								FontAttributes="Bold"/>

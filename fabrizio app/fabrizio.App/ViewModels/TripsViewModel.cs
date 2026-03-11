@@ -8,6 +8,14 @@ using System.Threading.Tasks;
 
 namespace fabrizio.App.Services
 {
+	public partial class FilterChip : ObservableObject
+	{
+		public string Name { get; set; }
+
+		[ObservableProperty]
+		private bool isSelected;
+	}
+
 	public partial class TripsViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
@@ -15,6 +23,14 @@ namespace fabrizio.App.Services
 
 
 		public ObservableCollection<TripListItemDto> Trips { get; } = new();
+		public ObservableCollection<FilterChip> Filters { get; } = new()
+		{
+			new FilterChip { Name = "Upcoming", IsSelected = true },
+			new FilterChip { Name = "Past" }, 
+			new FilterChip { Name = "All" }
+		};
+
+
 
 		[ObservableProperty] string selectedFilter;
 		[ObservableProperty] private bool isRefreshing;
@@ -26,14 +42,13 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand AddTripCommand { get; }
 		public AsyncRelayCommand<TripListItemDto> DeleteTripCommand { get; }
 		public AsyncRelayCommand<TripListItemDto> OpenTripCommand { get; }
-		public IRelayCommand<string> SetFilterCommand { get; }
+		public IRelayCommand<FilterChip> SetFilterCommand { get; }
 
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
 		private bool _isInitialized;
 
-		public List<string> Filters { get; } = new() { "Upcoming", "Past", "All" };
 
 
 		public TripsViewModel(ITripService tripService, IAuthService authService)
@@ -46,7 +61,7 @@ namespace fabrizio.App.Services
 			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);			
 			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripDetailAsync);
 			DeleteTripCommand = new AsyncRelayCommand<TripListItemDto>(DeleteTripAsync);
-			SetFilterCommand = new RelayCommand<string>(SetFilter);
+			SetFilterCommand = new RelayCommand<FilterChip>(SetFilter);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
@@ -56,13 +71,19 @@ namespace fabrizio.App.Services
 		}
 
 
-		private void SetFilter(string filter)
-		{
-			if (SelectedFilter == filter)
-				return;
 
-			SelectedFilter = filter;
+
+		private void SetFilter(FilterChip chip)
+		{
+			if (chip.IsSelected) return;
+
+			foreach (var f in Filters)
+				f.IsSelected = false;
+
+			chip.IsSelected = true;
+			SelectedFilter = chip.Name;
 		}
+
 		partial void OnSelectedFilterChanged(string value)
 		{
 			_ = ApplyFilter();
@@ -73,7 +94,8 @@ namespace fabrizio.App.Services
 			{
 				"Upcoming" => TripFilter.CurrentAndUpcoming,
 				"Past" => TripFilter.Past,
-				_ => TripFilter.All
+				"All" => TripFilter.All,
+				_ => TripFilter.CurrentAndUpcoming
 			};
 
 			await LoadTripsCoreAsync(filter);
@@ -117,7 +139,6 @@ namespace fabrizio.App.Services
 			try
 			{
 				await ApplyFilter();
-				//await LoadTripsCoreAsync();
 			}
 			catch (UnauthorizedException)
 			{
