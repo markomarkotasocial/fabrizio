@@ -31,7 +31,6 @@ namespace fabrizio.App.Services
 		};
 
 
-
 		[ObservableProperty] string selectedFilter;
 		[ObservableProperty] private bool isRefreshing;
 
@@ -48,7 +47,8 @@ namespace fabrizio.App.Services
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
 		private bool _isInitialized;
-
+		private bool _isInitializing = true;
+		private bool _isLoadingTrips;
 
 
 		public TripsViewModel(ITripService tripService, IAuthService authService)
@@ -68,6 +68,8 @@ namespace fabrizio.App.Services
 			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
 
 			SelectedFilter = "Upcoming";
+
+			_isInitializing = false;
 		}
 
 
@@ -86,6 +88,7 @@ namespace fabrizio.App.Services
 
 		partial void OnSelectedFilterChanged(string value)
 		{
+			if (_isInitializing) return;
 			_ = ApplyFilter();
 		}
 		private async Task ApplyFilter()
@@ -118,7 +121,8 @@ namespace fabrizio.App.Services
 			try
 			{
 				IsBusy = true;
-				await LoadTripsCoreAsync();
+				await ApplyFilter();
+
 			}
 			catch (UnauthorizedException)
 			{
@@ -153,18 +157,22 @@ namespace fabrizio.App.Services
 
 		private async Task LoadTripsCoreAsync(TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
-			Trips.Clear();
+			if (_isLoadingTrips) return;
+			_isLoadingTrips = true;
 
-			var result = await _tripService.GetTrips(filter);
-
-			if (!result.IsSuccess)
+			try
 			{
-				return;
+				Trips.Clear();
+				var result = await _tripService.GetTrips(filter);
+
+				if (!result.IsSuccess) return;
+
+				foreach (var t in result.Value!)
+					Trips.Add(t);
 			}
-
-			foreach (var t in result.Value!)
+			finally
 			{
-				Trips.Add(t);
+				_isLoadingTrips = false;
 			}
 		}
 
