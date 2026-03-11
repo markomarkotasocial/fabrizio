@@ -186,7 +186,7 @@
 						<Label
                             Grid.Column="1"
                             Text="{Binding NextTripCountdownText}"
-                            FontSize="20"
+                            FontSize="16"
                             FontAttributes="Bold"
                             TextColor="#137fec"
                             VerticalOptions="Center" />

@@ -31,18 +31,10 @@ namespace fabrizio.App.Services
 		};
 
 
-		[ObservableProperty] string selectedFilter;
 		[ObservableProperty] private bool isRefreshing;
 
 
 		public AsyncRelayCommand RefreshCommand { get; }
-		public AsyncRelayCommand LoadCommand { get; }
-
-		public AsyncRelayCommand AddTripCommand { get; }
-		public AsyncRelayCommand<TripListItemDto> DeleteTripCommand { get; }
-		public AsyncRelayCommand<TripListItemDto> OpenTripCommand { get; }
-		public IRelayCommand<FilterChip> SetFilterCommand { get; }
-
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
@@ -56,18 +48,11 @@ namespace fabrizio.App.Services
 			_tripService = tripService;
 			_authService = authService;
 
-			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
 			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
-			AddTripCommand = new AsyncRelayCommand(OnAddTripAsync);			
-			OpenTripCommand = new AsyncRelayCommand<TripListItemDto>(OpenTripDetailAsync);
-			DeleteTripCommand = new AsyncRelayCommand<TripListItemDto>(DeleteTripAsync);
-			SetFilterCommand = new RelayCommand<FilterChip>(SetFilter);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
 			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
-
-			SelectedFilter = "Upcoming";
 
 			_isInitializing = false;
 		}
@@ -75,49 +60,45 @@ namespace fabrizio.App.Services
 
 
 
+		[RelayCommand]
 		private void SetFilter(FilterChip chip)
 		{
 			if (chip.IsSelected) return;
-
-			foreach (var f in Filters)
-				f.IsSelected = false;
-
-			chip.IsSelected = true;
-			SelectedFilter = chip.Name;
-		}
-
-		partial void OnSelectedFilterChanged(string value)
-		{
-			if (_isInitializing) return;
+			foreach (var f in Filters) f.IsSelected = f == chip;
 			_ = ApplyFilter();
 		}
-		private async Task ApplyFilter()
+
+
+		[RelayCommand]
+		private Task AddTrip()
 		{
-			TripFilter filter = SelectedFilter switch
+			return Shell.Current.GoToAsync("trip-form");
+		}
+				
+		private bool _isOpeningDetail; // double tap protection
+
+		[RelayCommand]
+		private async Task OpenTrip(TripListItemDto trip)
+		{
+			if (trip == null || _isOpeningDetail) return;
+			try
 			{
-				"Upcoming" => TripFilter.CurrentAndUpcoming,
-				"Past" => TripFilter.Past,
-				"All" => TripFilter.All,
-				_ => TripFilter.CurrentAndUpcoming
-			};
-
-			await LoadTripsCoreAsync(filter);
+				_isOpeningDetail = true;
+				await Shell.Current.GoToAsync("trip-detail", new Dictionary<string, object>
+				{
+					["tripId"] = trip.Id
+				});
+			}
+			finally
+			{
+				_isOpeningDetail = false;
+			}
 		}
 
-
-
-
-		public async Task EnsureLoadedAsync()
-		{
-			if (_isInitialized)	return;
-			_isInitialized = true;
-			await LoadInitialAsync();
-		}
-
-		public async Task LoadInitialAsync()
+		[RelayCommand]
+		public async Task Load()
 		{
 			if (IsBusy) return;
-
 			try
 			{
 				IsBusy = true;
@@ -137,6 +118,44 @@ namespace fabrizio.App.Services
 				});
 			}
 		}
+
+		[RelayCommand]
+		private async Task DeleteTrip(TripListItemDto trip)
+		{
+			await _tripService.DeleteTrip(trip.Id);
+		}
+
+
+
+
+
+
+
+
+
+		private async Task ApplyFilter()
+		{
+			var chip = Filters.FirstOrDefault(x => x.IsSelected);
+
+			TripFilter filter = chip?.Name switch
+			{
+				"Upcoming" => TripFilter.CurrentAndUpcoming,
+				"Past" => TripFilter.Past,
+				"All" => TripFilter.All,
+				_ => TripFilter.CurrentAndUpcoming
+			};
+
+			await LoadTripsCoreAsync(filter);
+		}
+
+
+		public async Task EnsureLoadedAsync()
+		{
+			if (_isInitialized)	return;
+			_isInitialized = true;
+			await Load();
+		}
+				
 
 		public async Task RefreshAsync()
 		{
@@ -164,11 +183,8 @@ namespace fabrizio.App.Services
 			{
 				Trips.Clear();
 				var result = await _tripService.GetTrips(filter);
-
 				if (!result.IsSuccess) return;
-
-				foreach (var t in result.Value!)
-					Trips.Add(t);
+				foreach (var t in result.Value!) Trips.Add(t);
 			}
 			finally
 			{
@@ -181,35 +197,10 @@ namespace fabrizio.App.Services
 
 
 
-		private Task OnAddTripAsync()
-		{
-			return Shell.Current.GoToAsync("trip-form");
-		}
+	
 
 
-		// double tap protection
-		private bool _isOpeningDetail;
-		private async Task OpenTripDetailAsync(TripListItemDto trip)
-		{
-			if (trip == null || _isOpeningDetail) return;
-			try
-			{
-				_isOpeningDetail = true;
-				await Shell.Current.GoToAsync("trip-detail", new Dictionary<string, object>
-				{
-					["tripId"] = trip.Id
-				});
-			}
-			finally
-			{
-				_isOpeningDetail = false;
-			}
-		}
 
-		private async Task DeleteTripAsync(TripListItemDto trip)
-		{
-			await _tripService.DeleteTrip(trip.Id);
-		}
 
 	}
 }

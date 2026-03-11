@@ -38,7 +38,7 @@ namespace fabrizio.App.Services
 
 		public async Task LoadTrip(Guid id)
 		{
-			// TODO: call _tripService.GetTrip(id) and map result to fields
+			
 		}
 	}
 }
