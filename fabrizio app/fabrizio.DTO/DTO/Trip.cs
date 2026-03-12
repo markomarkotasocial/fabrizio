@@ -75,7 +75,6 @@ namespace fabrizio.Shared.DTO
 	public class UpdateTripRequest
 	{
 		public Guid Id { get; set; }
-		public int Status { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Notes { get; set; } = string.Empty;
 		public DateTime StartDate { get; set; }
