@@ -22,7 +22,7 @@
 
 				<Label
 					Grid.Column="1"
-					Text="Edit Trip"
+					Text="{Binding Title}"
 					HorizontalOptions="Center"
 					VerticalOptions="Center"
 					FontSize="18"

@@ -17,8 +17,8 @@
 				<!-- ================= CURRENT TRIP CARD ================= -->
 				<Frame
                     Grid.Row="0"
-                    CornerRadius="28"
-                    Padding="20"
+                    CornerRadius="26"
+                    Padding="18"
                     Margin="0,8"
                     HasShadow="False"
                     BackgroundColor="#1B2633"
@@ -42,7 +42,8 @@
 
 								<Label
                                     Text="{Binding Current.Name}"
-                                    FontSize="26"
+                                    FontSize="28"
+									Padding="0,10"
                                     FontAttributes="Bold"
                                     TextColor="White"
                                     LineBreakMode="WordWrap" />
@@ -53,8 +54,8 @@
 							<Frame
 
                                 Grid.Column="1"
-                                WidthRequest="44"
-                                HeightRequest="44"
+                                WidthRequest="40"
+                                HeightRequest="40"
                                 CornerRadius="2222"
                                 BackgroundColor="#243244"
                                 HasShadow="False"
@@ -69,9 +70,11 @@
 
 							<!-- DATE PILL -->
 							<Frame
-                                Padding="10,4"
+                                Padding="12,8"
+								Margin="0,0,6,0"
                                 CornerRadius="18"
                                 BackgroundColor="#243244"
+					            BorderColor="#101922"
                                 HasShadow="False"
                                 HorizontalOptions="Start">
 

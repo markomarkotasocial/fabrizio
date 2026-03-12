@@ -68,7 +68,7 @@ namespace fabrizio.Shared.DTO
 	{
 		public string Name { get; set; } = string.Empty;
 		public string Notes { get; set; } = string.Empty;
-		public DateTime StartDate { get; set; }
+		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 	}
 
@@ -77,7 +77,7 @@ namespace fabrizio.Shared.DTO
 		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Notes { get; set; } = string.Empty;
-		public DateTime StartDate { get; set; }
+		public DateTime? StartDate { get; set; }
 		public DateTime? EndDate { get; set; }
 	}
 

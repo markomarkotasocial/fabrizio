@@ -6,21 +6,9 @@ using fabrizio.App.Services;
 
 namespace fabrizio.App.Pages.Flows
 {
-	[QueryProperty(nameof(TripId), "tripId")]
 	public partial class TripFormPage : ContentPage
 	{
 		private readonly TripFormViewModel _viewModel;
-
-		public Guid TripId
-		{
-			set
-			{
-				if (value != Guid.Empty)
-				{
-					_viewModel.LoadTrip(value);
-				}
-			}
-		}
 
 		public TripFormPage(TripFormViewModel viewModel)
 		{

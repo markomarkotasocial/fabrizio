@@ -6,12 +6,13 @@ using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
 {
+	[QueryProperty(nameof(TripId), "tripId")]
 	public partial class TripFormViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
 
 
-		[ObservableProperty] private Guid tripId;
+		[ObservableProperty] private Guid? tripId;
 
 		[ObservableProperty] string name;
 		[ObservableProperty] DateTime? startDate;
@@ -23,30 +24,133 @@ namespace fabrizio.App.Services
 		[ObservableProperty] ObservableCollection<TravelBookingDto> travels;
 
 
-		public AsyncRelayCommand SaveCommand { get; }
-		public AsyncRelayCommand CancelCommand { get; }
+
+		public bool IsNewTrip => TripId == null;
+		public string Title => TripId == null ? "New Trip" : "Edit Trip";
 
 
 		public TripFormViewModel(ITripService tripService)
 		{
 			_tripService = tripService;
 
-			SaveCommand = new AsyncRelayCommand(SaveChangesAsync);
-			CancelCommand = new AsyncRelayCommand(CancelChanges);
 		}
 
-
-		public async Task SaveChangesAsync()
+		partial void OnTripIdChanged(Guid? value)
 		{
+			OnPropertyChanged(nameof(Title));
+
+			if (value.HasValue)
+			{
+				_ = LoadTrip(value.Value);
+			}
+			else
+			{
+				InitNewTrip();
+			}
 		}
 
-		public async Task CancelChanges()
+
+
+		[RelayCommand]
+		public async Task Save()
 		{
+			if (IsBusy) return;
+			IsBusy = true;
+
+			try
+			{
+				if (TripId == null)
+				{
+					await _tripService.AddTrip(new CreateTripRequest
+					{
+						Name = Name,
+						StartDate = StartDate,
+						EndDate = EndDate,
+						Notes = Notes
+					});
+				}
+				else
+				{
+					await _tripService.UpdateTrip(new UpdateTripRequest
+					{
+						Id = (Guid)TripId,
+						Name = Name,
+						StartDate = StartDate,
+						EndDate = EndDate,
+						Notes = Notes
+					});
+				}
+
+				await Shell.Current.GoToAsync("..");
+			}
+			finally
+			{
+				IsBusy = false;
+			}
 		}
+
+
+		[RelayCommand]
+		public async Task Cancel()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
+
+
+
+
+
+
+
+
+
 
 		public async Task LoadTrip(Guid id)
 		{
-			
+			if (IsBusy) return;
+
+			try
+			{
+				IsBusy = true;
+
+				var result = await _tripService.GetTrip(id);
+				if (!result.IsSuccess || result.Value == null) return;
+
+				var trip = result.Value;
+
+				TripId = trip.Id;
+				Name = trip.Name;
+				Notes = trip.Notes;
+				StartDate = trip.StartDate;
+				EndDate = trip.EndDate;
+				//Status = trip.Status;
+
+				Destinations = new ObservableCollection<string>(trip.Destinations.Select(x => x.Name));
+				Accommodations = new ObservableCollection<AccommodationBookingDto>(trip.AccommodationBookings);
+				Travels = new ObservableCollection<TravelBookingDto>(trip.TravelBookings);
+			}
+			finally
+			{
+				IsBusy = false;
+			}
 		}
+
+		private void InitNewTrip()
+		{
+			Name = string.Empty;
+			StartDate = DateTime.Today;
+			EndDate = DateTime.Today.AddDays(1);
+			Notes = string.Empty;
+			Destinations = new ObservableCollection<string>();
+			Accommodations = new ObservableCollection<AccommodationBookingDto>();
+			Travels = new ObservableCollection<TravelBookingDto>();
+		}
+
+
+
+		
+		
+
+		
 	}
 }
