@@ -235,9 +235,7 @@ namespace fabrizio.BLL
 				EndDate = dto.EndDate
 			};
 
-			if (trip.StartDate > DateTime.UtcNow) trip.Status = TripStatus.Planned;
-			else if (trip.EndDate == null || trip.EndDate >= DateTime.UtcNow) trip.Status = TripStatus.Ongoing;
-			else trip.Status = TripStatus.Completed;
+			trip.Recalculate();
 
 			_tripRepository.Add(trip);
 			await _tripRepository.SaveChangesAsync();
@@ -267,14 +265,6 @@ namespace fabrizio.BLL
 				return Result.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
 			}
 
-			if (dto.EndDate != null)
-			{
-				if (dto.EndDate < dto.StartDate)
-				{
-					return Result.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
-				}
-			}
-
 			var trip = await _tripRepository.GetById(id);
 			if (trip == null)
 			{
@@ -286,10 +276,21 @@ namespace fabrizio.BLL
 				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip can not be updated.", 403));
+			}		
+
+			var dateValidation = ValidateTripDates(trip, dto.StartDate, dto.EndDate);
+			if (!dateValidation.IsSuccess)
+			{
+				return dateValidation;
+			}
+
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
 			if (hasOverlap)
 			{
-				return Result<Trip>.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
+				return Result.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
 			}
 
 			#endregion Validate
@@ -299,12 +300,7 @@ namespace fabrizio.BLL
 			trip.StartDate = dto.StartDate;
 			trip.EndDate = dto.EndDate;
 
-			if (trip.Status != TripStatus.Cancelled)
-			{
-				if (trip.StartDate > DateTime.UtcNow) trip.Status = TripStatus.Planned;
-				else if (trip.EndDate == null || trip.EndDate >= DateTime.UtcNow) trip.Status = TripStatus.Ongoing;
-				else trip.Status = TripStatus.Completed;
-			}
+			trip.Recalculate();
 
 			await _tripRepository.SaveChangesAsync();
 			return Result.Success();
@@ -365,6 +361,54 @@ namespace fabrizio.BLL
 		}
 
 
+
+
+
+
+		private Result ValidateTripDates(Trip trip, DateTime? startDate, DateTime? endDate)
+		{
+			if (startDate.HasValue && endDate.HasValue && endDate < startDate)
+			{
+				return Result.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+			}
+
+			bool hasBookings = trip.AccommodationBookings.Any() || trip.TravelBookings.Any();
+
+			if (hasBookings)
+			{
+				if (!startDate.HasValue)
+				{
+					return Result.Fail(new BusinessError("trip_start_required", "Start date cannot be removed when bookings exist.", 400));
+				}
+
+				if (!endDate.HasValue)
+				{
+					return Result.Fail(new BusinessError("trip_end_required", "End date cannot be removed when bookings exist.", 400));
+				}
+
+				var minBookingStart =
+					trip.AccommodationBookings.Where(x => x.From.HasValue).Select(x => x.From!.Value)
+					.Concat(trip.TravelBookings.Where(x => x.Departure.HasValue).Select(x => x.Departure!.Value))
+					.Min();
+
+				var maxBookingEnd =
+					trip.AccommodationBookings.Where(x => x.To.HasValue).Select(x => x.To!.Value)
+					.Concat(trip.TravelBookings.Where(x => x.Arrival.HasValue).Select(x => x.Arrival!.Value))
+					.Max();
+
+				if (startDate > minBookingStart)
+				{
+					return Result.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
+				}
+
+				if (endDate < maxBookingEnd)
+				{
+					return Result.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
+				}
+			}		
+
+			return Result.Success();
+		}
 
 		private TripDto MapToGetTrip(Trip trip)
 		{

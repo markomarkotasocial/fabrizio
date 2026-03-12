@@ -173,6 +173,11 @@ namespace fabrizio.BLL
 				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
+			if (trip.Status == TripStatus.Cancelled)
+			{
+				return Result<TravelBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+			}
+
 			if (trip.AccountId != accountid)
 			{
 				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
