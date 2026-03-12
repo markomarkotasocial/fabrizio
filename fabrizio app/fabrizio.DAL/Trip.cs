@@ -14,14 +14,37 @@ namespace fabrizio.DAL.Entities
 		Cancelled
 	}
 
+
+	/// <summary>
+	/// Represents a travel plan containing destinations and bookings.
+	/// Trip dates represent the overall time span of the journey
+	/// and may be derived from booking data.
+	/// </summary>
 	public class Trip : BaseEntityGuid
 	{
+		/// <summary>
+		/// Trip lifecycle status.
+		/// Planned/Ongoing/Completed are derived from StartDate and EndDate.
+		/// Cancelled is a terminal state set explicitly by the user and
+		/// prevents further modifications.
+		/// </summary>
 		public TripStatus Status { get; set; } = TripStatus.Planned;
 
 		public string Name { get; set; } = string.Empty;
 		public string? Notes { get; set; }
 
+		/// <summary>
+		/// Earliest date of the trip.
+		/// May be expanded automatically when bookings are added.
+		/// Cannot be removed if bookings exist (validated in BLL).
+		/// </summary>
 		public DateTime? StartDate { get; set; }
+
+		/// <summary>
+		/// Earliest date of the trip.
+		/// May be expanded automatically when bookings are added.
+		/// Cannot be removed if bookings exist (validated in BLL).
+		/// </summary>
 		public DateTime? EndDate { get; set; }
 
 		public virtual List<AccommodationBooking> AccommodationBookings { get; set; } = new();
@@ -33,6 +56,11 @@ namespace fabrizio.DAL.Entities
 
 
 
+		/// <summary>
+		/// Latest date of the trip.
+		/// May be expanded automatically when bookings are added.
+		/// Cannot be removed if bookings exist (validated in BLL).
+		/// </summary>
 		public void Recalculate()
 		{
 			DateTime? minStart = null;
