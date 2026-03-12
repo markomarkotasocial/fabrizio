@@ -7,10 +7,11 @@
 
 		<Grid RowDefinitions="Auto,*,Auto">
 			
-		    <!-- HEADER -->
-			<Grid Padding="16,12"
-				  ColumnDefinitions="40,*,40"
-				  BackgroundColor="#101922">
+			<!-- HEADER -->
+			<Grid 
+				Padding="16,12"
+				ColumnDefinitions="40,*,40"
+				BackgroundColor="#101922">
 
 				<ImageButton
 					Source="close.png"
@@ -37,8 +38,9 @@
 					HorizontalOptions="End"
 					Command="{Binding SaveCommand}" />
 			</Grid>
+			
 
-     		<!-- CONTENT -->
+			<!-- CONTENT -->
 			<ScrollView Grid.Row="1">
 
 				<VerticalStackLayout
@@ -69,7 +71,7 @@
 
 							<Entry
                                 Text="{Binding Name}"
-                                Placeholder="e.g. Summer in Tuscany"
+                                Placeholder="e.g. Summer in Dalmatia"
                                 TextColor="White"
                                 PlaceholderColor="#6B7C93"/>
 						</Frame>
@@ -122,29 +124,6 @@
 						</VerticalStackLayout>
 
 					</Grid>
-
-					<!-- Status -->
-					<VerticalStackLayout Spacing="4">
-
-						<Label
-                            Text="Status"
-                            FontSize="13"
-                            TextColor="#9FB3C8"/>
-
-						<Frame
-                            Padding="12"
-                            BackgroundColor="#1B2633"
-                            BorderColor="#2A3646"
-                            CornerRadius="12">
-
-							<Picker
-                                Title="Select Status"
-                                ItemsSource="{Binding StatusOptions}"
-                                SelectedItem="{Binding Status}"
-                                TextColor="White"/>
-						</Frame>
-
-					</VerticalStackLayout>
 
 				</VerticalStackLayout>
 
@@ -251,8 +230,8 @@
 		</ScrollView>
 
 
-		<!-- FOOTER -->
-		<VerticalStackLayout
+			<!-- FOOTER -->
+			<VerticalStackLayout
             Grid.Row="2"
             Padding="16"
             Spacing="12"

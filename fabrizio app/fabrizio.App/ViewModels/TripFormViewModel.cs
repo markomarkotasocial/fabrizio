@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
+using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
 {
@@ -12,7 +13,14 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private Guid tripId;
 
+		[ObservableProperty] string name;
+		[ObservableProperty] DateTime? startDate;
+		[ObservableProperty] DateTime? endDate;
+		[ObservableProperty] string notes;
 
+		[ObservableProperty] ObservableCollection<string> destinations;
+		[ObservableProperty] ObservableCollection<AccommodationBookingDto> accommodations;
+		[ObservableProperty] ObservableCollection<TravelBookingDto> travels;
 
 
 		public AsyncRelayCommand SaveCommand { get; }
