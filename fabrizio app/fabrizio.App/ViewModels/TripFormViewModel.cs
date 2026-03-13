@@ -1,13 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using fabrizio.App.Pages.Components;
 using fabrizio.App.ViewModels;
-using fabrizio.Shared.DTO;
 using fabrizio.Shared.Contracts;
+using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
 {
 	[QueryProperty(nameof(TripId), "tripId")]
+	[QueryProperty(nameof(SelectedStartDate), "selectedStartDate")]
+	[QueryProperty(nameof(SelectedEndDate), "selectedEndDate")]
 	public partial class TripFormViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
@@ -16,8 +19,13 @@ namespace fabrizio.App.Services
 		[ObservableProperty] private Guid? tripId;
 
 		[ObservableProperty] string name;
-		[ObservableProperty] DateTime? startDate;
-		[ObservableProperty] DateTime? endDate;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DateRangeDisplay))] DateTime? startDate;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DateRangeDisplay))] DateTime? endDate;
+
 		[ObservableProperty] string notes;
 
 		[ObservableProperty] ObservableCollection<string> destinations;
@@ -28,6 +36,11 @@ namespace fabrizio.App.Services
 
 		public bool IsNewTrip => TripId == null;
 		public string Title => TripId == null ? "New Trip" : "Edit Trip";
+		public string DateRangeDisplay => StartDate.HasValue && EndDate.HasValue ? $"{StartDate:dd MMM yyyy} → {EndDate:dd MMM yyyy}" : "Select travel dates";
+
+
+		public DateTime SelectedStartDate {	set => StartDate = value; }
+		public DateTime SelectedEndDate	{ set => EndDate = value; }
 
 
 		public TripFormViewModel(ITripService tripService)
@@ -35,6 +48,7 @@ namespace fabrizio.App.Services
 			_tripService = tripService;
 
 		}
+
 
 
 
@@ -51,16 +65,31 @@ namespace fabrizio.App.Services
 				InitNewTrip();
 			}
 		}
-		
-		partial void OnStartDateChanged(DateTime? value)
+
+
+
+
+
+
+		[RelayCommand]
+		async Task SelectDates()
 		{
-			if (value.HasValue && EndDate < value)
-				EndDate = value.Value.AddDays(1);
+			var query = new List<string>();
+
+			if (StartDate.HasValue)
+				query.Add($"startDate={StartDate.Value:O}");
+
+			if (EndDate.HasValue)
+				query.Add($"endDate={EndDate.Value:O}");
+
+			var queryString = string.Join("&", query);
+
+			var route = string.IsNullOrEmpty(queryString)
+				? nameof(DateRangePage)
+				: $"{nameof(DateRangePage)}?{queryString}";
+
+			await Shell.Current.GoToAsync(route);
 		}
-
-
-
-
 
 
 		[RelayCommand]

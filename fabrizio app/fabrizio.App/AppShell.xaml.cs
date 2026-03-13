@@ -1,4 +1,5 @@
 ﻿using fabrizio.App.Pages.Auth;
+using fabrizio.App.Pages.Components;
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.Pages.Tabs;
 
@@ -11,6 +12,7 @@ namespace fabrizio.App
 			InitializeComponent();
 
 			// Flow / detail routes (NOT in TabBar)
+			Routing.RegisterRoute(nameof(DateRangePage), typeof(DateRangePage));
 			Routing.RegisterRoute(nameof(EditTimeZonePage), typeof(EditTimeZonePage));
 			Routing.RegisterRoute(nameof(EditLanguagePage), typeof(EditLanguagePage));
 			Routing.RegisterRoute(nameof(EditCurrencyPage), typeof(EditCurrencyPage));

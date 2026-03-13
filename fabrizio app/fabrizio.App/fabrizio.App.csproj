@@ -78,6 +78,9 @@
 	  <Compile Update="Pages\Auth\RegisterPage.xaml.cs">
 	    <DependentUpon>RegisterPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\Components\DateRangePage.xaml.cs">
+	    <DependentUpon>DateRangePage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\Flows\EditTimeZonePage.xaml.cs">
 	    <DependentUpon>EditTimeZonePage.xaml</DependentUpon>
 	  </Compile>
@@ -115,6 +118,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Auth\RegisterPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Components\DateRangePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Flows\EditTimeZonePage.xaml">

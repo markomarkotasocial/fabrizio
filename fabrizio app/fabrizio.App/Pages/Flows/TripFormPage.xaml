@@ -77,56 +77,43 @@
 						</Frame>
 					</VerticalStackLayout>
 
+
 					<!-- Dates -->
-					<Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+					<VerticalStackLayout Spacing="4">
+						
+						<Label
+							Text="Dates"
+							FontSize="13"
+							TextColor="#9FB3C8"/>
 
-						<VerticalStackLayout Spacing="4">
+						<Frame
+							Padding="12"
+							BackgroundColor="#1B2633"
+							BorderColor="#2A3646"
+							CornerRadius="12">
 
-							<Label
-                                Text="Start Date"
-                                FontSize="13"
-                                TextColor="#9FB3C8"/>
+							<Grid ColumnDefinitions="*,Auto">
 
-							<Frame
-                                Padding="12"
-                                BackgroundColor="#1B2633"
-                                BorderColor="#2A3646"
-                                CornerRadius="12">
-
-								<DatePicker
-									x:Name="StartDatePicker"
-									Date="{Binding StartDate}"
+								<Label
+									Text="{Binding DateRangeDisplay}"
 									TextColor="White"
-									DateSelected="OnStartDateSelected"/>
-							</Frame>
+									VerticalOptions="Center"/>
 
-						</VerticalStackLayout>
+								<Label
+									Grid.Column="1"
+									Text="📅"
+									FontSize="18"
+									VerticalOptions="Center"/>
 
+							</Grid>
 
-						<VerticalStackLayout
-							Grid.Column="1"
-                            Spacing="4">
+							<Frame.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding SelectDatesCommand}" />
+							</Frame.GestureRecognizers>
 
-							<Label
-                                Text="End Date"
-                                FontSize="13"
-                                TextColor="#9FB3C8"/>
+						</Frame>
 
-							<Frame
-                                Padding="12"
-                                BackgroundColor="#1B2633"
-                                BorderColor="#2A3646"
-                                CornerRadius="12">
-
-								<DatePicker
-									x:Name="EndDatePicker"
-									Date="{Binding EndDate}"
-									TextColor="White"/>
-							</Frame>
-
-						</VerticalStackLayout>
-
-					</Grid>
+					</VerticalStackLayout>
 
 				</VerticalStackLayout>
 
