@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
+using fabrizio.Shared.Contracts;
 using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
@@ -59,26 +60,34 @@ namespace fabrizio.App.Services
 
 			try
 			{
+				Result result;
+
 				if (TripId == null)
 				{
-					await _tripService.AddTrip(new CreateTripRequest
+					result = await _tripService.AddTrip(new CreateTripRequest
 					{
 						Name = Name,
 						StartDate = StartDate,
 						EndDate = EndDate,
-						Notes = Notes
+						Notes = Notes ?? string.Empty
 					});
 				}
 				else
 				{
-					await _tripService.UpdateTrip(new UpdateTripRequest
+					result = await _tripService.UpdateTrip(new UpdateTripRequest
 					{
 						Id = (Guid)TripId,
 						Name = Name,
 						StartDate = StartDate,
 						EndDate = EndDate,
-						Notes = Notes
+						Notes = Notes ?? string.Empty
 					});
+				}
+
+				if (!result.IsSuccess)
+				{
+					await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Unknown error occurred.", "OK");
+					return;
 				}
 
 				await Shell.Current.GoToAsync("..");

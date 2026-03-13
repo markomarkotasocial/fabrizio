@@ -25,7 +25,6 @@ namespace fabrizio.App.Services
 
 
 
-
 	public class TripService : ITripService
 	{
 		private readonly HttpClient _http;
@@ -117,17 +116,17 @@ namespace fabrizio.App.Services
 
 		public async Task<Result> AddTrip(CreateTripRequest trip)
 		{
-			//var json = JsonSerializer.Serialize(trip);
 			try
 			{
 				var response = await _http.PostAsJsonAsync("api/trips", trip);
-				if (!response.IsSuccessStatusCode)
+				if (response.IsSuccessStatusCode)
 				{
-					var errorResult = await response.Content.ReadFromJsonAsync<Result>();
-					return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+					return Result.Success();
 				}
 
-				return Result.Success();
+				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
+
+				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
 			}
 			catch (Exception)
 			{
@@ -140,13 +139,14 @@ namespace fabrizio.App.Services
 			try
 			{
 				var response = await _http.PutAsJsonAsync($"api/trips/{request.Id}", request);
-				if (!response.IsSuccessStatusCode)
+				if (response.IsSuccessStatusCode)
 				{
-					var errorResult = await response.Content.ReadFromJsonAsync<Result>();
-					return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+					return Result.Success();
 				}
 
-				return Result.Success();
+				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
+
+				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
 			}
 			catch (Exception)
 			{
