@@ -21,5 +21,20 @@ namespace fabrizio.App.Pages.Flows
 			base.OnAppearing();			
 		}
 
+
+
+		private async void OnStartDateSelected(object sender, DateChangedEventArgs e)
+		{
+			EndDatePicker.MinimumDate = e.NewDate;
+
+			if (EndDatePicker.Date < e.NewDate)
+				EndDatePicker.Date = e.NewDate;
+
+			// mali delay da se zatvori prvi picker
+			await Task.Delay(150);
+
+			EndDatePicker.Focus();
+		}
+
 	}
 }

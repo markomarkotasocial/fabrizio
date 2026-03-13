@@ -36,6 +36,8 @@ namespace fabrizio.App.Services
 
 		}
 
+
+
 		partial void OnTripIdChanged(Guid? value)
 		{
 			OnPropertyChanged(nameof(Title));
@@ -49,6 +51,15 @@ namespace fabrizio.App.Services
 				InitNewTrip();
 			}
 		}
+		
+		partial void OnStartDateChanged(DateTime? value)
+		{
+			if (value.HasValue && EndDate < value)
+				EndDate = value.Value.AddDays(1);
+		}
+
+
+
 
 
 
