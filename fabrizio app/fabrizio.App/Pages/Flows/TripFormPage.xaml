@@ -232,13 +232,13 @@
 
 			<!-- FOOTER -->
 			<VerticalStackLayout
-            Grid.Row="2"
-            Padding="16"
-            Spacing="12"
-            BackgroundColor="#101922">
+				Grid.Row="2"
+				Padding="16"
+				Spacing="12"
+				BackgroundColor="#101922">
 
 			<Button
-                Text="Save Trip"
+				Text="Save Trip"
                 HeightRequest="56"
                 CornerRadius="12"
                 BackgroundColor="#2E7DFF"

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using fabrizio.Shared.Contracts;
+using fabrizio.Shared.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-
-using fabrizio.Shared.DTO;
-using fabrizio.Shared.Contracts;
 
 namespace fabrizio.App.Services
 {
@@ -18,7 +18,7 @@ namespace fabrizio.App.Services
 		Task<Result<GETTripOverview>> GetTripsOverview();
 
 
-		Task AddTrip(CreateTripRequest trip);
+		Task<Result> AddTrip(CreateTripRequest trip);
 		Task<Result> UpdateTrip(UpdateTripRequest trip);
 		Task DeleteTrip(Guid id);
 	}
@@ -115,10 +115,24 @@ namespace fabrizio.App.Services
 
 
 
-
-		public async Task AddTrip(CreateTripRequest trip)
+		public async Task<Result> AddTrip(CreateTripRequest trip)
 		{
-			await _http.PostAsJsonAsync("api/trips", trip);
+			//var json = JsonSerializer.Serialize(trip);
+			try
+			{
+				var response = await _http.PostAsJsonAsync("api/trips", trip);
+				if (!response.IsSuccessStatusCode)
+				{
+					var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+					return Result.Fail(errorResult?.Error ?? new BusinessError("unknown_error", "An unknown error occurred.", (int)response.StatusCode));
+				}
+
+				return Result.Success();
+			}
+			catch (Exception)
+			{
+				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
 		}
 
 		public async Task<Result> UpdateTrip(UpdateTripRequest request)

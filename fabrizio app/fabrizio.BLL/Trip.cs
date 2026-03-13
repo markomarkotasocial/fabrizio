@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using fabrizio.DAL;
+using fabrizio.DAL.Entities;
+using fabrizio.Repository;
+using fabrizio.Shared.Contracts;
+using fabrizio.Shared.DTO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System.Net.NetworkInformation;
 using System.Numerics;
-
-using fabrizio.DAL;
-using fabrizio.DAL.Entities;
-using fabrizio.Shared.DTO;
-using fabrizio.Shared.Contracts;
-using fabrizio.Repository;
+using static Azure.Core.HttpHeader;
 
 
 namespace fabrizio.BLL
@@ -229,8 +229,8 @@ namespace fabrizio.BLL
 			var trip = new Trip
 			{
 				AccountId = accountid,
-				Name = dto.Name, 
-				Notes = dto.Notes, 
+				Name = dto.Name,
+				Notes = dto.Notes ?? string.Empty,
 				StartDate = dto.StartDate, 
 				EndDate = dto.EndDate
 			};
@@ -296,7 +296,7 @@ namespace fabrizio.BLL
 			#endregion Validate
 
 			trip.Name = dto.Name;
-			trip.Notes = dto.Notes;
+			trip.Notes = dto.Notes ?? string.Empty;
 			trip.StartDate = dto.StartDate;
 			trip.EndDate = dto.EndDate;
 
