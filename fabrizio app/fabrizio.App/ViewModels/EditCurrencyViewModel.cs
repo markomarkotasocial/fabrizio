@@ -16,8 +16,10 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private string selectedCurrency;
 
-
 		public ObservableCollection<CurrencyOption> Currencies { get; } = new(CurrencyData.All);
+
+
+		public string Title => "Select your currency";
 
 
 		public EditCurrencyViewModel(IAccountState accountState, IProfileService profileService)
@@ -84,6 +86,14 @@ namespace fabrizio.App.Services
 				IsBusy = false;
 			}
 		}
+
+		[RelayCommand]
+		public async Task Cancel()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
+
+
 
 
 		private void ReorderCurrencies()

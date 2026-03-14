@@ -2,15 +2,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Flows.EditTimeZonePage"
 			 x:Name="ThisPage"
+			 Shell.NavBarIsVisible="False"
              Title="Select your time zone"
              BackgroundColor="#101922">
 
-	<CollectionView
-        ItemsSource="{Binding TimeZones}"
-        SelectionMode="None"
-        Margin="16">
 
-		<CollectionView.ItemTemplate>
+	<Grid RowDefinitions="Auto,*">
+
+		<!-- HEADER -->
+		<Grid 
+			Grid.Row="0"
+			Padding="16,12"
+			ColumnDefinitions="40,*,40"
+			BackgroundColor="#101922">
+
+			<ImageButton
+				Source="arrow_back.png"
+				BackgroundColor="Transparent"
+				HeightRequest="36"
+				WidthRequest="36"
+				Command="{Binding CancelCommand}" />
+
+			<Label
+				Grid.Column="1"
+				Text="{Binding Title}"
+				HorizontalOptions="Center"
+				VerticalOptions="Center"
+				FontSize="18"
+				FontAttributes="Bold"
+				TextColor="White"/>
+		</Grid>
+
+		<!-- CONTENT -->
+		<CollectionView
+			Grid.Row="1"
+			ItemsSource="{Binding TimeZones}"
+			SelectionMode="None"
+			Margin="16">
+
+			<CollectionView.ItemTemplate>
 			<DataTemplate>
 				<Grid Padding="14"
                       ColumnDefinitions="*, Auto"
@@ -41,8 +71,10 @@
 
 				</Grid>
 			</DataTemplate>
-		</CollectionView.ItemTemplate>
-
+			</CollectionView.ItemTemplate>
+			
 	</CollectionView>
+
+	</Grid>
 
 </ContentPage>

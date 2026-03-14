@@ -16,9 +16,10 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] private string selectedLanguage;
 
-
 		public ObservableCollection<LanguageOption> Languages { get; } = new(LanguageData.All);
 
+
+		public string Title => "Select your language";
 
 		public EditLanguageViewModel(IAccountState accountState, IProfileService profileService)
 		{
@@ -84,6 +85,13 @@ namespace fabrizio.App.Services
 				IsBusy = false;
 			}
 		}
+
+		[RelayCommand]
+		public async Task Cancel()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
+
 
 		private void ReorderLanguages()
 		{

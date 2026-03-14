@@ -5,14 +5,42 @@
 			 Shell.NavBarIsVisible="False"
              Title="Trip details">
 
-	<ScrollView>
 
-		<VerticalStackLayout 
-			Spacing="24" 
-			Padding="20">
+	<Grid RowDefinitions="Auto,*">
 
-			<!-- HERO CARD -->
-			<Frame CornerRadius="20"
+		<!-- HEADER -->
+		<Grid 
+			Grid.Row="0"
+			Padding="16,12"
+			ColumnDefinitions="40,*,40"
+			BackgroundColor="#101922">
+			
+			<ImageButton
+				Source="arrow_back.png"
+				BackgroundColor="Transparent"
+				HeightRequest="36"
+				WidthRequest="36"
+				Command="{Binding CancelCommand}" />
+
+			<Label
+				Grid.Column="1"
+				Text="{Binding Title}"
+				HorizontalOptions="Center"
+				VerticalOptions="Center"
+				FontSize="18"
+				FontAttributes="Bold"
+				TextColor="White"/>
+		</Grid>
+
+		<!-- CONTENT -->
+		<ScrollView Grid.Row="1">
+
+			<VerticalStackLayout 
+				Spacing="24" 
+				Padding="20">		
+
+				<!-- HERO CARD -->
+				<Frame CornerRadius="20"
 				   Padding="0"
 				   IsClippedToBounds="True"
 				   HasShadow="False"
@@ -63,9 +91,8 @@
 
 			</Frame>
 
-
-			<!-- DESTINATIONS -->
-			<VerticalStackLayout Spacing="12">
+				<!-- DESTINATIONS -->
+				<VerticalStackLayout Spacing="12">
 
 				<Grid ColumnDefinitions="*,Auto">
 
@@ -121,9 +148,8 @@
 
 			</VerticalStackLayout>
 
-
-			<!-- STAYS -->
-			<VerticalStackLayout Spacing="12">
+				<!-- STAYS -->
+				<VerticalStackLayout Spacing="12">
 
 				<Grid ColumnDefinitions="*,Auto">
 
@@ -199,9 +225,8 @@
 
 			</VerticalStackLayout>
 
-
-			<!-- TRANSPORT -->
-			<VerticalStackLayout Spacing="12">
+				<!-- TRANSPORT -->
+				<VerticalStackLayout Spacing="12">
 
 				<Grid ColumnDefinitions="*,Auto">
 
@@ -297,9 +322,11 @@
 				</CollectionView>
 
 			</VerticalStackLayout>
-
-		</VerticalStackLayout>
-
-	</ScrollView>
+		
+			</VerticalStackLayout>
+		
+		</ScrollView>
+	
+	</Grid>
 
 </ContentPage>

@@ -53,6 +53,9 @@ namespace fabrizio.App.Services
 		public AsyncRelayCommand AddTravel { get; }
 
 
+		public string Title => "Trip Details";
+
+
 		public TripDetailViewModel(ITripService tripService)
 		{
 			_tripService = tripService;
@@ -144,7 +147,11 @@ namespace fabrizio.App.Services
 			}
 		}
 
-
+		[RelayCommand]
+		public async Task Cancel()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
 
 
 

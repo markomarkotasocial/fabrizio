@@ -20,6 +20,8 @@ namespace fabrizio.App.Services
 		public ObservableCollection<TimeZoneOption> TimeZones { get; } = new(TimeZoneData.All);
 
 
+		public string Title => "Select your time zone";
+
 		public EditTimeZoneViewModel(IAccountState accountState, IProfileService profileService)
 		{
 			_profileService = profileService;
@@ -84,6 +86,13 @@ namespace fabrizio.App.Services
 				IsBusy = false;
 			}
 		}
+
+		[RelayCommand]
+		public async Task Cancel()
+		{
+			await Shell.Current.GoToAsync("..");
+		}
+
 
 		private void ReorderTimeZones()
 		{
