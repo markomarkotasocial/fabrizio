@@ -41,22 +41,27 @@ namespace fabrizio.App
                 client.BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             }).AddHttpMessageHandler<TokenHandler>();
+
+
             // 🟢 ViewModels
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<TripsViewModel>();
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<ProfileViewModel>();
+            builder.Services.AddTransient<HubViewModel>();
             builder.Services.AddTransient<TripFormViewModel>();
             builder.Services.AddTransient<TripDetailViewModel>();
             builder.Services.AddTransient<EditLanguageViewModel>();
             builder.Services.AddTransient<EditCurrencyViewModel>();
             builder.Services.AddTransient<EditTimeZoneViewModel>();
             builder.Services.AddTransient<DateRangeViewModel>();
+
             // 🟢 Pages
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<TripsPage>();
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<HubPage>();
             builder.Services.AddTransient<TripDetailPage>();
             builder.Services.AddTransient<TripFormPage>();
             builder.Services.AddTransient<EditLanguagePage>();

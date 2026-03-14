@@ -92,8 +92,8 @@
 	  <Compile Update="Pages\Flows\TripFormPage.xaml.cs">
 	    <DependentUpon>TripFormPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Pages\Tabs\AddPage.xaml.cs">
-	    <DependentUpon>AddPage.xaml</DependentUpon>
+	  <Compile Update="Pages\Tabs\HubPage.xaml.cs">
+	    <DependentUpon>HubPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Pages\Flows\TripDetailPage.xaml.cs">
 	    <DependentUpon>TripDetailPage.xaml</DependentUpon>
@@ -134,7 +134,7 @@
 	  <MauiXaml Update="Pages\Flows\TripFormPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\Tabs\AddPage.xaml">
+	  <MauiXaml Update="Pages\Tabs\HubPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Flows\TripDetailPage.xaml">

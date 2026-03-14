@@ -26,8 +26,8 @@
 
 		<ShellContent Title="Hub"
 					  Icon="hub.svg"
-					  ContentTemplate="{DataTemplate tabs:AddPage}"
-					  Route="add"/>
+					  ContentTemplate="{DataTemplate tabs:HubPage}"
+					  Route="hub"/>
 
 		<ShellContent Title="Profile"
 					  ContentTemplate="{DataTemplate tabs:ProfilePage}"

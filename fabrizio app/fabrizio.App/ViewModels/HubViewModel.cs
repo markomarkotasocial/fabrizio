@@ -6,28 +6,23 @@ using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
 {
-	public partial class AddViewModel : BaseViewModel
+	public partial class HubViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
 
 
 
-		public AsyncRelayCommand RefreshCommand { get; }
 
 
-		public AddViewModel(ITripService tripService)
+		public HubViewModel(ITripService tripService)
 		{
 			_tripService = tripService;
-			//RefreshCommand = new AsyncRelayCommand(RefreshHomeAsync);
+			
 		}
 
 		
 		
-		//private async Task RefreshHomeAsync()
-		//{			
-
-		//}
-
+	
 	}
 
 }

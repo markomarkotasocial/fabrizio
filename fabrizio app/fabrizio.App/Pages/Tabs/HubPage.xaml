@@ -1,16 +1,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="fabrizio.App.Pages.Tabs.AddPage"
+             x:Class="fabrizio.App.Pages.Tabs.HubPage"
              Shell.NavBarIsVisible="False"
 			 BackgroundColor="#101922">
 
 
 	<Grid Padding="16">
 
-		<Label Text="Add"
-FontSize="26"
-FontAttributes="Bold"
-TextColor="White" />
+		<Label Text="Hub"
+			   FontSize="26"
+			   FontAttributes="Bold"
+			   TextColor="White" />
 
 
 	</Grid>
