@@ -17,11 +17,11 @@
 			BackgroundColor="#101922">
 
 			<ImageButton
-	Source="arrow_back.png"
+				Source="arrow_back.png"
 	BackgroundColor="Transparent"
-	HeightRequest="36"
-	WidthRequest="36"
-	Command="{Binding CancelCommand}">
+				HeightRequest="30"
+				WidthRequest="30"
+				Command="{Binding CancelCommand}">
 
 				<ImageButton.Behaviors>
 					<toolkit:IconTintColorBehavior TintColor="White"/>

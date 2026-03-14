@@ -147,11 +147,39 @@ namespace fabrizio.App.Services
 			}
 		}
 
+
 		[RelayCommand]
 		public async Task Cancel()
 		{
 			await Shell.Current.GoToAsync("..");
 		}
+
+
+
+		private bool _isOpeningDetail; // double tap protection
+
+		[RelayCommand]
+		public async Task Edit()
+		{
+			if (_isOpeningDetail) return;
+
+			try
+			{
+				_isOpeningDetail = true;
+
+				await Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
+				{
+					[nameof(TripFormViewModel.TripId)] = TripId
+				});
+			}
+			finally
+			{
+				_isOpeningDetail = false;
+			}
+		}
+
+
+
 
 
 

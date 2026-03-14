@@ -167,7 +167,6 @@ namespace fabrizio.App.Services
 
 				var trip = result.Value;
 
-				TripId = trip.Id;
 				Name = trip.Name;
 				Notes = trip.Notes;
 				StartDate = trip.StartDate;

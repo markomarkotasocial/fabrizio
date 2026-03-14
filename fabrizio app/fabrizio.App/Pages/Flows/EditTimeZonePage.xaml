@@ -18,10 +18,10 @@
 			BackgroundColor="#101922">
 
 			<ImageButton
-				Source="arrow_back.png"
+				Source="arrow_back.svg"
 				BackgroundColor="Transparent"
-				HeightRequest="36"
-				WidthRequest="36"
+				HeightRequest="30"
+				WidthRequest="30"
 				Command="{Binding CancelCommand}">
 
 				<ImageButton.Behaviors>
@@ -38,6 +38,8 @@
 				FontSize="18"
 				FontAttributes="Bold"
 				TextColor="White"/>
+			
+
 		</Grid>
 
 		<!-- CONTENT -->

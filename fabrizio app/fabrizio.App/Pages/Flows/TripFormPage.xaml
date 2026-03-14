@@ -17,8 +17,8 @@
 			<ImageButton
 				Source="arrow_back.png"
 				BackgroundColor="Transparent"
-				HeightRequest="36"
-				WidthRequest="36"
+				HeightRequest="30"
+				WidthRequest="30"
 				Command="{Binding CancelCommand}">
 
 				<ImageButton.Behaviors>

@@ -166,33 +166,74 @@
                     BorderColor="#2A3646"
                     HasShadow="False"
                     IsVisible="{Binding ShowNextFollower}">
+					
+					
+					<Grid ColumnDefinitions="Auto,*,Auto">
 
-					<Grid ColumnDefinitions="*,Auto">
+						<!-- LEFT (image placeholder) -->
+						<VerticalStackLayout
+							Grid.Column="0"
+							Spacing="0"
+							HorizontalOptions="Start"
+							VerticalOptions="Center">
 
-						<VerticalStackLayout Spacing="2">
-
-							<Label
-                                Text="NEXT ADVENTURE"
-                                FontSize="9"
-                                FontAttributes="Bold"
-                                TextColor="#7F93A8"
-                                CharacterSpacing="1.5" />
-
-							<Label
-                                Text="{Binding Next.Name}"
-                                FontSize="14"
-                                FontAttributes="Bold"
-                                TextColor="White" />
+							<!-- kasnije možeš ubaciti sliku -->
+							<Image
+								Source="trip_placeholder.png"
+								WidthRequest="40"
+								HeightRequest="40"
+								Aspect="AspectFill"/>
 
 						</VerticalStackLayout>
 
-						<Label
-                            Grid.Column="1"
-                            Text="{Binding NextTripCountdownText}"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            TextColor="#137fec"
-                            VerticalOptions="Center" />
+
+						<!-- CENTER -->
+						<VerticalStackLayout
+							Grid.Column="1"
+							Spacing="2"
+							HorizontalOptions="Center"
+							VerticalOptions="Center">
+
+							<Label
+								Text="NEXT ADVENTURE"
+								FontSize="9"
+								FontAttributes="Bold"
+								TextColor="#7F93A8"
+								CharacterSpacing="1.5"
+								HorizontalTextAlignment="Center"/>
+
+							<Label
+								Text="{Binding Next.Name}"
+								FontSize="16"
+								FontAttributes="Bold"
+								TextColor="White"
+								HorizontalTextAlignment="Center"/>
+
+						</VerticalStackLayout>
+
+
+						<!-- RIGHT -->
+						<VerticalStackLayout
+							Grid.Column="2"
+							Spacing="2"
+							HorizontalOptions="End"
+							VerticalOptions="Center">
+
+							<Label
+								Text="{Binding NextTripCountdownText}"
+								FontSize="16"
+								FontAttributes="Bold"
+								TextColor="#137fec"
+								HorizontalTextAlignment="End"/>
+
+							<Label
+								Text="DAYS TO GO"
+								FontSize="9"
+								FontAttributes="Bold"
+								TextColor="#7F93A8"
+								HorizontalTextAlignment="End"/>
+
+						</VerticalStackLayout>
 
 					</Grid>
 				</Frame>

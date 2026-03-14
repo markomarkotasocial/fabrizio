@@ -17,10 +17,11 @@
 			BackgroundColor="#101922">
 
 			<ImageButton
-				Source="arrow_back.png"
+				Grid.Column="0"
+				Source="arrow_back.svg"
 				BackgroundColor="Transparent"
-				HeightRequest="36"
-				WidthRequest="36"
+				HeightRequest="30"
+				WidthRequest="30"
 				Command="{Binding CancelCommand}">
 
 				<ImageButton.Behaviors>
@@ -37,6 +38,21 @@
 				FontSize="18"
 				FontAttributes="Bold"
 				TextColor="White"/>
+
+			<ImageButton
+				Grid.Column="2"
+				Source="edit.svg"
+				BackgroundColor="Transparent"
+				HeightRequest="30"
+				WidthRequest="30"
+				Command="{Binding EditCommand}">
+
+				<ImageButton.Behaviors>
+					<toolkit:IconTintColorBehavior TintColor="White"/>
+				</ImageButton.Behaviors>
+
+			</ImageButton>
+
 		</Grid>
 
 		<!-- CONTENT -->

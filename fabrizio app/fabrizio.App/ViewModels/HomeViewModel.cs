@@ -42,7 +42,7 @@ namespace fabrizio.App.Services
 				var today = DateTime.Today;
 				var days = (Next.StartDate.Value.Date - today).Days;
 
-				if (days > 0) return $"{Next.Name} in {days} days ✈️"; 
+				if (days > 0) return $"{days}"; 
 				else return string.Empty;
 			}
 		}
