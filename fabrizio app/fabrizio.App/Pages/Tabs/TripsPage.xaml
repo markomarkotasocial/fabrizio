@@ -284,16 +284,15 @@
 			VerticalOptions="Center"/>
 
 		<!-- FAB -->
-		<Button
+		<ImageButton
 			Grid.RowSpan="2"
-			Text="+"
+			Source="add.svg"
 			Command="{Binding AddTripCommand}"
 			BackgroundColor="#FF7D54"
-			TextColor="White"
-			FontSize="32"
 			WidthRequest="64"
 			HeightRequest="64"
 			CornerRadius="32"
+			Padding="16"
 			VerticalOptions="End"
 			HorizontalOptions="End"
 			Margin="0,0,6,22"

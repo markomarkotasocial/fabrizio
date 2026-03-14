@@ -14,10 +14,10 @@
 				BackgroundColor="#101922">
 
 				<ImageButton
-					Source="close.png"
+					Source="close.svg"
 					BackgroundColor="Transparent"
-					HeightRequest="24"
-					WidthRequest="24"
+					HeightRequest="36"
+					WidthRequest="36"
 					Command="{Binding CancelCommand}" />
 
 				<Label
@@ -31,10 +31,10 @@
 
 				<ImageButton
 					Grid.Column="2"
-					Source="check.png"
+					Source="check.svg"
 					BackgroundColor="Transparent"
-					HeightRequest="24"
-					WidthRequest="24"
+					HeightRequest="36"
+					WidthRequest="36"
 					HorizontalOptions="End"
 					Command="{Binding SaveCommand}" />
 			</Grid>

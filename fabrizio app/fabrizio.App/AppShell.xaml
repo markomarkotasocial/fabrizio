@@ -10,28 +10,28 @@
 	<TabBar>
 
 		<ShellContent Title="Home"
-					  Icon="home.png" 
+					  Icon="home.svg" 
 					  ContentTemplate="{DataTemplate tabs:HomePage}"
 					  Route="home"/>
 
 		<ShellContent Title="Trips"
-                      Icon="trips.png"
+                      Icon="trips.svg"
                       ContentTemplate="{DataTemplate tabs:TripsPage}" 
 					  Route="trips"/>		
 
 		<ShellContent Title="Discover"
-                      Icon="discover.png"
+                      Icon="discover.svg"
                       ContentTemplate="{DataTemplate tabs:DiscoverPage}"
 					  Route="discover"/>
 
-		<ShellContent Title="Add"
-					  Icon="add.png"
+		<ShellContent Title="Hub"
+					  Icon="hub.svg"
 					  ContentTemplate="{DataTemplate tabs:AddPage}"
 					  Route="add"/>
 
 		<ShellContent Title="Profile"
 					  ContentTemplate="{DataTemplate tabs:ProfilePage}"
-					  Icon="profile.png"
+					  Icon="profile.svg"
 					  Route="profile" />
 	</TabBar>
 
