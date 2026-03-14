@@ -170,26 +170,26 @@
 					
 					<Grid ColumnDefinitions="Auto,*,Auto">
 
-						<!-- LEFT (image placeholder) -->
+						<!-- LEFT (image placeholder) --><!--
 						<VerticalStackLayout
 							Grid.Column="0"
 							Spacing="0"
 							HorizontalOptions="Start"
 							VerticalOptions="Center">
 
-							<!-- kasnije možeš ubaciti sliku -->
+							--><!-- kasnije možeš ubaciti sliku --><!--
 							<Image
 								Source="trip_placeholder.png"
 								WidthRequest="40"
 								HeightRequest="40"
 								Aspect="AspectFill"/>
 
-						</VerticalStackLayout>
+						</VerticalStackLayout>-->
 
 
 						<!-- CENTER -->
 						<VerticalStackLayout
-							Grid.Column="1"
+							Grid.Column="0"
 							Spacing="2"
 							HorizontalOptions="Center"
 							VerticalOptions="Center">
@@ -200,11 +200,11 @@
 								FontAttributes="Bold"
 								TextColor="#7F93A8"
 								CharacterSpacing="1.5"
-								HorizontalTextAlignment="Center"/>
+								HorizontalTextAlignment="Start"/>
 
 							<Label
 								Text="{Binding Next.Name}"
-								FontSize="16"
+								FontSize="18"
 								FontAttributes="Bold"
 								TextColor="White"
 								HorizontalTextAlignment="Center"/>
@@ -214,14 +214,14 @@
 
 						<!-- RIGHT -->
 						<VerticalStackLayout
-							Grid.Column="2"
+							Grid.Column="1"
 							Spacing="2"
 							HorizontalOptions="End"
 							VerticalOptions="Center">
 
 							<Label
 								Text="{Binding NextTripCountdownText}"
-								FontSize="16"
+								FontSize="18"
 								FontAttributes="Bold"
 								TextColor="#137fec"
 								HorizontalTextAlignment="End"/>

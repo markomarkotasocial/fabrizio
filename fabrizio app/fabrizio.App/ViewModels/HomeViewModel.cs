@@ -21,10 +21,6 @@ namespace fabrizio.App.Services
 
 
 
-		public AsyncRelayCommand RefreshCommand { get; }
-		public AsyncRelayCommand LoadCommand { get; }
-
-		
 
 		public bool ShowCurrentSplash => Current != null;
 		public bool ShowNextFollower => Current != null && Next != null;
@@ -55,10 +51,58 @@ namespace fabrizio.App.Services
 			_tripService = tripService;
 			_authService = authService;
 
-			LoadCommand = new AsyncRelayCommand(LoadInitialAsync);
-			RefreshCommand = new AsyncRelayCommand(RefreshAsync);
 
 		}
+
+
+
+		[RelayCommand]
+		public async Task Refresh()
+		{
+			try
+			{
+				await LoadOverviewCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				IsRefreshing = false;
+				OnPropertyChanged(nameof(IsEmpty));
+
+			}
+		}
+
+
+		[RelayCommand]
+		private async Task Load()
+		{
+			if (IsBusy) return;
+
+			try
+			{
+				IsBusy = true;
+				await LoadOverviewCoreAsync();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					IsBusy = false;
+					OnPropertyChanged(nameof(IsEmpty));
+				});
+			}
+		}
+
+
+
+
 
 
 
@@ -101,46 +145,7 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		private async Task LoadInitialAsync()
-		{
-			if (IsBusy) return;
-
-			try
-			{
-				IsBusy = true;
-				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
-			}
-			finally
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					IsBusy = false;
-					OnPropertyChanged(nameof(IsEmpty));
-				});
-			}
-		}
-
-		public async Task RefreshAsync()
-		{
-			try
-			{
-				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
-			}
-			finally
-			{
-				IsRefreshing = false;
-				OnPropertyChanged(nameof(IsEmpty));
-
-			}
-		}
+		
 
 		public async Task LoadOverviewCoreAsync()
 		{
@@ -164,7 +169,6 @@ namespace fabrizio.App.Services
 
 			}
 		}
-
 
 
 

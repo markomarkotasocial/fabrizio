@@ -1,5 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="fabrizio.App.Pages.Tabs.TripsPage"
 			 Shell.NavBarIsVisible="False"
 			 BackgroundColor="#101922">
@@ -291,12 +292,19 @@
 			BackgroundColor="#FF7D54"
 			WidthRequest="64"
 			HeightRequest="64"
-			CornerRadius="32"
+			CornerRadius="32" 
+			BorderColor="Black"
+			BorderWidth="4"
 			Padding="16"
 			VerticalOptions="End"
 			HorizontalOptions="End"
-			Margin="0,0,6,22"
-			ZIndex="10" />
+			Margin="0,0,4,20"
+			ZIndex="10">
+			<ImageButton.Behaviors>
+				<toolkit:IconTintColorBehavior TintColor="White"/>
+			</ImageButton.Behaviors>
+
+		</ImageButton>
 	</Grid>
 
 
