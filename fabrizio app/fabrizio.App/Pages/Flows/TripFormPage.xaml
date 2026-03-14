@@ -2,6 +2,7 @@
 	x:Class="fabrizio.App.Pages.Flows.TripFormPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	Shell.NavBarIsVisible="False"
 	BackgroundColor="#101922">
 
@@ -13,14 +14,19 @@
 				ColumnDefinitions="40,*,40"
 				BackgroundColor="#101922">
 
-				<ImageButton
-					Source="close.svg"
-					BackgroundColor="Transparent"
-					HeightRequest="36"
-					WidthRequest="36"
-					Command="{Binding CancelCommand}" />
+			<ImageButton
+				Source="arrow_back.png"
+				BackgroundColor="Transparent"
+				HeightRequest="36"
+				WidthRequest="36"
+				Command="{Binding CancelCommand}">
 
-				<Label
+				<ImageButton.Behaviors>
+					<toolkit:IconTintColorBehavior TintColor="White"/>
+				</ImageButton.Behaviors>
+
+			</ImageButton>
+			<Label
 					Grid.Column="1"
 					Text="{Binding Title}"
 					HorizontalOptions="Center"

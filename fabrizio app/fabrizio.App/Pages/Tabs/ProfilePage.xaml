@@ -1,5 +1,6 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="fabrizio.App.Pages.Tabs.ProfilePage"
 			 Shell.NavBarIsVisible="False"
 			 BackgroundColor="#101922">
@@ -29,7 +30,14 @@
 							   WidthRequest="20"
 							   HeightRequest="20"
 							   HorizontalOptions="Center"
-							   VerticalOptions="Center" />
+							   VerticalOptions="Center">
+
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+
+						</Image>
+
 					</Frame>
 				</Grid>
 
@@ -102,7 +110,13 @@
 						<Image Source="edit.png"
 							   WidthRequest="20"
 							   HeightRequest="20"
-							   VerticalOptions="Center"/>
+							   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+
+						</Image>
+
 					</HorizontalStackLayout>
 				</Frame>
 
@@ -217,7 +231,13 @@
 								Source="location.svg"
 								WidthRequest="18"
 								HeightRequest="18"
-								VerticalOptions="Center"/>
+								VerticalOptions="Center">
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
+
 							<Label Grid.Column="1"
 								   Text="Home Location"
 								   TextColor="White"/>
@@ -253,7 +273,13 @@
 								<Image Source="globe.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Preferred language"
@@ -279,7 +305,13 @@
 								<Image Source="payments.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Preferred currency"
@@ -305,7 +337,13 @@
 								<Image Source="time_zone.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Default time zone"
@@ -327,7 +365,13 @@
 								<Image Source="dark_mode.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Dark mode"
@@ -375,12 +419,18 @@
 								<Image Source="delete_account.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#FB7185"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Delete account"
 									   VerticalOptions="Center"
-									   TextColor="White"
+									   TextColor="#FB7185"
 									   FontAttributes="Bold"/>
 
 							</Grid>
@@ -399,12 +449,18 @@
 								<Image Source="logout.svg"
 									   WidthRequest="18"
 									   HeightRequest="18"
-									   VerticalOptions="Center"/>
+									   VerticalOptions="Center">
+									<Image.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+									</Image.Behaviors>
+
+								</Image>
+
 
 								<Label Grid.Column="1"
 									   Text="Sign out"
 									   VerticalOptions="Center"
-									   TextColor="#FB7185"
+									   TextColor="White"
 									   FontAttributes="Bold"/>
 
 							</Grid>

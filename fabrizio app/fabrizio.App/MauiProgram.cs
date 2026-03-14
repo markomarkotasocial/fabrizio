@@ -1,4 +1,5 @@
-﻿using fabrizio.App.Pages.Auth;
+﻿using CommunityToolkit.Maui;
+using fabrizio.App.Pages.Auth;
 using fabrizio.App.Pages.Components;
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.Pages.Tabs;
@@ -16,6 +17,7 @@ namespace fabrizio.App
 			var builder = MauiApp.CreateBuilder();
 			builder
 				.UseMauiApp<App>()
+				.UseMauiCommunityToolkit()
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
