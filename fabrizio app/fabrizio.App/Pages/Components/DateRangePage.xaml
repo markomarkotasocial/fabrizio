@@ -2,6 +2,7 @@
     x:Class="fabrizio.App.Pages.Components.DateRangePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     BackgroundColor="#101922"
     Shell.NavBarIsVisible="False">
 
@@ -13,7 +14,14 @@
 			<ImageButton
                 Source="close.png"
                 BackgroundColor="Transparent"
-                Command="{Binding CancelCommand}" />
+				HeightRequest="30"
+				WidthRequest="30"
+                Command="{Binding CancelCommand}">
+				<ImageButton.Behaviors>
+					<toolkit:IconTintColorBehavior TintColor="White"/>
+				</ImageButton.Behaviors>
+
+			</ImageButton>
 
 			<Label
                 Grid.Column="1"

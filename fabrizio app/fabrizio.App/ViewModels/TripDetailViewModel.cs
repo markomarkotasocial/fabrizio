@@ -69,7 +69,7 @@ namespace fabrizio.App.Services
 		{
 			if (value != Guid.Empty)
 			{
-				LoadTrip(value);
+				Load(value);
 			}
 		}
 
@@ -96,6 +96,7 @@ namespace fabrizio.App.Services
 			}
 			OnPropertyChanged(nameof(SummaryText));
 		}
+
 
 
 
@@ -166,11 +167,6 @@ namespace fabrizio.App.Services
 			{
 				_isOpeningDetail = true;
 
-				//await Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
-				//{
-				//	["tripId"] = TripId.ToString()
-				//});
-
 				await Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
 				{
 					["tripId"] = TripId
@@ -183,12 +179,32 @@ namespace fabrizio.App.Services
 			}
 		}
 
+		[RelayCommand]
+		private async Task DeleteTrip()
+		{
+			bool confirm = await Shell.Current.DisplayAlert(
+				"Delete trip",
+				"Are you sure you want to delete this trip?",
+				"Delete",
+				"Cancel");
+
+			if (!confirm) return;
+
+			//var result = await _tripService.DeleteTrip();
+
+			//if (!result.IsSuccess)
+			//{
+			//	await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
+			//	return;
+			//}
+
+			await Shell.Current.GoToAsync("..");
+		}
 
 
 
-
-
-		public async Task LoadTrip(Guid id)
+		[RelayCommand]
+		public async Task Load(Guid id)
 		{
 			if (IsBusy)	return;
 

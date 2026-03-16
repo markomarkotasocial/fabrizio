@@ -97,7 +97,7 @@ namespace fabrizio.App.Services
 			{
 				Result result;
 
-				if (TripId == null)
+				if (TripId == Guid.Empty)
 				{
 					result = await _tripService.AddTrip(new CreateTripRequest
 					{
@@ -111,7 +111,7 @@ namespace fabrizio.App.Services
 				{
 					result = await _tripService.UpdateTrip(new UpdateTripRequest
 					{
-						Id = (Guid)TripId,
+						Id = TripId,
 						Name = Name,
 						StartDate = StartDate,
 						EndDate = EndDate,

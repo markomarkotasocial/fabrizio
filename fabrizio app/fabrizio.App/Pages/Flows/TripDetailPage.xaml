@@ -7,7 +7,7 @@
              Title="Trip details">
 
 
-	<Grid RowDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,*, Auto">
 
 		<!-- HEADER -->
 		<Grid 
@@ -55,6 +55,7 @@
 
 		</Grid>
 
+		
 		<!-- CONTENT -->
 		<ScrollView Grid.Row="1">
 
@@ -349,7 +350,30 @@
 			</VerticalStackLayout>
 		
 		</ScrollView>
-	
+
+		
+		<!-- FOOTER -->
+		<VerticalStackLayout
+			Grid.Row="2"
+			Padding="16"
+			Spacing="12"
+			BackgroundColor="#101922">
+
+			<Button
+				Text="Delete Trip"
+				HeightRequest="56"
+				CornerRadius="12"
+				BackgroundColor="#FB7185"
+				TextColor="White"
+				FontAttributes="Bold"
+				Command="{Binding DeleteTripCommand}" />
+
+
+		</VerticalStackLayout>
+
+
+
+
 	</Grid>
 
 </ContentPage>

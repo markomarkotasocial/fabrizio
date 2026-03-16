@@ -17,23 +17,14 @@ namespace fabrizio.App.Pages.Flows
 			BindingContext = _viewModel = viewModel;
 		}
 
-
-		//public Guid TripId
-		//{
-		//	set
-		//	{
-		//		if (value != Guid.Empty)
-		//		{
-		//			_viewModel.LoadTrip(value);
-		//		}
-		//	}
-		//}
-
-
-		//protected override void OnAppearing()
-		//{
-		//	base.OnAppearing();			
-		//}
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
+			if (BindingContext is TripDetailViewModel vm && vm.TripId != Guid.Empty)
+			{
+				await vm.Load(vm.TripId);
+			}
+		}
 
 	}
 }

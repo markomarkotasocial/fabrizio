@@ -167,20 +167,34 @@
                                             Source="location.png"
                                             WidthRequest="20"
                                             HeightRequest="20"
-                                            VerticalOptions="Center"/>
+                                            VerticalOptions="Center">
 
-										<Label
+											<Image.Behaviors>
+												<toolkit:IconTintColorBehavior TintColor="White"/>
+											</Image.Behaviors>
+
+											</Image>
+
+											<Label
                                             Grid.Column="1"
-                                            Text="{Binding Name}"
+                                            Text="{Binding .}"
                                             VerticalOptions="Center"
                                             TextColor="White"/>
 
 										<ImageButton
                                             Grid.Column="2"
-                                            Source="trash.png"
+                                            Source="delete.svg"
+											WidthRequest="20"
+                                            HeightRequest="20"
                                             BackgroundColor="Transparent"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteDestinationCommand}"
-                                            CommandParameter="{Binding .}"/>
+                                            CommandParameter="{Binding .}">
+
+											<ImageButton.Behaviors>
+												<toolkit:IconTintColorBehavior TintColor="White"/>
+											</ImageButton.Behaviors>
+
+										</ImageButton>
 
 									</Grid>
 
@@ -233,14 +247,14 @@
 				Spacing="12"
 				BackgroundColor="#101922">
 
-			<Button
-				Text="Save Trip"
-                HeightRequest="56"
-                CornerRadius="12"
-                BackgroundColor="#2E7DFF"
-                TextColor="White"
-                FontAttributes="Bold"
-                Command="{Binding SaveCommand}" />
+				<Button
+					Text="Save Trip"
+					HeightRequest="56"
+					CornerRadius="12"
+					BackgroundColor="#2E7DFF"
+					TextColor="White"
+					FontAttributes="Bold"
+					Command="{Binding SaveCommand}" />
 
 			<!--<Button
                 Text="Cancel"
