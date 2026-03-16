@@ -76,11 +76,13 @@ namespace fabrizio.App.Services
 		[RelayCommand]
 		private Task AddTrip()
 		{
-			return Shell.Current.GoToAsync("trip-form");
+			return Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
+			{
+				["tripId"] = Guid.Empty
+			});
 		}
-				
-		private bool _isOpeningDetail; // double tap protection
 
+		private bool _isOpeningDetail; // double tap protection
 		[RelayCommand]
 		private async Task OpenTrip(TripListItemDto trip)
 		{

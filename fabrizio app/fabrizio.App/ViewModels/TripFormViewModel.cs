@@ -16,7 +16,7 @@ namespace fabrizio.App.Services
 		private readonly ITripService _tripService;
 
 
-		[ObservableProperty] private Guid? tripId;
+		[ObservableProperty] private Guid tripId;
 
 		[ObservableProperty] string name;
 
@@ -34,8 +34,8 @@ namespace fabrizio.App.Services
 
 
 
-		public bool IsNewTrip => TripId == null;
-		public string Title => TripId == null ? "New Trip" : "Edit Trip";
+		public bool IsNewTrip => TripId == Guid.Empty;
+		public string Title => TripId == Guid.Empty ? "New Trip" : "Edit Trip";
 		public string DateRangeDisplay => StartDate.HasValue && EndDate.HasValue ? $"{StartDate:dd MMM yyyy} → {EndDate:dd MMM yyyy}" : "Select travel dates";
 
 
@@ -51,19 +51,14 @@ namespace fabrizio.App.Services
 
 
 
-
-		partial void OnTripIdChanged(Guid? value)
+		partial void OnTripIdChanged(Guid value)
 		{
 			OnPropertyChanged(nameof(Title));
 
-			if (value.HasValue)
-			{
-				_ = LoadTrip(value.Value);
-			}
+			if (value != Guid.Empty)
+				_ = LoadTrip(value);
 			else
-			{
 				InitNewTrip();
-			}
 		}
 
 

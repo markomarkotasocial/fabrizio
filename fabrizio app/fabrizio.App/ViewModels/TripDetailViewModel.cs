@@ -162,15 +162,20 @@ namespace fabrizio.App.Services
 		public async Task Edit()
 		{
 			if (_isOpeningDetail) return;
-
 			try
 			{
 				_isOpeningDetail = true;
 
+				//await Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
+				//{
+				//	["tripId"] = TripId.ToString()
+				//});
+
 				await Shell.Current.GoToAsync("trip-form", new Dictionary<string, object>
 				{
-					[nameof(TripFormViewModel.TripId)] = TripId
+					["tripId"] = TripId
 				});
+
 			}
 			finally
 			{
