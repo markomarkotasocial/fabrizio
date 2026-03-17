@@ -1,5 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="fabrizio.App.Pages.Tabs.HomePage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#101922">
@@ -55,13 +56,26 @@
 
                                 Grid.Column="1"
                                 WidthRequest="40"
-                                HeightRequest="40"
-                                CornerRadius="2222"
+								HeightRequest="40"
+								CornerRadius="20"
                                 BackgroundColor="#243244"
                                 HasShadow="False"
                                 HorizontalOptions="End"
-                                VerticalOptions="Start" />
-		
+                                VerticalOptions="Start">
+
+								<ImageButton
+									Source="search.svg"
+									WidthRequest="20"
+									HeightRequest="20"
+									BackgroundColor="Transparent">
+
+									<ImageButton.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="White"/>
+									</ImageButton.Behaviors>
+
+								</ImageButton>
+							</Frame>
+
 
 						</Grid>
 

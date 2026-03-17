@@ -27,14 +27,21 @@
 					HeightRequest="40"
 					CornerRadius="20"
 					BackgroundColor="#1A222C"
-					BorderColor="#2A3646"
+
 					Padding="0"
 					HasShadow="False">
 					
-					<Label
-						Text="🔍"
-						HorizontalOptions="Center"
-						VerticalOptions="Center" />
+					<ImageButton
+						Source="search.svg"
+						WidthRequest="20"
+						HeightRequest="20"
+						BackgroundColor="Transparent">
+
+						<ImageButton.Behaviors>
+							<toolkit:IconTintColorBehavior TintColor="White"/>
+						</ImageButton.Behaviors>
+
+					</ImageButton>
 				</Frame>
 
 			</Grid>
