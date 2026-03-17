@@ -69,7 +69,7 @@ namespace fabrizio.App.Services
 		{
 			if (value != Guid.Empty)
 			{
-				Load(value);
+				_ = Load(value);
 			}
 		}
 
@@ -190,13 +190,13 @@ namespace fabrizio.App.Services
 
 			if (!confirm) return;
 
-			//var result = await _tripService.DeleteTrip();
+			var result = await _tripService.DeleteTrip(TripId);
 
-			//if (!result.IsSuccess)
-			//{
-			//	await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
-			//	return;
-			//}
+			if (!result.IsSuccess)
+			{
+				await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
+				return;
+			}
 
 			await Shell.Current.GoToAsync("..");
 		}

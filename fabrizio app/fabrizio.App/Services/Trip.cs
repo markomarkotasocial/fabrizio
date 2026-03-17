@@ -20,7 +20,7 @@ namespace fabrizio.App.Services
 
 		Task<Result> AddTrip(CreateTripRequest trip);
 		Task<Result> UpdateTrip(UpdateTripRequest trip);
-		Task DeleteTrip(Guid id);
+		Task<Result> DeleteTrip(Guid id);
 	}
 
 
@@ -154,9 +154,24 @@ namespace fabrizio.App.Services
 			}
 		}
 
-		public async Task DeleteTrip(Guid id)
+		public async Task<Result> DeleteTrip(Guid id)
 		{
-			await _http.DeleteAsync($"api/trips/{id}");
+			try
+			{
+				var response = await _http.DeleteAsync($"api/trips/{id}");
+				if (response.IsSuccessStatusCode)
+				{
+					return Result.Success();
+				}
+
+				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
+
+				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
+			}
+			catch (Exception)
+			{
+				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
+			}
 		}
 	}
 

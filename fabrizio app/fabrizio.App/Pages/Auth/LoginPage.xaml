@@ -47,17 +47,17 @@
                     IsEnabled="False" 
                     BackgroundColor="DeepSkyBlue" TextColor="Black"/>
 
-			<Button Text="Login with Microsoft (coming soon)" 
+			<!--<Button Text="Login with Microsoft (coming soon)" 
                     IsEnabled="False" 
-                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>-->
 
 			<Button Text="Login with Apple (coming soon)" 
                     IsEnabled="False" 
                     BackgroundColor="DeepSkyBlue" TextColor="Black"/>
 
-			<Button Text="Login with Facebook (coming soon)" 
+			<!--<Button Text="Login with Facebook (coming soon)" 
                     IsEnabled="False" 
-                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>
+                    BackgroundColor="DeepSkyBlue" TextColor="Black"/>-->
 
 		</VerticalStackLayout>
 	</ScrollView>

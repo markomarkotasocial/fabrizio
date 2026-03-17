@@ -105,11 +105,18 @@
 									TextColor="White"
 									VerticalOptions="Center"/>
 
-								<Label
-									Grid.Column="1"
-									Text="📅"
-									FontSize="18"
-									VerticalOptions="Center"/>
+								<ImageButton
+									Grid.Column="2"
+									Source="calendar.svg"
+									WidthRequest="20"
+									HeightRequest="20"
+									BackgroundColor="Transparent">
+
+									<ImageButton.Behaviors>
+										<toolkit:IconTintColorBehavior TintColor="White"/>
+									</ImageButton.Behaviors>
+
+								</ImageButton>
 
 							</Grid>
 
@@ -164,7 +171,7 @@
                                           ColumnSpacing="12">
 
 										<Image
-                                            Source="location.png"
+                                            Source="drag_handle.png"
                                             WidthRequest="20"
                                             HeightRequest="20"
                                             VerticalOptions="Center">
@@ -172,14 +179,14 @@
 											<Image.Behaviors>
 												<toolkit:IconTintColorBehavior TintColor="White"/>
 											</Image.Behaviors>
+										</Image>
 
-											</Image>
-
-											<Label
-                                            Grid.Column="1"
-                                            Text="{Binding .}"
-                                            VerticalOptions="Center"
-                                            TextColor="White"/>
+										<Label
+											Grid.Column="1"
+											Text="{Binding .}"
+											VerticalOptions="Center"
+											FontSize="14"
+											TextColor="White"/>
 
 										<ImageButton
                                             Grid.Column="2"

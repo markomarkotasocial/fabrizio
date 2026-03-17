@@ -153,12 +153,20 @@
                                    BorderColor="#2C3A4A">
 
 								<HorizontalStackLayout Spacing="6">
+									<Image
+										Source="location.png"
+										WidthRequest="20"
+										HeightRequest="20"
+										VerticalOptions="Center">
 
-									<Label Text="📍"/>
-
+										<Image.Behaviors>
+											<toolkit:IconTintColorBehavior TintColor="White"/>
+										</Image.Behaviors>
+									</Image>
+									
 									<Label Text="{Binding .}"
-                                           TextColor="White"
-                                           FontSize="14"/>
+										   TextColor="White"
+										   FontSize="14"/>
 
 								</HorizontalStackLayout>
 
