@@ -83,14 +83,16 @@
 						Padding="20"
 						Spacing="3">
 
-						<Frame BackgroundColor="#137fec33"
-							   BorderColor="#137fec"
-							   Padding="10,8"
-							   CornerRadius="20"
-							   HasShadow="False"
-							   HorizontalOptions="Start">
+							<!-- NOW badge -->
+							<Frame BackgroundColor="#137fec33"
+								   BorderColor="#137fec"
+								   Padding="10,8"
+								   CornerRadius="16"
+								   HasShadow="False"
+								   HorizontalOptions="Start"
+								   IsVisible="{Binding IsCurrent}">
 
-							<Label Text="UPCOMING"
+							<Label Text="NOW"
 								   FontSize="10"
 								   FontAttributes="Bold"
 								   TextColor="#137fec"/>

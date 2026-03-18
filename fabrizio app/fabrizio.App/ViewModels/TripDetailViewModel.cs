@@ -28,6 +28,7 @@ namespace fabrizio.App.Services
 
 
 
+		public bool IsCurrent => StartDate.HasValue && EndDate.HasValue && DateTime.Today >= StartDate.Value.Date && DateTime.Today <= EndDate.Value.Date;
 		public string DateRangeText => StartDate.HasValue && EndDate.HasValue ? $"{StartDate:dd MMM} — {EndDate:dd MMM}" : string.Empty;
 		public string SummaryText
 		{
@@ -78,12 +79,14 @@ namespace fabrizio.App.Services
 		{
 			OnPropertyChanged(nameof(DateRangeText));
 			OnPropertyChanged(nameof(SummaryText));
+			OnPropertyChanged(nameof(IsCurrent));
 		}
 
 		partial void OnEndDateChanged(DateTime? value)
 		{
 			OnPropertyChanged(nameof(DateRangeText));
 			OnPropertyChanged(nameof(SummaryText));
+			OnPropertyChanged(nameof(IsCurrent));
 		}
 		partial void OnDestinationsChanged(ObservableCollection<string> value)
 		{

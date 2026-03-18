@@ -12,8 +12,7 @@ namespace fabrizio.App.Services
 	{
 		public string Name { get; set; }
 
-		[ObservableProperty]
-		private bool isSelected;
+		[ObservableProperty] private bool isSelected;
 	}
 
 	public partial class TripsViewModel : BaseViewModel
@@ -131,6 +130,23 @@ namespace fabrizio.App.Services
 			await _tripService.DeleteTrip(trip.Id);
 		}
 
+		public async Task RefreshAsync()
+		{
+			try
+			{
+				await ApplyFilter();
+			}
+			catch (UnauthorizedException)
+			{
+				await _authService.LogoutAsync();
+			}
+			finally
+			{
+				IsRefreshing = false;
+				OnPropertyChanged(nameof(IsEmpty));
+			}
+		}
+
 
 
 
@@ -162,23 +178,6 @@ namespace fabrizio.App.Services
 			await Load();
 		}
 				
-
-		public async Task RefreshAsync()
-		{
-			try
-			{
-				await ApplyFilter();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
-			}
-			finally
-			{
-				IsRefreshing = false; 
-				OnPropertyChanged(nameof(IsEmpty));
-			}
-		}
 
 		private async Task LoadTripsCoreAsync(TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
