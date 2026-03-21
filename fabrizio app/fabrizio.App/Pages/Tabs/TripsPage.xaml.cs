@@ -19,7 +19,7 @@ namespace fabrizio.App.Pages.Tabs
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			await _viewModel.LoadCommand.ExecuteAsync(null);
+			await _viewModel.EnsureLoadedAsync();
 		}
 
 		private async void OnChipTapped(object sender, TappedEventArgs e)

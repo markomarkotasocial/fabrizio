@@ -13,7 +13,7 @@ namespace fabrizio.App.Services
 {
 	public interface ITripService
 	{
-		Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter);
+		Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter, int skip, int take);
 		Task<Result<TripDto>> GetTrip(Guid id);
 		Task<Result<GETTripOverview>> GetTripsOverview();
 
@@ -34,13 +34,14 @@ namespace fabrizio.App.Services
 			_http = httpClient;
 		}
 
-		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter)
+		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter, int skip, int take)
 		{
 			try
 			{
-				var url = $"api/trips?filter={filter}";
+				var url = $"api/trips?filter={filter}&skip={skip}&take={take}";
 
 				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripListItemDto>>>(url);
+
 				if (result == null)
 				{
 					return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
@@ -55,8 +56,7 @@ namespace fabrizio.App.Services
 			}
 			catch (Exception)
 			{
-				return Result<IEnumerable<TripListItemDto>>.Fail(
-					new BusinessError("network_error", "Unable to reach server.", 0));
+				return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
 			}
 		}
 

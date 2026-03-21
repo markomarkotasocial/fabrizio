@@ -34,6 +34,7 @@ namespace fabrizio.App.Services
 
 
 		public AsyncRelayCommand RefreshCommand { get; }
+		public AsyncRelayCommand LoadMoreCommand { get; }
 
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
@@ -42,12 +43,19 @@ namespace fabrizio.App.Services
 		private bool _isLoadingTrips;
 
 
+		private int _skip = 0;
+		private const int PageSize = 12;
+		private bool _hasMoreItems = true;
+		private bool _isLoadingMore;
+
+
 		public TripsViewModel(ITripService tripService, IAuthService authService)
 		{
 			_tripService = tripService;
 			_authService = authService;
 
-			RefreshCommand = new AsyncRelayCommand(RefreshAsync, () => !IsRefreshing);
+			RefreshCommand = new AsyncRelayCommand(RefreshAsync);
+			LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, () => !_isLoadingMore && _hasMoreItems);
 
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
@@ -56,20 +64,6 @@ namespace fabrizio.App.Services
 			_isInitializing = false;
 		}
 
-
-
-
-		[RelayCommand]
-		private void SetFilter(FilterChip chip)
-		{
-			if (chip.IsSelected) return;
-			foreach (var f in Filters) f.IsSelected = f == chip;
-			_ = Task.Run(async () =>
-			{
-				await Task.Delay(80);
-				await ApplyFilter();
-			});
-		}
 
 
 		[RelayCommand]
@@ -81,6 +75,15 @@ namespace fabrizio.App.Services
 			});
 		}
 
+
+		[RelayCommand]
+		private void SetFilter(FilterChip chip)
+		{
+			if (chip.IsSelected) return;
+			foreach (var f in Filters) f.IsSelected = f == chip;
+			_ = ApplyFilter();
+		}
+		
 		private bool _isOpeningDetail; // double tap protection
 		[RelayCommand]
 		private async Task OpenTrip(TripListItemDto trip)
@@ -130,6 +133,8 @@ namespace fabrizio.App.Services
 			await _tripService.DeleteTrip(trip.Id);
 		}
 
+
+
 		public async Task RefreshAsync()
 		{
 			try
@@ -143,17 +148,54 @@ namespace fabrizio.App.Services
 			finally
 			{
 				IsRefreshing = false;
-				OnPropertyChanged(nameof(IsEmpty));
 			}
 		}
 
+		private async Task LoadMoreAsync()
+		{
+			if ((_isLoadingMore && _skip != 0) || !_hasMoreItems) return;
 
+			try
+			{
+				_isLoadingMore = true;
 
+				var chip = Filters.FirstOrDefault(x => x.IsSelected);
 
+				TripFilter filter = chip?.Name switch
+				{
+					"Upcoming" => TripFilter.CurrentAndUpcoming,
+					"Past" => TripFilter.Past,
+					"All" => TripFilter.All,
+					_ => TripFilter.CurrentAndUpcoming
+				};
 
+				var result = await _tripService.GetTrips(filter, _skip, PageSize);
+				if (!result.IsSuccess || result.Value == null) return;
 
+				var items = result.Value.ToList(); // !
 
+				foreach (var t in items)
+					Trips.Add(t);
 
+				_skip += items.Count;
+
+				if (items.Count < PageSize)
+					_hasMoreItems = false;
+			}
+			finally
+			{
+				_isLoadingMore = false;
+				LoadMoreCommand.NotifyCanExecuteChanged();
+			}
+		}
+
+		private async Task ResetAndLoadAsync(TripFilter filter)
+		{
+			_skip = 0;
+			_hasMoreItems = true;
+			Trips.Clear();
+			await LoadMoreAsync();
+		}
 
 		private async Task ApplyFilter()
 		{
@@ -167,34 +209,14 @@ namespace fabrizio.App.Services
 				_ => TripFilter.CurrentAndUpcoming
 			};
 
-			await LoadTripsCoreAsync(filter);
+			await ResetAndLoadAsync(filter);
 		}
-
 
 		public async Task EnsureLoadedAsync()
 		{
 			if (_isInitialized)	return;
 			_isInitialized = true;
 			await Load();
-		}
-				
-
-		private async Task LoadTripsCoreAsync(TripFilter filter = TripFilter.CurrentAndUpcoming)
-		{
-			if (_isLoadingTrips) return;
-			_isLoadingTrips = true;
-
-			try
-			{
-				Trips.Clear();
-				var result = await _tripService.GetTrips(filter);
-				if (!result.IsSuccess) return;
-				foreach (var t in result.Value!) Trips.Add(t);
-			}
-			finally
-			{
-				_isLoadingTrips = false;
-			}
 		}
 
 
