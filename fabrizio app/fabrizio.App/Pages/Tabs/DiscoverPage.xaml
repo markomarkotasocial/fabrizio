@@ -1,5 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="fabrizio.App.Pages.Tabs.DiscoverPage"
              Shell.NavBarIsVisible="False"
              BackgroundColor="#101922">
@@ -34,36 +35,48 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
+						<!-- ICON -->
 						<Frame
-							WidthRequest="40"
-							HeightRequest="40"
-							CornerRadius="20"
-                            BackgroundColor="#1A222C"
+							WidthRequest="50"
+							HeightRequest="50"
+							CornerRadius="25"
+							BackgroundColor="#1A222C"
 							BorderColor="#1A222C"
-                            HasShadow="False"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Start">
+							HasShadow="False"
+							HorizontalOptions="Start"
+							VerticalOptions="Start">
 
-							<Label
-                                Text="🗺️"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"/>
+							<Image Source="map.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout Spacing="2">
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<!-- TEXT (BOTTOM) -->
+						<VerticalStackLayout Grid.Row="2" Spacing="2">
 							<Label Text="Destinations"
-                                   FontAttributes="Bold"
-                                   FontSize="16"
-                                   TextColor="White"/>
+								   FontAttributes="Bold"
+								   FontSize="16"
+								   TextColor="White"/>
 
 							<Label Text="CURATED GUIDES"
-                                   FontSize="10"
-                                   TextColor="#9FB3C8"/>
+								   FontSize="10"
+								   TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- VISA -->
@@ -75,24 +88,35 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
 						<Frame 
-							WidthRequest="40"
-							HeightRequest="40"
-							CornerRadius="20"
+							WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25"
 							BackgroundColor="#1A222C"
 							BorderColor="#1A222C"
 							HorizontalOptions="Start"
 							VerticalOptions="Start"
 							HasShadow="False">
 
-							<Label Text="🪪"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="passport.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout>
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<VerticalStackLayout Grid.Row="2" >
 							<Label Text="Visa Policies"
                                    FontAttributes="Bold"
                                    FontSize="16"
@@ -103,7 +127,7 @@
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- COFFEE -->
@@ -115,23 +139,34 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
-						<Frame WidthRequest="40"
-							   HeightRequest="40"
-							   CornerRadius="20"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25"
 							   BackgroundColor="#1A222C"
 							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
 
-							<Label Text="☕"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="coffee.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout>
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<VerticalStackLayout Grid.Row="2" >
 							<Label Text="Coffee places"
                                    FontAttributes="Bold"
                                    FontSize="16"
@@ -142,7 +177,7 @@
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- FLIGHTS -->
@@ -154,23 +189,34 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
-						<Frame WidthRequest="40"
-							   HeightRequest="40"
-							   CornerRadius="20"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25"
 							   BackgroundColor="#1A222C"
 							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
 
-							<Label Text="✈️"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="flight_takeoff.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout>
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<VerticalStackLayout Grid.Row="2" >
 							<Label Text="Flight recommendations"
                                    FontAttributes="Bold"
                                    FontSize="16"
@@ -181,7 +227,7 @@
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- ESIM -->
@@ -193,23 +239,34 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
-						<Frame WidthRequest="40"
-							   HeightRequest="40"
-							   CornerRadius="20"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25"
 							   BackgroundColor="#1A222C"
 							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
 
-							<Label Text="📶"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="sim_card.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout>
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<VerticalStackLayout Grid.Row="2" >
 							<Label Text="eSIM"
                                    FontAttributes="Bold"
                                    FontSize="16"
@@ -220,7 +277,7 @@
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- INSURANCE -->
@@ -232,23 +289,34 @@
                        BorderColor="#2A3646"
                        HasShadow="False">
 
-					<VerticalStackLayout Spacing="12">
+					<Grid RowDefinitions="Auto,*,Auto">
 
-						<Frame WidthRequest="40"
-							   HeightRequest="40"
-							   CornerRadius="20"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25"
 							   BackgroundColor="#1A222C"
 							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
 
-							<Label Text="🛡️"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="shield_with_heart.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout>
+						<!-- SPACER -->
+						<BoxView Grid.Row="1" Opacity="0" />
+
+						<VerticalStackLayout Grid.Row="2" >
 							<Label Text="Insurance"
                                    FontAttributes="Bold"
                                    FontSize="16"
@@ -259,7 +327,7 @@
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
 
-					</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 				<!-- INSIGHTS (FULL WIDTH) -->
@@ -273,19 +341,27 @@
 					<Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
 
 						<Frame
-							WidthRequest="64" 
-							HeightRequest="64"	
+							WidthRequest="50" 
+							HeightRequest="50"	
 							CornerRadius="12"
 							BackgroundColor="#1A222C"
 							BorderColor="#1A222C"
 							HasShadow="False">
 
-							<Label Text="📊"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="monitoring.svg"
+								   WidthRequest="20"
+								   HeightRequest="20"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+
+							</Image>
 						</Frame>
 
-						<VerticalStackLayout Grid.Column="1" Margin="12,0">
+						<VerticalStackLayout Grid.Column="1" Margin="12,16">
 							<Label Text="Insights"
                                    FontAttributes="Bold"
                                    FontSize="16"
