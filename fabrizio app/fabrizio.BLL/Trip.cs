@@ -284,7 +284,7 @@ namespace fabrizio.BLL
 			var dateValidation = ValidateTripDates(trip, dto.StartDate, dto.EndDate);
 			if (!dateValidation.IsSuccess)
 			{
-				return dateValidation;
+				return Result<TripDto>.Fail(dateValidation.Error!);
 			}
 
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
@@ -376,7 +376,7 @@ namespace fabrizio.BLL
 
 
 
-		private Result<TripDto> ValidateTripDates(Trip trip, DateTime? startDate, DateTime? endDate)
+		private Result ValidateTripDates(Trip trip, DateTime? startDate, DateTime? endDate)
 		{
 			if (startDate.HasValue && endDate.HasValue && endDate < startDate)
 			{
@@ -397,28 +397,45 @@ namespace fabrizio.BLL
 					return Result<TripDto>.Fail(new BusinessError("trip_end_required", "End date cannot be removed when bookings exist.", 400));
 				}
 
-				var minBookingStart =
+				var bookingStarts =
 					trip.AccommodationBookings.Where(x => x.From.HasValue).Select(x => x.From!.Value)
 					.Concat(trip.TravelBookings.Where(x => x.Departure.HasValue).Select(x => x.Departure!.Value))
-					.Min();
+					.ToList();
 
-				var maxBookingEnd =
-					trip.AccommodationBookings.Where(x => x.To.HasValue).Select(x => x.To!.Value)
-					.Concat(trip.TravelBookings.Where(x => x.Arrival.HasValue).Select(x => x.Arrival!.Value))
-					.Max();
-
-				if (startDate > minBookingStart)
+				if (bookingStarts.Any())
 				{
-					return Result<TripDto>.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
+					var minBookingStart = bookingStarts.Min();
+
+					if (startDate.Value > minBookingStart)
+					{
+						return Result<TripDto>.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
+					}
 				}
 
-				if (endDate < maxBookingEnd)
-				{
-					return Result<TripDto>.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
-				}
-			}		
 
-			return (Result<TripDto>)Result<TripDto>.Success();
+
+				//var minBookingStart =
+				//	trip.AccommodationBookings.Where(x => x.From.HasValue).Select(x => x.From!.Value)
+				//	.Concat(trip.TravelBookings.Where(x => x.Departure.HasValue).Select(x => x.Departure!.Value))
+				//	.Min();
+
+				//var maxBookingEnd =
+				//	trip.AccommodationBookings.Where(x => x.To.HasValue).Select(x => x.To!.Value)
+				//	.Concat(trip.TravelBookings.Where(x => x.Arrival.HasValue).Select(x => x.Arrival!.Value))
+				//	.Max();
+
+				//if (startDate > minBookingStart)
+				//{
+				//	return Result<TripDto>.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
+				//}
+
+				//if (endDate < maxBookingEnd)
+				//{
+				//	return Result<TripDto>.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
+				//}
+			}
+
+			return Result.Success();
 		}
 
 		private TripDto MapToGetTrip(Trip trip)
