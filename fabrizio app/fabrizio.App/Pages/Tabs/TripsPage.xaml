@@ -9,7 +9,7 @@
 		  RowDefinitions="Auto,*">
 
 		<!-- HEADER -->
-		<VerticalStackLayout Grid.Row="0" Spacing="12">
+		<VerticalStackLayout Grid.Row="0" Spacing="18">
 
 			<Grid ColumnDefinitions="*,Auto">
 
@@ -27,7 +27,6 @@
 					HeightRequest="40"
 					CornerRadius="20"
 					BackgroundColor="#1A222C"
-
 					Padding="0"
 					HasShadow="False">
 					

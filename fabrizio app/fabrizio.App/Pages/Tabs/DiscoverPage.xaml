@@ -2,16 +2,321 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="fabrizio.App.Pages.Tabs.DiscoverPage"
              Shell.NavBarIsVisible="False"
-			 BackgroundColor="#101922">
+             BackgroundColor="#101922">
 
+	<ScrollView>
 
-	<Grid Padding="16">
+		<VerticalStackLayout 
+			Padding="20" 
+			Spacing="18">
 
-		<Label Text="Discover"
-FontSize="26"
-FontAttributes="Bold"
-TextColor="White" />
+			<!-- HEADER -->
+			<Label
+                Text="Explore new possibilities"
+                FontSize="26"
+                FontAttributes="Bold"
+                TextColor="White" />
 
-</Grid>
+			<!-- GRID -->
+			<Grid ColumnDefinitions="*,*"
+				  RowDefinitions="Auto,Auto,Auto,Auto"
+				  RowSpacing="14"
+				  ColumnSpacing="14">
+
+				<!-- CARD TEMPLATE STYLE (manual reuse) -->
+
+				<!-- DESTINATIONS -->
+				<Frame Grid.Row="0" Grid.Column="0"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame
+							WidthRequest="40"
+							HeightRequest="40"
+							CornerRadius="20"
+                            BackgroundColor="#1A222C"
+                            HasShadow="False"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Start">
+
+							<Label
+                                Text="🗺️"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout Spacing="2">
+							<Label Text="Destinations"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="CURATED GUIDES"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- VISA -->
+				<Frame Grid.Row="0" Grid.Column="1"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame 
+							WidthRequest="40"
+							HeightRequest="40"
+							CornerRadius="20"
+							BackgroundColor="#1A222C"
+							HorizontalOptions="Start"
+							VerticalOptions="Start"
+							HasShadow="False">
+
+							<Label Text="🪪"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout>
+							<Label Text="Visa Policies"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="TRAVEL FREEDOM"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- COFFEE -->
+				<Frame Grid.Row="1" Grid.Column="0"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame WidthRequest="40"
+							   HeightRequest="40"
+							   CornerRadius="20"
+							   BackgroundColor="#1A222C"
+							   HorizontalOptions="Start"
+							   VerticalOptions="Start"
+                               HasShadow="False">
+
+							<Label Text="☕"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout>
+							<Label Text="Coffee places"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="EXPLORE OPTIONS"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- FLIGHTS -->
+				<Frame Grid.Row="1" Grid.Column="1"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame WidthRequest="40"
+							   HeightRequest="40"
+							   CornerRadius="20"
+							   BackgroundColor="#1A222C"
+							   HorizontalOptions="Start"
+							   VerticalOptions="Start"
+                               HasShadow="False">
+
+							<Label Text="✈️"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout>
+							<Label Text="Flight recommendations"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="LIVE TRACKING"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- ESIM -->
+				<Frame Grid.Row="2" Grid.Column="0"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame WidthRequest="40"
+							   HeightRequest="40"
+							   CornerRadius="20"
+							   BackgroundColor="#1A222C"
+							   HorizontalOptions="Start"
+							   VerticalOptions="Start"
+                               HasShadow="False">
+
+							<Label Text="📶"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout>
+							<Label Text="eSIM"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="GLOBAL DATA"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- INSURANCE -->
+				<Frame Grid.Row="2" Grid.Column="1"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="160"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="12">
+
+						<Frame WidthRequest="40"
+							   HeightRequest="40"
+							   CornerRadius="20"
+							   BackgroundColor="#1A222C"
+							   HorizontalOptions="Start"
+							   VerticalOptions="Start"
+                               HasShadow="False">
+
+							<Label Text="🛡️"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout>
+							<Label Text="Insurance"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="PEACE OF MIND"
+                                   FontSize="10"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- INSIGHTS (FULL WIDTH) -->
+				<Frame Grid.Row="3" Grid.ColumnSpan="2"
+                       CornerRadius="18"
+                       Padding="16"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+
+						<Frame
+							WidthRequest="44" 
+							HeightRequest="44"
+							CornerRadius="10"
+							BackgroundColor="#1A222C"
+							HasShadow="False">
+
+							<Label Text="📊"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<VerticalStackLayout Grid.Column="1" Margin="12,0">
+							<Label Text="Insights"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="White"/>
+
+							<Label Text="Coming soon"
+                                   FontSize="12"
+                                   TextColor="#9FB3C8"/>
+						</VerticalStackLayout>
+
+						<Label Grid.Column="2"
+                               Text="›"
+                               FontSize="20"
+                               TextColor="#9FB3C8"
+                               VerticalOptions="Center"/>
+
+					</Grid>
+				</Frame>
+
+			</Grid>
+
+			<!-- FOOTER -->
+			<VerticalStackLayout Spacing="4" HorizontalOptions="Center" Margin="0,20,0,0">
+
+				<Label Text="STAY TUNED"
+                       FontSize="10"
+                       TextColor="#6B7280"
+                       HorizontalOptions="Center"/>
+
+				<Label Text="More features coming soon"
+                       FontSize="10"
+                       TextColor="#4B5563"
+                       HorizontalOptions="Center"/>
+
+			</VerticalStackLayout>
+
+		</VerticalStackLayout>
+
+	</ScrollView>
 
 </ContentPage>
