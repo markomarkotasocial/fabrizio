@@ -412,27 +412,21 @@ namespace fabrizio.BLL
 					}
 				}
 
+				var bookingEnds =
+					trip.AccommodationBookings.Where(x => x.To.HasValue).Select(x => x.To!.Value)
+					.Concat(trip.TravelBookings.Where(x => x.Arrival.HasValue).Select(x => x.Arrival!.Value))
+					.ToList();
 
+				if (bookingEnds.Any())
+				{
+					var maxBookingEnd = bookingEnds.Max();
 
-				//var minBookingStart =
-				//	trip.AccommodationBookings.Where(x => x.From.HasValue).Select(x => x.From!.Value)
-				//	.Concat(trip.TravelBookings.Where(x => x.Departure.HasValue).Select(x => x.Departure!.Value))
-				//	.Min();
-
-				//var maxBookingEnd =
-				//	trip.AccommodationBookings.Where(x => x.To.HasValue).Select(x => x.To!.Value)
-				//	.Concat(trip.TravelBookings.Where(x => x.Arrival.HasValue).Select(x => x.Arrival!.Value))
-				//	.Max();
-
-				//if (startDate > minBookingStart)
-				//{
-				//	return Result<TripDto>.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
-				//}
-
-				//if (endDate < maxBookingEnd)
-				//{
-				//	return Result<TripDto>.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
-				//}
+					if (endDate.Value < maxBookingEnd)
+					{
+						return Result<TripDto>.Fail(
+							new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
+					}
+				}
 			}
 
 			return Result.Success();

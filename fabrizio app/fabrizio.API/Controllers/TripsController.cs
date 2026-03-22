@@ -162,8 +162,9 @@ namespace fabrizio.API.Controllers
 			var accountIdClaim = User.FindFirstValue("accountId");
 			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
 
-			await _tripsService.UpdateTrip(accountId, id, dto);
-			return NoContent();
+			var result = await _tripsService.UpdateTrip(accountId, id, dto);
+			if (!result.IsSuccess) return result.ToProblem();
+			return Ok(result.Value);
 		}
 
 		/// <summary>
