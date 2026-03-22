@@ -30,7 +30,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -41,6 +41,7 @@
 							HeightRequest="40"
 							CornerRadius="20"
                             BackgroundColor="#1A222C"
+							BorderColor="#1A222C"
                             HasShadow="False"
                             HorizontalOptions="Start"
                             VerticalOptions="Start">
@@ -70,7 +71,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -81,6 +82,7 @@
 							HeightRequest="40"
 							CornerRadius="20"
 							BackgroundColor="#1A222C"
+							BorderColor="#1A222C"
 							HorizontalOptions="Start"
 							VerticalOptions="Start"
 							HasShadow="False">
@@ -109,7 +111,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -119,6 +121,7 @@
 							   HeightRequest="40"
 							   CornerRadius="20"
 							   BackgroundColor="#1A222C"
+							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
@@ -147,7 +150,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -157,6 +160,7 @@
 							   HeightRequest="40"
 							   CornerRadius="20"
 							   BackgroundColor="#1A222C"
+							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
@@ -185,7 +189,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -195,6 +199,7 @@
 							   HeightRequest="40"
 							   CornerRadius="20"
 							   BackgroundColor="#1A222C"
+							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
@@ -223,7 +228,7 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="160"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
@@ -233,6 +238,7 @@
 							   HeightRequest="40"
 							   CornerRadius="20"
 							   BackgroundColor="#1A222C"
+							   BorderColor="#1A222C"
 							   HorizontalOptions="Start"
 							   VerticalOptions="Start"
                                HasShadow="False">
@@ -260,17 +266,18 @@
 				<Frame Grid.Row="3" Grid.ColumnSpan="2"
                        CornerRadius="18"
                        Padding="16"
-                       BackgroundColor="#121A23"
+                       BackgroundColor="#1E293B"
                        BorderColor="#2A3646"
                        HasShadow="False">
 
 					<Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
 
 						<Frame
-							WidthRequest="44" 
-							HeightRequest="44"
-							CornerRadius="10"
+							WidthRequest="64" 
+							HeightRequest="64"	
+							CornerRadius="12"
 							BackgroundColor="#1A222C"
+							BorderColor="#1A222C"
 							HasShadow="False">
 
 							<Label Text="📊"
