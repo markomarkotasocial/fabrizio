@@ -153,6 +153,8 @@ namespace fabrizio.App.Services
 
 		private async Task LoadMoreAsync()
 		{
+			// Prevent duplicate loads during infinite scrolling, but allow reload when starting from the first page (skip == 0),
+			// e.g. during pull-to-refresh or initial load. This acts as a safety net beyond the command's CanExecute logic.
 			if ((_isLoadingMore && _skip != 0) || !_hasMoreItems) return;
 
 			try
@@ -175,7 +177,12 @@ namespace fabrizio.App.Services
 				var items = result.Value.ToList(); // !
 
 				foreach (var t in items)
-					Trips.Add(t);
+				{
+					// Prevent duplicates in case of backend paging inconsistencies
+					// or data changes between requests (e.g. new items inserted).
+					if (!Trips.Any(x => x.Id == t.Id)) 
+						Trips.Add(t);
+				}
 
 				_skip += items.Count;
 
@@ -185,17 +192,12 @@ namespace fabrizio.App.Services
 			finally
 			{
 				_isLoadingMore = false;
+
+				// Re-evaluate CanExecute to update command (LoadMore) availability in UI
 				LoadMoreCommand.NotifyCanExecuteChanged();
 			}
 		}
-
-		private async Task ResetAndLoadAsync(TripFilter filter)
-		{
-			_skip = 0;
-			_hasMoreItems = true;
-			Trips.Clear();
-			await LoadMoreAsync();
-		}
+				
 
 		private async Task ApplyFilter()
 		{
@@ -210,6 +212,14 @@ namespace fabrizio.App.Services
 			};
 
 			await ResetAndLoadAsync(filter);
+		}
+
+		private async Task ResetAndLoadAsync(TripFilter filter)
+		{
+			_skip = 0;
+			_hasMoreItems = true;
+			Trips.Clear();
+			await LoadMoreAsync();
 		}
 
 		public async Task EnsureLoadedAsync()
