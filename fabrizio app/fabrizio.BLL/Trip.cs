@@ -18,7 +18,7 @@ namespace fabrizio.BLL
 		Task<Result<TripDto>> GetTripById(int accountid, Guid id);
 		Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, TripFilter filter = TripFilter.CurrentAndUpcoming);
 		Task<Result<TripDto>> CreateTrip(int accountid, CreateTripRequest dto);
-		Task<Result> UpdateTrip(int accountid, Guid id, UpdateTripRequest dto);
+		Task<Result<TripDto>> UpdateTrip(int accountid, Guid id, UpdateTripRequest dto);
 		Task<Result> DeleteTrip(int accountid, Guid id);
 
 
@@ -253,7 +253,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result> UpdateTrip(int accountid, Guid id, UpdateTripRequest dto)
+		public async Task<Result<TripDto>> UpdateTrip(int accountid, Guid id, UpdateTripRequest dto)
 		{
 			#region Validate
 
@@ -303,7 +303,18 @@ namespace fabrizio.BLL
 			trip.Recalculate();
 
 			await _tripRepository.SaveChangesAsync();
-			return Result.Success();
+			return Result<TripDto>.Success(new TripDto
+			{
+				Id = trip.Id,
+				Name = trip.Name,
+				Notes = trip.Notes ?? string.Empty,
+				StartDate = trip.StartDate,
+				EndDate = trip.EndDate,
+				Status = (int)trip.Status,
+				AccommodationBookings = Enumerable.Empty<AccommodationBookingDto>(),
+				TravelBookings = Enumerable.Empty<TravelBookingDto>(),
+				Destinations = Enumerable.Empty<DestinationDto>()
+			});
 		}
 
 		public async Task<Result> DeleteTrip(int accountid, Guid id)
@@ -365,11 +376,11 @@ namespace fabrizio.BLL
 
 
 
-		private Result ValidateTripDates(Trip trip, DateTime? startDate, DateTime? endDate)
+		private Result<TripDto> ValidateTripDates(Trip trip, DateTime? startDate, DateTime? endDate)
 		{
 			if (startDate.HasValue && endDate.HasValue && endDate < startDate)
 			{
-				return Result.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+				return Result<TripDto>.Fail(new BusinessError("trip_dates_inconsistency", "End date cannot be earlier than start date.", 400));
 			}
 
 			bool hasBookings = trip.AccommodationBookings.Any() || trip.TravelBookings.Any();
@@ -378,12 +389,12 @@ namespace fabrizio.BLL
 			{
 				if (!startDate.HasValue)
 				{
-					return Result.Fail(new BusinessError("trip_start_required", "Start date cannot be removed when bookings exist.", 400));
+					return Result<TripDto>.Fail(new BusinessError("trip_start_required", "Start date cannot be removed when bookings exist.", 400));
 				}
 
 				if (!endDate.HasValue)
 				{
-					return Result.Fail(new BusinessError("trip_end_required", "End date cannot be removed when bookings exist.", 400));
+					return Result<TripDto>.Fail(new BusinessError("trip_end_required", "End date cannot be removed when bookings exist.", 400));
 				}
 
 				var minBookingStart =
@@ -398,16 +409,16 @@ namespace fabrizio.BLL
 
 				if (startDate > minBookingStart)
 				{
-					return Result.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
+					return Result<TripDto>.Fail(new BusinessError("trip_start_conflict", "Start date cannot be after the first booking.", 400));
 				}
 
 				if (endDate < maxBookingEnd)
 				{
-					return Result.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
+					return Result<TripDto>.Fail(new BusinessError("trip_end_conflict", "End date cannot be before the last booking.", 400));
 				}
 			}		
 
-			return Result.Success();
+			return (Result<TripDto>)Result<TripDto>.Success();
 		}
 
 		private TripDto MapToGetTrip(Trip trip)
