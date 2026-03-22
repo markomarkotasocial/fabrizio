@@ -262,23 +262,23 @@ namespace fabrizio.BLL
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
 			{
-				return Result.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
+				return Result<TripDto>.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
 			}
 
 			var trip = await _tripRepository.GetById(id);
 			if (trip == null)
 			{
-				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+				return Result<TripDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
 			if (trip.AccountId != accountid)
 			{
-				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result<TripDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip can not be updated.", 403));
+				return Result<TripDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip can not be updated.", 403));
 			}		
 
 			var dateValidation = ValidateTripDates(trip, dto.StartDate, dto.EndDate);
@@ -290,7 +290,7 @@ namespace fabrizio.BLL
 			var hasOverlap = await _tripRepository.HasOverlappingTrip(accountid, dto.StartDate, dto.EndDate, excludeTripId: id);
 			if (hasOverlap)
 			{
-				return Result.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
+				return Result<TripDto>.Fail(new BusinessError("trip_overlap", "Trip dates overlap.", 409));
 			}
 
 			#endregion Validate
