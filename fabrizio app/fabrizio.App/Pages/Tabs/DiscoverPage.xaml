@@ -167,12 +167,12 @@
 						<BoxView Grid.Row="1" Opacity="0" />
 
 						<VerticalStackLayout Grid.Row="2" >
-							<Label Text="Coffee places"
+							<Label Text="Coffee and notebook"
                                    FontAttributes="Bold"
                                    FontSize="16"
                                    TextColor="White"/>
 
-							<Label Text="EXPLORE OPTIONS"
+							<Label Text="NEARBY OPTIONS"
                                    FontSize="10"
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
@@ -222,7 +222,7 @@
                                    FontSize="16"
                                    TextColor="White"/>
 
-							<Label Text="LIVE TRACKING"
+							<Label Text="FROM RECENT TRAVELLERS"
                                    FontSize="10"
                                    TextColor="#9FB3C8"/>
 						</VerticalStackLayout>
