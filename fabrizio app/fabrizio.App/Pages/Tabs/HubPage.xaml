@@ -37,31 +37,36 @@
 					   CornerRadius="18"
 					   Padding="16"
 					   HeightRequest="140"
-					   BackgroundColor="#121A23"
+					   BackgroundColor="#1E293B"
 					   BorderColor="#2A3646"
 					   HasShadow="False">
 
 					<VerticalStackLayout VerticalOptions="Center" Spacing="10">
 
-						<Frame WidthRequest="48"
-                               HeightRequest="48"
-                               CornerRadius="24"
-                               BackgroundColor="#FFFFFF22"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25" 
+                               BackgroundColor="#121A23"
                                HasShadow="False"
                                HorizontalOptions="Center">
 
-							<Label Text="+"
-                                   FontSize="22"
-                                   TextColor="White"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+							<Image Source="add.svg"
+								   WidthRequest="22"
+								   HeightRequest="22"
+								   HorizontalOptions="Center"
+								   VerticalOptions="Center">
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+							</Image>
+
 						</Frame>
 
 						<Label Text="ADD DOCUMENT"
-                               FontSize="12"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="White"/>
+							   FontSize="12"
+							   FontAttributes="Bold"
+							   HorizontalOptions="Center"
+							   TextColor="White"/>					
 
 					</VerticalStackLayout>
 				</Frame>
@@ -71,16 +76,16 @@
                        CornerRadius="18"
                        Padding="16"
                        HeightRequest="140"
-                       BackgroundColor="#121A23"
-                       BorderColor="#2A3646"
+					   BackgroundColor="#1E293B"
+					   BorderColor="#2A3646"
                        HasShadow="False">
 
 					<VerticalStackLayout VerticalOptions="Center" Spacing="10">
 
-						<Frame WidthRequest="48"
-                               HeightRequest="48"
-                               CornerRadius="24"
-                               BackgroundColor="#137fec33"
+						<Frame WidthRequest="50"
+							   HeightRequest="50"
+							   CornerRadius="25" 
+                               BackgroundColor="#121A23"
                                HasShadow="False"
                                HorizontalOptions="Center">
 
@@ -123,20 +128,21 @@
 			<!-- DOCUMENT LIST -->
 
 			<!-- ITEM -->
-			<Frame CornerRadius="16"
-                   Padding="14"
+			<Frame CornerRadius="18"
+                   Padding="16"
                    BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
                    HasShadow="False">
 
 				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
 					<Frame WidthRequest="44"
                            HeightRequest="44"
-                           CornerRadius="10"
-                           BackgroundColor="#137fec22"
+                           CornerRadius="12"
+                           BackgroundColor="#121A23"
                            HasShadow="False">
 
-						<Image Source="ticket.svg"
+						<Image Source="airplane_ticket.svg"
                                WidthRequest="20"
                                HeightRequest="20"
                                HorizontalOptions="Center"
@@ -166,9 +172,189 @@
 				</Grid>
 			</Frame>
 
-			<!-- (kopiraj za ostale: Visas, Accommodation, itd.) -->
+			<!-- ITEM -->
+			<Frame CornerRadius="18"
+				   Padding="16"
+				   BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
+				   HasShadow="False">
 
-			<!-- SMART FEATURES -->
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+						   HeightRequest="44"
+						   CornerRadius="12"
+						   BackgroundColor="#121A23"
+						   HasShadow="False">
+
+						<Image Source="airplane_ticket.svg"
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Boarding Passes"
+							   FontAttributes="Bold"
+							   TextColor="White"/>
+
+						<Label Text="Upcoming: Flight TW410 to ICN"
+							   FontSize="12"
+							   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+						   Text="›"
+						   FontSize="20"
+						   TextColor="#9FB3C8"
+						   VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+			<!-- ITEM -->
+			<Frame CornerRadius="18"
+				   Padding="16"
+				   BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
+				   HasShadow="False">
+
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+						   HeightRequest="44"
+						   CornerRadius="12"
+						   BackgroundColor="#121A23"
+						   HasShadow="False">
+
+						<Image Source="airplane_ticket.svg"
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Boarding Passes"
+				   FontAttributes="Bold"
+				   TextColor="White"/>
+
+						<Label Text="Upcoming: Flight TW410 to ICN"
+				   FontSize="12"
+				   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+			   Text="›"
+			   FontSize="20"
+			   TextColor="#9FB3C8"
+			   VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+			<!-- ITEM -->
+			<Frame CornerRadius="18"
+				   Padding="16"
+				   BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
+				   HasShadow="False">
+
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+			   HeightRequest="44"
+			   CornerRadius="12"
+			   BackgroundColor="#121A23"
+			   HasShadow="False">
+
+						<Image Source="airplane_ticket.svg"
+				   WidthRequest="20"
+				   HeightRequest="20"
+				   HorizontalOptions="Center"
+				   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Boarding Passes"
+				   FontAttributes="Bold"
+				   TextColor="White"/>
+
+						<Label Text="Upcoming: Flight TW410 to ICN"
+				   FontSize="12"
+				   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+			   Text="›"
+			   FontSize="20"
+			   TextColor="#9FB3C8"
+			   VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+			<!-- ITEM -->
+			<Frame CornerRadius="18"
+				   Padding="16"
+				   BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
+				   HasShadow="False">
+
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+						   HeightRequest="44"
+						   CornerRadius="12"
+						   BackgroundColor="#121A23"
+						   HasShadow="False">
+
+						<Image Source="airplane_ticket.svg"
+				   WidthRequest="20"
+				   HeightRequest="20"
+				   HorizontalOptions="Center"
+				   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Boarding Passes"
+				   FontAttributes="Bold"
+				   TextColor="White"/>
+
+						<Label Text="Upcoming: Flight TW410 to ICN"
+				   FontSize="12"
+				   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+			   Text="›"
+			   FontSize="20"
+			   TextColor="#9FB3C8"
+			   VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+
+
+			<!-- SMART FEATURES HEADER -->
 			<Label Text="Smart Features"
                    FontSize="18"
                    FontAttributes="Bold"
@@ -234,8 +420,6 @@
 					</VerticalStackLayout>
 				</Frame>
 				
-				
-
 			</Grid>
 
 		</VerticalStackLayout>

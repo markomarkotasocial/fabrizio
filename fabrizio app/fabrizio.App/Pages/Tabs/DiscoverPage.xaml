@@ -98,8 +98,8 @@
 
 						<Frame 
 							WidthRequest="50"
-							   HeightRequest="50"
-							   CornerRadius="25"
+							HeightRequest="50"
+							CornerRadius="25"
 							BackgroundColor="#1A222C"
 							BorderColor="#1A222C"
 							HorizontalOptions="Start"
