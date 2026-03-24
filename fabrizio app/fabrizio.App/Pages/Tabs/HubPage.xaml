@@ -1,18 +1,243 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="fabrizio.App.Pages.Tabs.HubPage"
              Shell.NavBarIsVisible="False"
-			 BackgroundColor="#101922">
+             BackgroundColor="#101922">
 
+	<ScrollView>
 
-	<Grid Padding="16">
+		<VerticalStackLayout Padding="20" 
+							 Spacing="18">
 
-		<Label Text="Hub"
-			   FontSize="26"
-			   FontAttributes="Bold"
-			   TextColor="White" />
+			<!-- HEADER -->
+			<VerticalStackLayout Spacing="4">
+				<Label Text="Hub"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"/>
 
+				<Label Text="Your travel documents and tools"
+                       FontSize="14"
+                       TextColor="#9FB3C8"/>
+			</VerticalStackLayout>
 
-	</Grid>
+			<!-- QUICK ACTIONS -->
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+
+				<!-- ADD DOCUMENT -->
+				<Frame Grid.Column="0"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="140"
+                       HasShadow="False">
+
+					<Frame.Background>
+						<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+							<GradientStop Color="#4F7EFF" Offset="0"/>
+							<GradientStop Color="#3B5BDB" Offset="1"/>
+						</LinearGradientBrush>
+					</Frame.Background>
+
+					<VerticalStackLayout VerticalOptions="Center" Spacing="10">
+
+						<Frame WidthRequest="48"
+                               HeightRequest="48"
+                               CornerRadius="24"
+                               BackgroundColor="#FFFFFF22"
+                               HasShadow="False"
+                               HorizontalOptions="Center">
+
+							<Label Text="+"
+                                   FontSize="22"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+						</Frame>
+
+						<Label Text="ADD DOCUMENT"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="White"/>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- SCAN -->
+				<Frame Grid.Column="1"
+                       CornerRadius="18"
+                       Padding="16"
+                       HeightRequest="140"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       HasShadow="False">
+
+					<VerticalStackLayout VerticalOptions="Center" Spacing="10">
+
+						<Frame WidthRequest="48"
+                               HeightRequest="48"
+                               CornerRadius="24"
+                               BackgroundColor="#137fec33"
+                               HasShadow="False"
+                               HorizontalOptions="Center">
+
+							<Image Source="scan.svg"
+                                   WidthRequest="22"
+                                   HeightRequest="22"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+								<Image.Behaviors>
+									<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+								</Image.Behaviors>
+							</Image>
+						</Frame>
+
+						<Label Text="SCAN"
+                               FontSize="12"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="White"/>
+
+					</VerticalStackLayout>
+				</Frame>
+
+			</Grid>
+
+			<!-- MAIN DOCUMENTS HEADER -->
+			<Grid ColumnDefinitions="*,Auto">
+				<Label Text="Main Documents"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#ADC6FF"/>
+
+				<Label Grid.Column="1"
+                       Text="5 ITEMS"
+                       FontSize="10"
+                       TextColor="#6B7280"
+                       VerticalOptions="Center"/>
+			</Grid>
+
+			<!-- DOCUMENT LIST -->
+
+			<!-- ITEM -->
+			<Frame CornerRadius="16"
+                   Padding="14"
+                   BackgroundColor="#1E293B"
+                   HasShadow="False">
+
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+                           HeightRequest="44"
+                           CornerRadius="10"
+                           BackgroundColor="#137fec22"
+                           HasShadow="False">
+
+						<Image Source="ticket.svg"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Boarding Passes"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+						<Label Text="Upcoming: Flight TW410 to ICN"
+                               FontSize="12"
+                               TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+                           Text="›"
+                           FontSize="20"
+                           TextColor="#9FB3C8"
+                           VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+			<!-- (kopiraj za ostale: Visas, Accommodation, itd.) -->
+
+			<!-- SMART FEATURES -->
+			<Label Text="Smart Features"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="#ADC6FF"/>
+
+			<Grid ColumnDefinitions="*,*" RowSpacing="14" ColumnSpacing="14">
+
+				<!-- FEATURE CARD -->
+				<Frame Grid.Row="0" Grid.Column="0"
+                       CornerRadius="16"
+                       Padding="16"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       Opacity="0.6"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="10">
+
+						<Image Source="bell.svg"
+                               WidthRequest="26"
+                               HeightRequest="26">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+						</Image>
+
+						<Label Text="Expiry Alerts"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+						<Label Text="COMING SOON"
+                               FontSize="10"
+                               TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- DUPLICATE for others -->
+				<Frame Grid.Row="0" Grid.Column="1"
+                       CornerRadius="16"
+                       Padding="16"
+                       BackgroundColor="#121A23"
+                       BorderColor="#2A3646"
+                       Opacity="0.6"
+                       HasShadow="False">
+
+					<VerticalStackLayout Spacing="10">
+
+						<Image Source="offline.svg"
+                               WidthRequest="26"
+                               HeightRequest="26">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+						</Image>
+
+						<Label Text="Offline Access"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+						<Label Text="COMING SOON"
+                               FontSize="10"
+                               TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+				</Frame>
+				
+				
+
+			</Grid>
+
+		</VerticalStackLayout>
+
+	</ScrollView>
 
 </ContentPage>
