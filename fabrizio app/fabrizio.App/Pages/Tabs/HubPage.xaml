@@ -140,6 +140,7 @@
                            HeightRequest="44"
                            CornerRadius="12"
                            BackgroundColor="#121A23"
+						   BorderColor="#121A23"
                            HasShadow="False">
 
 						<Image Source="airplane_ticket.svg"
@@ -185,9 +186,10 @@
 						   HeightRequest="44"
 						   CornerRadius="12"
 						   BackgroundColor="#121A23"
+						   BorderColor="#121A23"
 						   HasShadow="False">
 
-						<Image Source="airplane_ticket.svg"
+						<Image Source="passport.svg"
 							   WidthRequest="20"
 							   HeightRequest="20"
 							   HorizontalOptions="Center"
@@ -199,11 +201,11 @@
 					</Frame>
 
 					<VerticalStackLayout Grid.Column="1" Spacing="2">
-						<Label Text="Boarding Passes"
+						<Label Text="Visas"
 							   FontAttributes="Bold"
 							   TextColor="White"/>
 
-						<Label Text="Upcoming: Flight TW410 to ICN"
+						<Label Text="Schengen (Expires in 45 days)"
 							   FontSize="12"
 							   TextColor="#9FB3C8"/>
 					</VerticalStackLayout>
@@ -230,9 +232,10 @@
 						   HeightRequest="44"
 						   CornerRadius="12"
 						   BackgroundColor="#121A23"
+						   BorderColor="#121A23"
 						   HasShadow="False">
 
-						<Image Source="airplane_ticket.svg"
+						<Image Source="hotel.svg"
 							   WidthRequest="20"
 							   HeightRequest="20"
 							   HorizontalOptions="Center"
@@ -244,56 +247,11 @@
 					</Frame>
 
 					<VerticalStackLayout Grid.Column="1" Spacing="2">
-						<Label Text="Boarding Passes"
+						<Label Text="Accomodation"
 				   FontAttributes="Bold"
 				   TextColor="White"/>
 
-						<Label Text="Upcoming: Flight TW410 to ICN"
-				   FontSize="12"
-				   TextColor="#9FB3C8"/>
-					</VerticalStackLayout>
-
-					<Label Grid.Column="2"
-			   Text="›"
-			   FontSize="20"
-			   TextColor="#9FB3C8"
-			   VerticalOptions="Center"/>
-
-				</Grid>
-			</Frame>
-
-			<!-- ITEM -->
-			<Frame CornerRadius="18"
-				   Padding="16"
-				   BackgroundColor="#1E293B"
-				   BorderColor="#1E293B"
-				   HasShadow="False">
-
-				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-
-					<Frame WidthRequest="44"
-			   HeightRequest="44"
-			   CornerRadius="12"
-			   BackgroundColor="#121A23"
-			   HasShadow="False">
-
-						<Image Source="airplane_ticket.svg"
-				   WidthRequest="20"
-				   HeightRequest="20"
-				   HorizontalOptions="Center"
-				   VerticalOptions="Center">
-							<Image.Behaviors>
-								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
-							</Image.Behaviors>
-						</Image>
-					</Frame>
-
-					<VerticalStackLayout Grid.Column="1" Spacing="2">
-						<Label Text="Boarding Passes"
-				   FontAttributes="Bold"
-				   TextColor="White"/>
-
-						<Label Text="Upcoming: Flight TW410 to ICN"
+						<Label Text="Hotel Bangkok 68 Ratchadaphisek"
 				   FontSize="12"
 				   TextColor="#9FB3C8"/>
 					</VerticalStackLayout>
@@ -320,13 +278,14 @@
 						   HeightRequest="44"
 						   CornerRadius="12"
 						   BackgroundColor="#121A23"
+						   BorderColor="#121A23"
 						   HasShadow="False">
 
-						<Image Source="airplane_ticket.svg"
-				   WidthRequest="20"
-				   HeightRequest="20"
-				   HorizontalOptions="Center"
-				   VerticalOptions="Center">
+						<Image Source="shield_with_heart.svg"
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center">
 							<Image.Behaviors>
 								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
 							</Image.Behaviors>
@@ -334,11 +293,57 @@
 					</Frame>
 
 					<VerticalStackLayout Grid.Column="1" Spacing="2">
-						<Label Text="Boarding Passes"
-				   FontAttributes="Bold"
-				   TextColor="White"/>
+						<Label Text="Insurance"
+							   FontAttributes="Bold"
+							   TextColor="White"/>
 
-						<Label Text="Upcoming: Flight TW410 to ICN"
+						<Label Text="Policy #6476534 - Allianz"
+							   FontSize="12"
+							   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+
+					<Label Grid.Column="2"
+			   Text="›"
+			   FontSize="20"
+			   TextColor="#9FB3C8"
+			   VerticalOptions="Center"/>
+
+				</Grid>
+			</Frame>
+
+			<!-- ITEM -->
+			<Frame CornerRadius="18"
+				   Padding="16"
+				   BackgroundColor="#1E293B"
+				   BorderColor="#1E293B"
+				   HasShadow="False">
+
+				<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+					<Frame WidthRequest="44"
+						   HeightRequest="44"
+						   CornerRadius="12"
+						   BackgroundColor="#121A23"
+						   BorderColor="#121A23"
+						   HasShadow="False">
+
+						<Image Source="contract.svg"
+							   WidthRequest="20"
+							   HeightRequest="20"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#137fec"/>
+							</Image.Behaviors>
+						</Image>
+					</Frame>
+
+					<VerticalStackLayout Grid.Column="1" Spacing="2">
+						<Label Text="Tax Documents"
+							   FontAttributes="Bold"
+							   TextColor="White"/>
+
+						<Label Text="No Documents Attached"
 				   FontSize="12"
 				   TextColor="#9FB3C8"/>
 					</VerticalStackLayout>
@@ -360,9 +365,11 @@
                    FontAttributes="Bold"
                    TextColor="#ADC6FF"/>
 
-			<Grid ColumnDefinitions="*,*" RowSpacing="14" ColumnSpacing="14">
+			<Grid ColumnDefinitions="*,*" RowDefinitions="*,*"
+				  RowSpacing="14" 
+				  ColumnSpacing="14">
 
-				<!-- FEATURE CARD -->
+				<!-- FEATURE CARD 0 0 -->
 				<Frame Grid.Row="0" Grid.Column="0"
                        CornerRadius="16"
                        Padding="16"
@@ -373,7 +380,7 @@
 
 					<VerticalStackLayout Spacing="10">
 
-						<Image Source="bell.svg"
+						<Image Source="notification_important.svg"
                                WidthRequest="26"
                                HeightRequest="26">
 							<Image.Behaviors>
@@ -391,7 +398,7 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<!-- DUPLICATE for others -->
+				<!-- FEATURE CARD 0 1 -->
 				<Frame Grid.Row="0" Grid.Column="1"
                        CornerRadius="16"
                        Padding="16"
@@ -402,7 +409,7 @@
 
 					<VerticalStackLayout Spacing="10">
 
-						<Image Source="offline.svg"
+						<Image Source="cloud_off.svg"
                                WidthRequest="26"
                                HeightRequest="26">
 							<Image.Behaviors>
@@ -419,7 +426,66 @@
                                TextColor="#9FB3C8"/>
 					</VerticalStackLayout>
 				</Frame>
-				
+
+				<!-- FEATURE CARD 1 0 -->
+				<Frame Grid.Row="1" Grid.Column="0"
+					   CornerRadius="16"
+					   Padding="16"
+					   BackgroundColor="#121A23"
+					   BorderColor="#2A3646"
+					   Opacity="0.6"
+					   HasShadow="False">
+
+					<VerticalStackLayout Spacing="10">
+
+						<Image Source="share.svg"
+							   WidthRequest="26"
+							   HeightRequest="26">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+						</Image>
+
+						<Label Text="Quick Share"
+							   FontAttributes="Bold"
+							   TextColor="White"/>
+
+						<Label Text="COMING SOON"
+							   FontSize="10"
+							   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- FEATURE CARD 1 1 -->
+				<Frame Grid.Row="1" Grid.Column="1"
+				   CornerRadius="16"
+				   Padding="16"
+				   BackgroundColor="#121A23"
+				   BorderColor="#2A3646"
+				   Opacity="0.6"
+				   HasShadow="False">
+
+					<VerticalStackLayout Spacing="10">
+
+						<Image Source="wand_stars.svg"
+						   WidthRequest="26"
+						   HeightRequest="26">
+							<Image.Behaviors>
+								<toolkit:IconTintColorBehavior TintColor="#94A3B8"/>
+							</Image.Behaviors>
+						</Image>
+
+						<Label Text="AI Summary"
+						   FontAttributes="Bold"
+						   TextColor="White"/>
+
+						<Label Text="COMING SOON"
+						   FontSize="10"
+						   TextColor="#9FB3C8"/>
+					</VerticalStackLayout>
+				</Frame>
+
+
 			</Grid>
 
 		</VerticalStackLayout>
