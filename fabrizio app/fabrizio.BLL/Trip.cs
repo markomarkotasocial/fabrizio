@@ -23,15 +23,15 @@ namespace fabrizio.BLL
 
 
 		Task<Result<TravelBookingDto>> CreateTravelBooking(int accountid, Guid tripid, CreateTravelBookingRequest dto);
-		Task<Result> UpdateTravelBooking(int accountid, Guid id, UpdateTravelBookingRequest dto);
+		Task<Result<TravelBookingDto>> UpdateTravelBooking(int accountid, Guid id, UpdateTravelBookingRequest dto);
 		Task<Result> DeleteTravelBooking(int accountid, Guid tripid, Guid travelbookingid);
 
 		Task<Result<AccommodationBookingDto>> CreateAccommodationBooking(int accountid, Guid tripid, CreateAccommodationBookingRequest dto);
-		Task<Result> UpdateAccommodationBooking(int accountid, Guid tripid, UpdateAccommodationBookingRequest dto);
+		Task<Result<AccommodationBookingDto>> UpdateAccommodationBooking(int accountid, Guid tripid, UpdateAccommodationBookingRequest dto);
 		Task<Result> DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid);
 
 		Task<Result<DestinationDto>> CreateDestination(int accountid, Guid tripid, CreateDestinationRequest dto);
-		Task<Result> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto);
+		Task<Result<DestinationDto>> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto);
 		Task<Result> DeleteDestination(int accountid, Guid tripid, Guid destinationid);
 	}
 

@@ -71,7 +71,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto)
+		public async Task<Result<DestinationDto>> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto)
 		{
 			#region Validate
 
@@ -81,35 +81,35 @@ namespace fabrizio.BLL
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
 			{
-				return Result.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
+				return Result<DestinationDto>.Fail(new BusinessError("destination_name_required", "Name must be provided.", 400));
 			}
 
 			var hasOverlap = await _destinationRepository.HasOverlappingDestination(accountid, tripid, dto.Name, dto.Id);
 			if (hasOverlap)
 			{
-				return Result.Fail(new BusinessError("destination_overlap", "Destination name overlap.", 409));
+				return Result<DestinationDto>.Fail(new BusinessError("destination_overlap", "Destination name overlap.", 409));
 			}
 						
 			Trip? trip = await _tripRepository.GetById(tripid);
 			if (trip == null)
 			{
-				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+				return Result<DestinationDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
 			if (trip.AccountId != accountid)
 			{
-				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result<DestinationDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+				return Result<DestinationDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
 			Destination? destination = trip.Destinations.FirstOrDefault(b => b.Id == dto.Id);
 			if (destination == null)
 			{
-				return Result.Fail(new BusinessError("destination_not_found", "There is no destination with specified ID.", 404));
+				return Result<DestinationDto>.Fail(new BusinessError("destination_not_found", "There is no destination with specified ID.", 404));
 			}
 
 			#endregion Validate
@@ -117,7 +117,13 @@ namespace fabrizio.BLL
 			destination.Name = dto.Name;
 
 			await _tripRepository.SaveChangesAsync();
-			return Result.Success();
+			return Result<DestinationDto>.Success(new DestinationDto
+			{
+				Id = destination.Id,
+				Name = destination.Name, 
+				Order = destination.Order, 
+				TripId = destination.TripId
+			});
 		}
 
 		public async Task<Result> DeleteDestination(int accountid, Guid tripid, Guid destinationid)

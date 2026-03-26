@@ -89,7 +89,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<Result> UpdateAccommodationBooking(int accountid, Guid tripid, UpdateAccommodationBookingRequest dto)
+		public async Task<Result<AccommodationBookingDto>> UpdateAccommodationBooking(int accountid, Guid tripid, UpdateAccommodationBookingRequest dto)
 		{
 			#region Validate
 
@@ -99,49 +99,49 @@ namespace fabrizio.BLL
 
 			if (string.IsNullOrWhiteSpace(dto.Location))
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_location_required", "Location must be provided.", 400));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_location_required", "Location must be provided.", 400));
 			}
 
 			if (string.IsNullOrWhiteSpace(dto.Name))
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_name_required", "Name must be provided.", 400));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_name_required", "Name must be provided.", 400));
 			}
 
 			if (!Enum.IsDefined(typeof(AccommodationBookingTypes), dto.Type))
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_type_invalid", "Invalid accommodation booking type.", 400));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_type_invalid", "Invalid accommodation booking type.", 400));
 			}
 
 			if (dto.From == null || dto.To == null)
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dated_required", "Accommodation booking must have both from and to dates.", 400));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_dated_required", "Accommodation booking must have both from and to dates.", 400));
 			}
 
 			if (dto.From > dto.To)
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
 			}
 
 			Trip? trip = await _tripRepository.GetById(tripid);
 			if (trip == null)
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
 			}
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
 			if (trip.AccountId != accountid)
 			{
-				return Result<AccommodationBooking>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			AccommodationBooking? booking = trip.AccommodationBookings.FirstOrDefault(b => b.Id == dto.Id);
 			if (booking == null)
 			{
-				return Result.Fail(new BusinessError("accomodationbooking_not_found", "There is no accommodation booking with specified ID.", 404));
+				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_not_found", "There is no accommodation booking with specified ID.", 404));
 			}
 
 			#endregion Validate
@@ -156,7 +156,18 @@ namespace fabrizio.BLL
 
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
-			return Result.Success();
+			return Result<AccommodationBookingDto>.Success(new AccommodationBookingDto
+			{
+				Id = booking.Id,
+				Name = booking.Name, 
+				From = booking.From, 
+				To = booking.To, 
+				Location = booking.Location, 
+				Note = booking.Note, 
+				Reference = booking.Reference,  
+				Type = (int)booking.Type, 
+				TripId = booking.TripId,
+			});
 		}
 
 		public async Task<Result> DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid)

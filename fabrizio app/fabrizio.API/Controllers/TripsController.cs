@@ -116,7 +116,7 @@ namespace fabrizio.API.Controllers
 		}
 
 		/// <summary>
-		/// Create a new accommodoation booking for a specific trip.
+		/// Create a new accommodation booking for a specific trip.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="dto"></param>
