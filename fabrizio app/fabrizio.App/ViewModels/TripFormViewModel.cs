@@ -28,7 +28,7 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] string notes;
 
-		[ObservableProperty] ObservableCollection<string> destinations;
+		[ObservableProperty] ObservableCollection<DestinationDto> destinations;
 		[ObservableProperty] ObservableCollection<AccommodationBookingDto> accommodations;
 		[ObservableProperty] ObservableCollection<TravelBookingDto> travels;
 
@@ -141,6 +141,48 @@ namespace fabrizio.App.Services
 		}
 
 
+		[RelayCommand]
+		public async Task AddDestination()
+		{
+
+			bool confirm = await Shell.Current.DisplayAlert(
+				"Delete destination",
+				"Are you sure you want to delete this destination?",
+				"Delete",
+				"Cancel");
+
+			if (!confirm) return;
+			else return;
+		}
+
+		[RelayCommand]
+		public async Task DeleteDestination()
+		{
+			bool confirm = await Shell.Current.DisplayAlert(
+				"Delete destination",
+				"Are you sure you want to delete this destination?",
+				"Delete",
+				"Cancel");
+
+			if (!confirm) return;
+			else return;
+
+			//var result = await _tripService.DeleteTrip(TripId);
+
+			//if (!result.IsSuccess)
+			//{
+			//	await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
+			//	return;
+			//}
+
+			//await Shell.Current.GoToAsync("..");
+
+		}
+
+
+
+
+
 
 
 
@@ -168,7 +210,7 @@ namespace fabrizio.App.Services
 				EndDate = trip.EndDate;
 				//Status = trip.Status;
 
-				Destinations = new ObservableCollection<string>(trip.Destinations.Select(x => x.Name));
+				Destinations = new ObservableCollection<DestinationDto>(trip.Destinations);
 				Accommodations = new ObservableCollection<AccommodationBookingDto>(trip.AccommodationBookings);
 				Travels = new ObservableCollection<TravelBookingDto>(trip.TravelBookings);
 			}
@@ -184,7 +226,7 @@ namespace fabrizio.App.Services
 			StartDate = DateTime.Today;
 			EndDate = DateTime.Today.AddDays(1);
 			Notes = string.Empty;
-			Destinations = new ObservableCollection<string>();
+			Destinations = new ObservableCollection<DestinationDto>();
 			Accommodations = new ObservableCollection<AccommodationBookingDto>();
 			Travels = new ObservableCollection<TravelBookingDto>();
 		}

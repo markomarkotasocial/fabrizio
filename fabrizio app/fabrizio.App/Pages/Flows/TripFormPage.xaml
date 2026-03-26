@@ -53,7 +53,7 @@
 					Padding="16,24"
 					Spacing="24">
 
-			     	<!-- GENERAL INFORMATION -->
+					<!-- GENERAL INFORMATION -->
 					<VerticalStackLayout Spacing="12">
 
 					<Label
@@ -62,10 +62,10 @@
                         FontAttributes="Bold"
                         TextColor="White"/>
 
-					<!-- Trip Name -->
-					<VerticalStackLayout Spacing="4">
+						<!-- Trip Name -->
+						<VerticalStackLayout Spacing="4">
 						<Label
-                            Text="Trip Name"
+                            Text="Name"
                             FontSize="13"
                             TextColor="#9FB3C8"/>
 
@@ -83,9 +83,8 @@
 						</Frame>
 					</VerticalStackLayout>
 
-
-					<!-- Dates -->
-					<VerticalStackLayout Spacing="4">
+						<!-- Dates -->
+						<VerticalStackLayout Spacing="4">
 						
 						<Label
 							Text="Dates"
@@ -127,8 +126,8 @@
 						</Frame>
 
 					</VerticalStackLayout>
-
-				</VerticalStackLayout>
+						
+					</VerticalStackLayout>
 
 
 				<!-- DESTINATIONS -->
@@ -183,7 +182,7 @@
 
 										<Label
 											Grid.Column="1"
-											Text="{Binding .}"
+											Text="{Binding Name}"
 											VerticalOptions="Center"
 											FontSize="14"
 											TextColor="White"/>
@@ -245,7 +244,6 @@
 			</VerticalStackLayout>
 
 		</ScrollView>
-
 
 			<!-- FOOTER -->
 			<VerticalStackLayout
