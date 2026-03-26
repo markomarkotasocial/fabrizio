@@ -8,6 +8,16 @@ using System.Collections.ObjectModel;
 
 namespace fabrizio.App.Services
 {
+	public partial class DestinationItemViewModel : ObservableObject
+	{
+		public Guid? Id { get; set; }
+		[ObservableProperty] private string name;
+		public bool IsNew { get; set; }
+	}
+
+
+
+
 	[QueryProperty(nameof(TripId), "tripId")]
 	[QueryProperty(nameof(SelectedStartDate), "selectedStartDate")]
 	[QueryProperty(nameof(SelectedEndDate), "selectedEndDate")]
@@ -28,7 +38,7 @@ namespace fabrizio.App.Services
 
 		[ObservableProperty] string notes;
 
-		[ObservableProperty] ObservableCollection<DestinationDto> destinations;
+		[ObservableProperty] ObservableCollection<DestinationItemViewModel> destinations;
 		[ObservableProperty] ObservableCollection<AccommodationBookingDto> accommodations;
 		[ObservableProperty] ObservableCollection<TravelBookingDto> travels;
 
@@ -144,15 +154,11 @@ namespace fabrizio.App.Services
 		[RelayCommand]
 		public async Task AddDestination()
 		{
-
-			bool confirm = await Shell.Current.DisplayAlert(
-				"Delete destination",
-				"Are you sure you want to delete this destination?",
-				"Delete",
-				"Cancel");
-
-			if (!confirm) return;
-			else return;
+			Destinations.Add(new DestinationItemViewModel
+			{
+				Name = string.Empty,
+				IsNew = true
+			});
 		}
 
 		[RelayCommand]
@@ -210,7 +216,7 @@ namespace fabrizio.App.Services
 				EndDate = trip.EndDate;
 				//Status = trip.Status;
 
-				Destinations = new ObservableCollection<DestinationDto>(trip.Destinations);
+				Destinations = new ObservableCollection<DestinationItemViewModel>(trip.Destinations.Select(x => new DestinationItemViewModel { Id = x.Id, IsNew = false, Name = x.Name }).ToList());
 				Accommodations = new ObservableCollection<AccommodationBookingDto>(trip.AccommodationBookings);
 				Travels = new ObservableCollection<TravelBookingDto>(trip.TravelBookings);
 			}
@@ -226,15 +232,12 @@ namespace fabrizio.App.Services
 			StartDate = DateTime.Today;
 			EndDate = DateTime.Today.AddDays(1);
 			Notes = string.Empty;
-			Destinations = new ObservableCollection<DestinationDto>();
+			Destinations = new ObservableCollection<DestinationItemViewModel>();
 			Accommodations = new ObservableCollection<AccommodationBookingDto>();
 			Travels = new ObservableCollection<TravelBookingDto>();
 		}
 
 
-
-		
-		
 
 		
 	}

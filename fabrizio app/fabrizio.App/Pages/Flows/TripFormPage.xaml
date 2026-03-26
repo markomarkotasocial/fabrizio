@@ -34,18 +34,8 @@
 					FontSize="18"
 					FontAttributes="Bold"
 					TextColor="White"/>
-
-				<!--<ImageButton
-					Grid.Column="2"
-					Source="check.svg"
-					BackgroundColor="Transparent"
-					HeightRequest="36"
-					WidthRequest="36"
-					HorizontalOptions="End"
-					Command="{Binding SaveCommand}" />-->
-			</Grid>
+		</Grid>
 			
-
 			<!-- CONTENT -->
 			<ScrollView Grid.Row="1">
 
@@ -134,20 +124,20 @@
 				<VerticalStackLayout Spacing="12">
 
 					<Grid ColumnDefinitions="*,Auto">
-
 						<Label
                             Text="Destinations"
                             FontSize="18"
                             FontAttributes="Bold"
                             TextColor="White"/>
 
-						<Button
-                            Grid.Column="1"
-                            Text="+ Add"
-                            BackgroundColor="Transparent"
-                            TextColor="#2E7DFF"
-                            Command="{Binding AddDestinationCommand}"/>
-
+						<Button Grid.Column="1"
+								Text="+ Add"
+								FontAttributes="Bold"
+								BackgroundColor="#1B2633"
+								TextColor="#137fec"
+								CornerRadius="22"
+								Padding="22,4"
+								Command="{Binding AddDestinationCommand}"/>
 					</Grid>
 
 
@@ -212,6 +202,7 @@
 
 					</CollectionView>
 
+					
 				</VerticalStackLayout>
 
 
@@ -252,7 +243,7 @@
 				Spacing="12"
 				BackgroundColor="#101922">
 
-				<Button
+			<Button
 					Text="Save Trip"
 					HeightRequest="56"
 					CornerRadius="12"
@@ -260,14 +251,6 @@
 					TextColor="White"
 					FontAttributes="Bold"
 					Command="{Binding SaveCommand}" />
-
-			<!--<Button
-                Text="Cancel"
-                HeightRequest="56"
-                CornerRadius="12"
-                BackgroundColor="Transparent"
-                TextColor="#9FB3C8"
-                Command="{Binding CancelCommand}" />-->
 
 		</VerticalStackLayout>
 

@@ -127,14 +127,14 @@
                            FontAttributes="Bold"
                            TextColor="White"/>
 
-					<Button Grid.Column="1"
+					<!--<Button Grid.Column="1"
                             Text="+ Add destination"
 							CornerRadius="22"
 							Padding="4,4"
                             FontSize="14"
 							FontAttributes="Bold"
                             BackgroundColor="Transparent"
-                            TextColor="#137fec"/>
+                            TextColor="#137fec"/>-->
 
 				</Grid>
 
@@ -192,14 +192,14 @@
                            FontAttributes="Bold"
                            TextColor="White"/>
 
-					<Button Grid.Column="1"
+					<!--<Button Grid.Column="1"
                             Text="+ Add"
 							FontAttributes="Bold"
                             BackgroundColor="#1B2633"
                             TextColor="#137fec"
                             CornerRadius="22"
                             Padding="22,4"
-							Command="{Binding AddAccomodation}"/>
+							Command="{Binding AddAccomodation}"/>-->
 
 				</Grid>
 
@@ -269,14 +269,14 @@
                            FontAttributes="Bold"
                            TextColor="White"/>
 
-					<Button Grid.Column="1"
+					<!--<Button Grid.Column="1"
                             Text="+ Add"
 							FontAttributes="Bold"
                             BackgroundColor="#1B2633"
                             TextColor="#137fec"
                             CornerRadius="22"
                             Padding="22,4"
-							Command="{Binding AddTravel}"/>
+							Command="{Binding AddTravel}"/>-->
 
 				</Grid>
 
