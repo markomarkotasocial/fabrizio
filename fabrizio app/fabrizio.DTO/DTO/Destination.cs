@@ -17,7 +17,6 @@ namespace fabrizio.Shared.DTO
 	public class CreateDestinationRequest
 	{
 		public string Name { get; set; } = string.Empty;
-
 	}
 
 	public class UpdateDestinationRequest

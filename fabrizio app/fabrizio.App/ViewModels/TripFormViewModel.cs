@@ -12,6 +12,7 @@ namespace fabrizio.App.Services
 	{
 		public Guid? Id { get; set; }
 		[ObservableProperty] private string name;
+		[ObservableProperty] private int order;
 		public bool IsNew { get; set; }
 	}
 
@@ -190,8 +191,20 @@ namespace fabrizio.App.Services
 
 
 
+		public async Task CreateDestinationAsync(DestinationItemViewModel item)
+		{
+			//var result = await _tripService.CreateDestination(...);
 
+			//if (!result.IsSuccess) return;
 
+			//item.Id = result.Value.Id;
+			//item.IsNew = false;
+		}
+
+		public async Task UpdateDestinationAsync(DestinationItemViewModel item)
+		{
+			//await _tripService.UpdateDestination(...);
+		}
 
 
 
@@ -216,7 +229,7 @@ namespace fabrizio.App.Services
 				EndDate = trip.EndDate;
 				//Status = trip.Status;
 
-				Destinations = new ObservableCollection<DestinationItemViewModel>(trip.Destinations.Select(x => new DestinationItemViewModel { Id = x.Id, IsNew = false, Name = x.Name }).ToList());
+				Destinations = new ObservableCollection<DestinationItemViewModel>(trip.Destinations.Select(x => new DestinationItemViewModel { Id = x.Id, IsNew = false, Name = x.Name, Order = x.Order }).OrderByDescending(x => x.Order).ToList());
 				Accommodations = new ObservableCollection<AccommodationBookingDto>(trip.AccommodationBookings);
 				Travels = new ObservableCollection<TravelBookingDto>(trip.TravelBookings);
 			}

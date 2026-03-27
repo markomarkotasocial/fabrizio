@@ -23,5 +23,23 @@ namespace fabrizio.App.Pages.Flows
 
 
 
+		private async void OnDestinationUnfocused(object sender, FocusEventArgs e)
+		{
+			if (sender is not Entry entry) return;
+			if (entry.BindingContext is not DestinationItemViewModel item) return;
+
+			if (string.IsNullOrWhiteSpace(item.Name))
+				return;
+
+			var vm = (TripFormViewModel)BindingContext;
+
+			if (item.IsNew)
+				await vm.CreateDestinationAsync(item);
+			else
+				await vm.UpdateDestinationAsync(item);
+		}
+
+
+
 	}
 }

@@ -6,10 +6,10 @@
 	Shell.NavBarIsVisible="False"
 	BackgroundColor="#101922">
 
-		<Grid RowDefinitions="Auto,*,Auto">
+	<Grid RowDefinitions="Auto,*,Auto">
 			
-			<!-- HEADER -->
-			<Grid 
+		<!-- HEADER -->
+		<Grid 
 				Padding="16,12"
 				ColumnDefinitions="40,*,40"
 				BackgroundColor="#101922">
@@ -36,22 +36,22 @@
 					TextColor="White"/>
 		</Grid>
 			
-			<!-- CONTENT -->
-			<ScrollView Grid.Row="1">
+		<!-- CONTENT -->
+		<ScrollView Grid.Row="1">
 
-				<VerticalStackLayout
-					Padding="16,24"
-					Spacing="24">
+			<VerticalStackLayout
+				Padding="16,24"
+				Spacing="24">
 
-					<!-- GENERAL INFORMATION -->
-					<VerticalStackLayout Spacing="12">
-
+				<!-- GENERAL INFORMATION -->
+				<VerticalStackLayout Spacing="12">
+					
 					<Label
-                        Text="General Information"
-                        FontSize="18"
-                        FontAttributes="Bold"
-                        TextColor="White"/>
-
+						Text="General Information"
+						FontSize="18"
+						FontAttributes="Bold"
+						TextColor="White"/>
+						
 						<!-- Trip Name -->
 						<VerticalStackLayout Spacing="4">
 						<Label
@@ -117,9 +117,9 @@
 
 					</VerticalStackLayout>
 						
-					</VerticalStackLayout>
+				</VerticalStackLayout>
 
-
+				
 				<!-- DESTINATIONS -->
 				<VerticalStackLayout Spacing="12">
 
@@ -139,7 +139,6 @@
 								Padding="22,4"
 								Command="{Binding AddDestinationCommand}"/>
 					</Grid>
-
 
 					<CollectionView
                         ItemsSource="{Binding Destinations}"
@@ -170,12 +169,13 @@
 											</Image.Behaviors>
 										</Image>
 
-										<Label
-											Grid.Column="1"
-											Text="{Binding Name}"
-											VerticalOptions="Center"
-											FontSize="14"
-											TextColor="White"/>
+										<Entry Grid.Column="1"
+											   Text="{Binding Name}"
+											   Placeholder="Enter destination"
+											   TextColor="White"
+											   VerticalOptions="Center"
+											   FontSize="14"
+											   Unfocused="OnDestinationUnfocused"/>
 
 										<ImageButton
                                             Grid.Column="2"
@@ -236,21 +236,21 @@
 
 		</ScrollView>
 
-			<!-- FOOTER -->
-			<VerticalStackLayout
-				Grid.Row="2"
-				Padding="16"
-				Spacing="12"
-				BackgroundColor="#101922">
+		<!-- FOOTER -->
+		<VerticalStackLayout
+			Grid.Row="2"
+			Padding="16"
+			Spacing="12"
+			BackgroundColor="#101922">
 
 			<Button
-					Text="Save Trip"
-					HeightRequest="56"
-					CornerRadius="12"
-					BackgroundColor="#2E7DFF"
-					TextColor="White"
-					FontAttributes="Bold"
-					Command="{Binding SaveCommand}" />
+				Text="Save Trip"
+				HeightRequest="56"
+				CornerRadius="12"
+				BackgroundColor="#2E7DFF"
+				TextColor="White"
+				FontAttributes="Bold"
+				Command="{Binding SaveCommand}" />
 
 		</VerticalStackLayout>
 

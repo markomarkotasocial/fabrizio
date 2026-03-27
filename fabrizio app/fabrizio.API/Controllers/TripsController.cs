@@ -216,7 +216,7 @@ namespace fabrizio.API.Controllers
 
 			var result = await _tripsService.UpdateDestination(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
-			return NoContent();
+			return Ok(result.Value);
 		}
 
 		/// <summary>
