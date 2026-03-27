@@ -203,7 +203,9 @@ namespace fabrizio.App.Services
 
 		public async Task UpdateDestinationAsync(DestinationItemViewModel item)
 		{
-			//await _tripService.UpdateDestination(...);
+			if (item.Id is not Guid id) return;
+			var result = await _tripService.UpdateDestination(TripId, new UpdateDestinationRequest	{ Id = id, Name = item.Name	});
+			if (!result.IsSuccess) return;
 		}
 
 
