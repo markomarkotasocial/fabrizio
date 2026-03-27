@@ -14,6 +14,15 @@ namespace fabrizio.App.Pages.Flows
 		{
 			InitializeComponent();
 			BindingContext = _viewModel = viewModel;
+
+			//_viewModel.RequestFocus = (item) =>
+			//{
+			//	MainThread.BeginInvokeOnMainThread(() =>
+			//	{
+			//		var entry = FindEntryForItem(item);
+			//		entry?.Focus();
+			//	});
+			//};
 		}
 
 		protected override void OnAppearing()
@@ -28,16 +37,29 @@ namespace fabrizio.App.Pages.Flows
 			if (sender is not Entry entry) return;
 			if (entry.BindingContext is not DestinationItemViewModel item) return;
 
-			if (string.IsNullOrWhiteSpace(item.Name))
-				return;
-
 			var vm = (TripFormViewModel)BindingContext;
 
-			if (item.IsNew)
-				await vm.CreateDestinationAsync(item);
-			else
-				await vm.UpdateDestinationAsync(item);
+			if (item.IsNew && string.IsNullOrWhiteSpace(item.Name))
+			{
+				vm.Destinations.Remove(item);
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(item.Name)) return;
+
+			if (item.IsNew)	await vm.CreateDestinationAsync(item);
+			else await vm.UpdateDestinationAsync(item);
 		}
+
+		private void OnEntryLoaded(object sender, EventArgs e)
+		{
+			if (sender is Entry entry && entry.BindingContext is DestinationItemViewModel item && item.IsNew)
+			{
+				entry.Focus();
+			}
+		}
+
+
 
 
 

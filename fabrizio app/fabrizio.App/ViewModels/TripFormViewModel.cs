@@ -76,7 +76,6 @@ namespace fabrizio.App.Services
 
 
 
-
 		[RelayCommand]
 		async Task SelectDates()
 		{
@@ -163,27 +162,29 @@ namespace fabrizio.App.Services
 		}
 
 		[RelayCommand]
-		public async Task DeleteDestination()
+		public async Task DeleteDestination(DestinationItemViewModel item)
 		{
-			bool confirm = await Shell.Current.DisplayAlert(
-				"Delete destination",
-				"Are you sure you want to delete this destination?",
-				"Delete",
-				"Cancel");
+			if (item == null) return;
 
+			// Handle unsaved (new) items locally
+			if (item.IsNew || item.Id is not Guid id)
+			{
+				Destinations.Remove(item);
+				return;
+			}
+
+			bool confirm = await Shell.Current.DisplayAlert("Delete destination", "Are you sure you want to delete this destination?", "Delete", "Cancel");
 			if (!confirm) return;
-			else return;
 
-			//var result = await _tripService.DeleteTrip(TripId);
+			var result = await _tripService.DeleteDestination(TripId, id);
 
-			//if (!result.IsSuccess)
-			//{
-			//	await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
-			//	return;
-			//}
+			if (!result.IsSuccess)
+			{
+				await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting destination", "OK");
+				return;
+			}
 
-			//await Shell.Current.GoToAsync("..");
-
+			Destinations.Remove(item);
 		}
 
 
@@ -193,12 +194,11 @@ namespace fabrizio.App.Services
 
 		public async Task CreateDestinationAsync(DestinationItemViewModel item)
 		{
-			//var result = await _tripService.CreateDestination(...);
+			var result = await _tripService.AddDestination(TripId, new CreateDestinationRequest	{ Name = item.Name });
+			if (!result.IsSuccess) return;
 
-			//if (!result.IsSuccess) return;
-
-			//item.Id = result.Value.Id;
-			//item.IsNew = false;
+			item.Id = result?.Value?.Id;
+			item.IsNew = false;
 		}
 
 		public async Task UpdateDestinationAsync(DestinationItemViewModel item)

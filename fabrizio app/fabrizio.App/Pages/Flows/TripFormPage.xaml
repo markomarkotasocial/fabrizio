@@ -175,7 +175,8 @@
 											   TextColor="White"
 											   VerticalOptions="Center"
 											   FontSize="14"
-											   Unfocused="OnDestinationUnfocused"/>
+											   Unfocused="OnDestinationUnfocused"
+											   Loaded="OnEntryLoaded"/>
 
 										<ImageButton
                                             Grid.Column="2"

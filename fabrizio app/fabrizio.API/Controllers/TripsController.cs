@@ -241,7 +241,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="tripid"></param>
 		/// <param name="travelbookingid"></param>
 		/// <returns></returns>
-		[HttpDelete("{tripid:Guid}/travelbooking/{id:Guid}")]
+		[HttpDelete("{tripid:Guid}/travelbooking/{travelbookingid:Guid}")]
 		[Authorize]
 		public async Task<IActionResult> DeleteTravelBooking(Guid tripid, Guid travelbookingid)
 		{
@@ -258,7 +258,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="tripid"></param>
 		/// <param name="accommodationbookingid"></param>
 		/// <returns></returns>
-		[HttpDelete("{tripid:Guid}/accommodationbooking/{id:Guid}")]
+		[HttpDelete("{tripid:Guid}/accommodationbooking/{accommodationbookingid:Guid}")]
 		[Authorize]
 		public async Task<IActionResult> DeleteAccommodationBooking(Guid tripid, Guid accommodationbookingid)
 		{
@@ -275,7 +275,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="tripid"></param>
 		/// <param name="destinationid"></param>
 		/// <returns></returns>
-		[HttpDelete("{tripid:Guid}/destination/{id:Guid}")]
+		[HttpDelete("{tripid:Guid}/destination/{destinationid:Guid}")]
 		[Authorize]
 		public async Task<IActionResult> DeleteDestination(Guid tripid, Guid destinationid)
 		{
