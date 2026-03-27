@@ -46,6 +46,7 @@ namespace fabrizio.App.Services
 
 
 		public bool IsNewTrip => TripId == Guid.Empty;
+		public bool ShowDestinations => !IsNewTrip;
 		public string Title => TripId == Guid.Empty ? "New Trip" : "Edit Trip";
 		public string DateRangeDisplay => StartDate.HasValue && EndDate.HasValue ? $"{StartDate:dd MMM yyyy} → {EndDate:dd MMM yyyy}" : "Select travel dates";
 
@@ -65,14 +66,14 @@ namespace fabrizio.App.Services
 		partial void OnTripIdChanged(Guid value)
 		{
 			OnPropertyChanged(nameof(Title));
+			OnPropertyChanged(nameof(IsNewTrip));
+			OnPropertyChanged(nameof(ShowDestinations));
 
 			if (value != Guid.Empty)
 				_ = LoadTrip(value);
 			else
 				InitNewTrip();
 		}
-
-
 
 
 

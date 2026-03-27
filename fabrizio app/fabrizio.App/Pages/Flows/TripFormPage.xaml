@@ -121,7 +121,9 @@
 
 				
 				<!-- DESTINATIONS -->
-				<VerticalStackLayout Spacing="12">
+				<VerticalStackLayout 
+					Spacing="12"
+					IsVisible="{Binding ShowDestinations}">
 
 					<Grid ColumnDefinitions="*,Auto">
 						<Label
