@@ -33,7 +33,7 @@ jobs:
         with:
           name: dotnet-app
           path: "fabrizio app/fabrizio.API/publish"
-
+          retention-days: 7
   deploy:
     runs-on: windows-latest
     needs: build
