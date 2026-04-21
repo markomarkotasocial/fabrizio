@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
     permissions:
+      id-token: write
       contents: read
-
     steps:
       - uses: actions/checkout@v4
 
@@ -28,26 +28,6 @@ jobs:
         run: dotnet publish -c Release -o ./publish
         working-directory: "fabrizio app/fabrizio.API"
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: dotnet-app
-          path: "fabrizio app/fabrizio.API/publish"
-          retention-days: 7
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: dotnet-app
-          path: ./publish
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -60,4 +40,4 @@ jobs:
         with:
           app-name: 'fabrizio'
           slot-name: 'Production'
-          package: ./publish
+          package: "fabrizio app/fabrizio.API/publish"
