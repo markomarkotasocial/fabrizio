@@ -82,4 +82,4 @@ Run the MAUI client (`fabrizio.App`) from Visual Studio, selecting your target p
 About This Project
 Built as a hands-on exercise to apply the latest .NET 8 / .NET MAUI stack end-to-end — from mobile UI down to cloud infrastructure — with an emphasis on clean layering and shared contracts between client and server.
 ---
-Author: [Your Name] — [LinkedIn/GitHub/portfolio link]
+Author: Marko Markota
