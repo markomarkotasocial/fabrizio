@@ -22,11 +22,11 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: "fabrizio app/fabrizio.API"
+        working-directory: "fabrizio.API"
 
       - name: Publish with dotnet
         run: dotnet publish -c Release -o ./publish
-        working-directory: "fabrizio app/fabrizio.API"
+        working-directory: "fabrizio.API"
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -40,4 +40,4 @@ jobs:
         with:
           app-name: 'fabrizio'
           slot-name: 'Production'
-          package: "fabrizio app/fabrizio.API/publish"
+          package: "fabrizio.API/publish"
