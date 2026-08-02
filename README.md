@@ -126,4 +126,4 @@ Built as a hands-on exercise to apply the latest .NET 8 / .NET MAUI stack end-to
 
 ---
 
-**Author:** [Marko Markota] — [https://www.linkedin.com/in/marko-markota-586b2231/]
+**Author:** [Marko Markota] — [https://www.linkedin.com/in/marko-markota]
