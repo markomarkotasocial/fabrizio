@@ -45,3 +45,16 @@ Git & PR
 Use skills
 ----------
 This repository exposes reusable skills under `.github/skills/`. Prefer calling those skill documents when performing common tasks (add CRUD endpoint, add MAUI page, wire an authenticated HttpClient or DTO mapping).
+
+Architecture & project boundaries
+----------------------------------
+This repository follows a strict **layered architecture** where dependency direction ALWAYS flows downward. All agents MUST respect these boundaries when adding features or fixing bugs.
+
+See: **[Layered Architecture & Project Boundaries](.github/docs/ARCHITECTURE.md)** for detailed rules, file organization patterns, and the bottom-up workflow for adding features.
+
+Key rules:
+- No circular dependencies. No upward references.
+- Controllers are thin. All domain logic belongs in BLL services.
+- Repositories expose only interfaces, never DbContext.
+- DTOs in fabrizio.DTO only. No business logic there.
+- Always start from DAL and work upward: DAL → Repository → BLL → API/App.
