@@ -13,9 +13,18 @@ Agent rules
 - Add DTOs to `fabrizio.DTO` only when the shape differs from entities. Keep DTOs simple and version-aware.
 - Place business logic in `fabrizio.BLL` services; controllers in `fabrizio.API` should be thin and call BLL services.
 - Register new repositories/services in `fabrizio.API/Program.cs` using AddScoped. If adding DbContext changes, update DI accordingly.
-- When changing EF models, create migrations with:
+
+EF migrations boundary
+----------------------
+- When changing EF models, agents MAY create migration files:
   dotnet ef migrations add <Name> -p fabrizio.DAL -s fabrizio.API
-  dotnet ef database update -p fabrizio.DAL -s fabrizio.API
+- Agents MUST NOT apply migrations: do not run `dotnet ef database update`. The developer is solely responsible for applying migrations after review.
+- Document the migration command in the PR so the developer can review and apply it.
+
+NuGet package policy
+--------------------
+- Agents MUST NOT change package versions, add new packages, or remove existing packages without explicit developer approval.
+- If a package version update is required, ask the developer, propose the specific version and new version range, describe what code changes are needed, and wait for approval.
 
 Security & API surface
 ----------------------

@@ -19,7 +19,19 @@ Safety checks before edits
 -------------------------
 1. Locate and open `AppDbContext` and `BaseViewModel` in the workspace. Use exact namespaces from the files before referencing them in generated code.
 2. Run a local build (dotnet build or Visual Studio) after changes. Fix compile errors introduced by edits.
-3. When touching EF model/DbContext changes, add an EF migration and document migration commands.
+
+Entity Framework migrations
+---------------------------
+- Agents MAY create migration files when model changes exist (using `dotnet ef migrations add <Name> -p fabrizio.DAL -s fabrizio.API`).
+- Agents MUST NOT apply migrations to the database. Migration application is exclusively the developer's responsibility.
+- Always document the migration command in the PR description so the developer can review and apply it.
+
+NuGet package management
+------------------------
+- Agents MUST NOT change package versions independently.
+- Agents MUST NOT add new packages without explicit developer approval.
+- Agents MUST NOT remove existing packages without explicit developer approval.
+- If a package update is needed: ask the developer, propose the specific version, describe required code changes, and wait for approval before proceeding.
 
 Git & PR
 --------

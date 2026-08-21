@@ -13,6 +13,11 @@ Agent rules
 - Register ViewModels and Pages in `MauiProgram.cs` following the existing pattern: AddTransient for Pages and ViewModels, AddSingleton for app-wide state.
 - Use typed HttpClient registrations and `AddHttpMessageHandler<TokenHandler>()` for authenticated API calls. Match base addresses used in the project.
 
+NuGet package policy
+--------------------
+- Agents MUST NOT change package versions, add new packages, or remove existing packages without explicit developer approval.
+- If a package version update is required, ask the developer, propose the specific version and new version range, describe what code changes are needed, and wait for approval.
+
 XAML and binding
 ----------------
 - Pages should bind to ViewModels via DI-resolved instances. Do not set BindingContext in XAML; resolve Page from DI when navigating or when constructing AppShell.
