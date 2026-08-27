@@ -4,13 +4,12 @@ using fabrizio.Shared.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace fabrizio.API.Controllers
 {
 	[ApiController]
 	[Route("api/accounts")]
-	public class AccountsController : ControllerBase
+	public class AccountsController : AuthorizedControllerBase
 	{
 		private readonly IAccountService _accountService;
 		private readonly IJwtTokenService _jwtTokenService;
@@ -127,8 +126,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetInfo()
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _accountService.GetAccountInfoById(accountId);
 			return Ok(result);
@@ -144,8 +142,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> Update(int id, [FromBody] UpdateAccountProfileRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _accountService.Update(accountId, dto);
 			return NoContent();

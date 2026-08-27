@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
-using System.Security.Claims;
 
 using fabrizio.API.Services;
 using fabrizio.API.Extensions;
@@ -14,7 +13,7 @@ namespace fabrizio.API.Controllers
 {
 	[ApiController]
 	[Route("api/trips")]
-	public class TripsController : ControllerBase
+	public class TripsController : AuthorizedControllerBase
 	{
 		private readonly ITripService _tripsService;
 		private readonly IJwtTokenService _jwtTokenService;
@@ -42,8 +41,7 @@ namespace fabrizio.API.Controllers
 												[FromQuery] string? name = null,
 												[FromQuery] TripFilter filter = TripFilter.CurrentAndUpcoming)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, filter);
 			return Ok(result);
@@ -58,8 +56,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetById(Guid id)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetTripById(accountId, id);
 			return Ok(result);
@@ -74,8 +71,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> GetOverview(DateTime? date = null)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetTripOverview(accountId, date);
 			return Ok(result);
@@ -90,8 +86,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> Create([FromBody] CreateTripRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateTrip(accountId, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -107,8 +102,7 @@ namespace fabrizio.API.Controllers
 		[HttpPost("{id:Guid}/travelbooking")]
 		public async Task<IActionResult> CreateTravelBooking(Guid id, [FromBody] CreateTravelBookingRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateTravelBooking(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -124,8 +118,7 @@ namespace fabrizio.API.Controllers
 		[HttpPost("{id:Guid}/accommodationbooking")]
 		public async Task<IActionResult> CreateAccommodationBooking(Guid id, [FromBody] CreateAccommodationBookingRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateAccommodationBooking(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -141,8 +134,7 @@ namespace fabrizio.API.Controllers
 		[HttpPost("{id:Guid}/destination")]
 		public async Task<IActionResult> CreateDestination(Guid id, [FromBody] CreateDestinationRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateDestination(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -159,8 +151,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTripRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.UpdateTrip(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -177,8 +168,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> UpdateTravelBooking(Guid id, [FromBody] UpdateTravelBookingRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.UpdateTravelBooking(accountId, id, dto);
 			return NoContent();
@@ -194,8 +184,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> UpdateAccommodationBooking(Guid id, [FromBody] UpdateAccommodationBookingRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.UpdateAccommodationBooking(accountId, id, dto);
 			return NoContent();
@@ -211,8 +200,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> UpdateDestination(Guid id, [FromBody] UpdateDestinationRequest dto)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.UpdateDestination(accountId, id, dto);
 			if (!result.IsSuccess) return result.ToProblem();
@@ -228,8 +216,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.DeleteTrip(accountId, id);
 			return NoContent();
@@ -245,8 +232,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> DeleteTravelBooking(Guid tripid, Guid travelbookingid)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.DeleteTravelBooking(accountId, tripid, travelbookingid);
 			return NoContent();
@@ -262,8 +248,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> DeleteAccommodationBooking(Guid tripid, Guid accommodationbookingid)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.DeleteAccommodationBooking(accountId, tripid, accommodationbookingid);
 			return NoContent();
@@ -279,8 +264,7 @@ namespace fabrizio.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> DeleteDestination(Guid tripid, Guid destinationid)
 		{
-			var accountIdClaim = User.FindFirstValue("accountId");
-			if (!int.TryParse(accountIdClaim, out var accountId) || accountId <= 0) return Unauthorized();
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			await _tripsService.DeleteDestination(accountId, tripid, destinationid);
 			return NoContent();
