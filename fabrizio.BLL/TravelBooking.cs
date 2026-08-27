@@ -18,7 +18,6 @@ namespace fabrizio.BLL
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
 			{
@@ -43,20 +42,13 @@ namespace fabrizio.BLL
 				}
 			}
 
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result<TravelBookingDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result<TravelBookingDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result<TravelBookingDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<TravelBookingDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			#endregion Validate
@@ -87,7 +79,6 @@ namespace fabrizio.BLL
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (!Enum.IsDefined(typeof(TravelBookingTypes), dto.Type))
 			{
@@ -112,20 +103,13 @@ namespace fabrizio.BLL
 				}
 			}
 
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result<TravelBookingDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result<TravelBookingDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result<TravelBookingDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<TravelBookingDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			TravelBooking? booking = trip.TravelBookings.FirstOrDefault(b => b.Id == dto.Id);
@@ -155,23 +139,15 @@ namespace fabrizio.BLL
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip ID is not correct.", nameof(tripid));
 			if (travelbookingid.Equals(Guid.Empty)) throw new ArgumentException("Travel booking ID is not correct.", nameof(travelbookingid));
 
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result<TravelBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
 			TravelBooking? booking = trip.TravelBookings.FirstOrDefault(b => b.Id == travelbookingid);

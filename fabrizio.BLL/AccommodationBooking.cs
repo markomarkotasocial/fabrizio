@@ -20,7 +20,6 @@ namespace fabrizio.BLL
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (string.IsNullOrWhiteSpace(dto.Location))
 			{
@@ -42,20 +41,13 @@ namespace fabrizio.BLL
 				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
 			}
 			
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result<AccommodationBookingDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<AccommodationBookingDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			#endregion Validate
@@ -85,7 +77,6 @@ namespace fabrizio.BLL
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
 			ArgumentNullException.ThrowIfNull(dto, nameof(dto));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip id is not correct.", nameof(tripid));
 
 			if (string.IsNullOrWhiteSpace(dto.Location))
 			{
@@ -112,20 +103,13 @@ namespace fabrizio.BLL
 				return Result<AccommodationBookingDto>.Fail(new BusinessError("accomodationbooking_dates_inconsistency", "End date cannot be earlier than start date.", 400));
 			}
 
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result<AccommodationBookingDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result<AccommodationBookingDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<AccommodationBookingDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
 			}
 
 			AccommodationBooking? booking = trip.AccommodationBookings.FirstOrDefault(b => b.Id == dto.Id);
@@ -154,23 +138,15 @@ namespace fabrizio.BLL
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-			if (tripid.Equals(Guid.Empty)) throw new ArgumentException("Trip ID is not correct.", nameof(tripid));
 			if (accommodationbookingid.Equals(Guid.Empty)) throw new ArgumentException("Accommodation booking ID is not correct.", nameof(accommodationbookingid));
 
-			Trip? trip = await _tripRepository.GetById(tripid);
-			if (trip == null)
-			{
-				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, tripid);
+			if (!loaded.IsSuccess) return Result.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
-				return Result<TravelBooking>.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
+				return Result.Fail(new BusinessError("trip_cancelled", "Cancelled trip is not editable.", 409));
 			}
 
 			AccommodationBooking? booking = trip.AccommodationBookings.FirstOrDefault(b => b.Id == accommodationbookingid);

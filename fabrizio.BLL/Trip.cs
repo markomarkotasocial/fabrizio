@@ -59,17 +59,9 @@ namespace fabrizio.BLL
 		{
 			#region Validate
 
-			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
-			Trip? trip = await _tripRepository.GetById(id);
-			if (trip == null)
-			{
-				return Result<TripDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<TripDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, id);
+			if (!loaded.IsSuccess) return Result<TripDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			#endregion Validate
 
@@ -208,21 +200,14 @@ namespace fabrizio.BLL
 				return Result<TripDto>.Fail(new BusinessError("trip_name_required", "Name must be provided.", 400));
 			}
 
-			var trip = await _tripRepository.GetById(id);
-			if (trip == null)
-			{
-				return Result<TripDto>.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result<TripDto>.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, id);
+			if (!loaded.IsSuccess) return Result<TripDto>.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			if (trip.Status == TripStatus.Cancelled)
 			{
 				return Result<TripDto>.Fail(new BusinessError("trip_cancelled", "Cancelled trip can not be updated.", 403));
-			}		
+			}
 
 			var dateValidation = ValidateTripDates(trip, dto.StartDate, dto.EndDate);
 			if (!dateValidation.IsSuccess)
@@ -265,18 +250,10 @@ namespace fabrizio.BLL
 			#region Validate
 
 			if (accountid < 0) throw new ArgumentException("Account ID must be a non-negative integer.", nameof(accountid));
-			if (id.Equals(Guid.Empty)) throw new ArgumentException("Id is not correct.", nameof(id));
 
-			Trip? trip = await _tripRepository.GetById(id);
-			if (trip == null)
-			{
-				return Result.Fail(new BusinessError("trip_not_found", "There is no trip with specified ID.", 404));
-			}
-
-			if (trip.AccountId != accountid)
-			{
-				return Result.Fail(new BusinessError("forbidden", "You do not have access to this trip.", 403));
-			}
+			var loaded = await LoadOwnedTripAsync(accountid, id);
+			if (!loaded.IsSuccess) return Result.Fail(loaded.Error!);
+			var trip = loaded.Value!;
 
 			#endregion Validate
 
