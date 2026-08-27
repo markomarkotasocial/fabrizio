@@ -76,17 +76,7 @@ namespace fabrizio.BLL
 			trip.AccommodationBookings.Add(accommodationbooking);
 			trip.Recalculate();
 			await _accommodationBookingRepository.SaveChangesAsync();
-			return Result<AccommodationBookingDto>.Success(new AccommodationBookingDto 
-			{
-				Id = accommodationbooking.Id,
-				Type = (int)accommodationbooking.Type,
-				Reference = accommodationbooking.Reference,
-				From = accommodationbooking.From,
-				To = accommodationbooking.To,
-				Location = accommodationbooking.Location,
-				Name = accommodationbooking.Name,
-				Note = accommodationbooking.Note
-			});
+			return Result<AccommodationBookingDto>.Success(accommodationbooking.ToDto());
 		}
 
 		public async Task<Result<AccommodationBookingDto>> UpdateAccommodationBooking(int accountid, Guid tripid, UpdateAccommodationBookingRequest dto)
@@ -156,18 +146,7 @@ namespace fabrizio.BLL
 
 			trip.Recalculate();
 			await _tripRepository.SaveChangesAsync();
-			return Result<AccommodationBookingDto>.Success(new AccommodationBookingDto
-			{
-				Id = booking.Id,
-				Name = booking.Name, 
-				From = booking.From, 
-				To = booking.To, 
-				Location = booking.Location, 
-				Note = booking.Note, 
-				Reference = booking.Reference,  
-				Type = (int)booking.Type, 
-				TripId = booking.TripId,
-			});
+			return Result<AccommodationBookingDto>.Success(booking.ToDto());
 		}
 
 		public async Task<Result> DeleteAccommodationBooking(int accountid, Guid tripid, Guid accommodationbookingid)

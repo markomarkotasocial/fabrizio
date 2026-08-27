@@ -62,13 +62,7 @@ namespace fabrizio.BLL
 
 			trip.Destinations.Add(destination);
 			await _travelBookingRepository.SaveChangesAsync();
-			return Result<DestinationDto>.Success(new DestinationDto 
-			{
-				Id = destination.Id,
-				Name = destination.Name, 
-				Order = destination.Order,
-				TripId = destination.TripId
-			});
+			return Result<DestinationDto>.Success(destination.ToDto());
 		}
 
 		public async Task<Result<DestinationDto>> UpdateDestination(int accountid, Guid tripid, UpdateDestinationRequest dto)
@@ -117,13 +111,7 @@ namespace fabrizio.BLL
 			destination.Name = dto.Name;
 
 			await _tripRepository.SaveChangesAsync();
-			return Result<DestinationDto>.Success(new DestinationDto
-			{
-				Id = destination.Id,
-				Name = destination.Name, 
-				Order = destination.Order, 
-				TripId = destination.TripId
-			});
+			return Result<DestinationDto>.Success(destination.ToDto());
 		}
 
 		public async Task<Result> DeleteDestination(int accountid, Guid tripid, Guid destinationid)

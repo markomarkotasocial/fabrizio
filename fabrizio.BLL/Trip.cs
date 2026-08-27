@@ -73,47 +73,7 @@ namespace fabrizio.BLL
 
 			#endregion Validate
 
-			return Result<TripDto>.Success(new TripDto
-			{
-				Id = trip.Id,
-				Status = (int)trip.Status,
-				Name = trip.Name,
-				Notes = trip.Notes ?? string.Empty,
-				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,
-				Destinations = trip.Destinations.Select(tb => new DestinationDto 
-				{
-					Id = tb.Id,
-					Name = tb.Name,
-					Order = tb.Order,
-					TripId = tb.TripId,
-				}),
-				TravelBookings = trip.TravelBookings.Select(tb => new TravelBookingDto
-				{
-					Id = tb.Id,
-					TripId = tb.TripId,
-					Arrival = tb.Arrival,
-					Carrier = tb.Carrier,
-					Departure = tb.Departure,
-					Reference = tb.Reference,
-					Note = tb.Note,
-					Destination = tb.Destination,
-					Origin = tb.Origin,
-					Type = (int)tb.Type
-				}),
-				AccommodationBookings = trip.AccommodationBookings.Select(ab => new AccommodationBookingDto
-				{
-					Id = ab.Id,
-					TripId = ab.TripId,
-					From = ab.From,
-					To = ab.To,					
-					Location = ab.Location, 
-					Name = ab.Name, 
-					Note = ab.Note, 
-					Reference = ab.Reference,
-					Type = (int)ab.Type
-				}),
-			});
+			return Result<TripDto>.Success(trip.ToDto());
 		}
 
 		public async Task<Result<PagedResult<TripListItemDto>>> GetAllTrips(int accountid, int skip = 0, int take = 100, string? name = null, TripFilter filter = TripFilter.CurrentAndUpcoming)
@@ -172,24 +132,7 @@ namespace fabrizio.BLL
 			var items = await query.Skip(skip).Take(take).ToListAsync();
 
 			// Map to DTOs
-			var dtoItems = items.Select(trip => new TripListItemDto
-			{
-				Id = trip.Id,
-				Status = (int)trip.Status,
-				Name = trip.Name,
-				Notes = trip.Notes ?? string.Empty,
-				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,
-				Destinations = trip.Destinations
-					.OrderBy(d => d.Order)
-					.Select(d => new DestinationDto
-					{
-						Id = d.Id,
-						Name = d.Name,
-						Order = d.Order,
-						TripId = d.TripId,
-					})
-			});
+			var dtoItems = items.Select(trip => trip.ToListItemDto());
 
 			return Result<PagedResult<TripListItemDto>>.Success(new PagedResult<TripListItemDto>
 			{
@@ -365,9 +308,9 @@ namespace fabrizio.BLL
 
 			return Result<GETTripOverview>.Success(new GETTripOverview
 			{
-				Previous = previous != null ? MapToGetTrip(previous) : null,
-				Current = current != null ? MapToGetTrip(current) : null,
-				Next = next != null ? MapToGetTrip(next) : null
+				Previous = previous?.ToDto(),
+				Current = current?.ToDto(),
+				Next = next?.ToDto()
 			});
 		}
 
@@ -430,56 +373,6 @@ namespace fabrizio.BLL
 			}
 
 			return Result.Success();
-		}
-
-		private TripDto MapToGetTrip(Trip trip)
-		{
-			return new TripDto
-			{
-				Id = trip.Id,
-				Status = (int)trip.Status,
-				Name = trip.Name,
-				Notes = trip.Notes ?? string.Empty,
-				StartDate = trip.StartDate,
-				EndDate = trip.EndDate,
-
-				Destinations = trip.Destinations
-					.OrderBy(d => d.Order)
-					.Select(d => new DestinationDto
-					{
-						Id = d.Id,
-						Name = d.Name,
-						Order = d.Order, 
-						TripId = d.TripId,
-					}),
-
-				TravelBookings = trip.TravelBookings.Select(tb => new TravelBookingDto
-				{
-					Id = tb.Id,
-					TripId = tb.TripId,
-					Arrival = tb.Arrival,
-					Carrier = tb.Carrier,
-					Departure = tb.Departure,
-					Reference = tb.Reference,
-					Note = tb.Note,
-					Destination = tb.Destination,
-					Origin = tb.Origin,
-					Type = (int)tb.Type
-				}),
-
-				AccommodationBookings = trip.AccommodationBookings.Select(ab => new AccommodationBookingDto
-				{
-					Id = ab.Id,
-					TripId = ab.TripId,
-					From = ab.From,
-					To = ab.To,
-					Location = ab.Location,
-					Name = ab.Name,
-					Note = ab.Note,
-					Reference = ab.Reference,
-					Type = (int)ab.Type
-				})
-			};
 		}
 
 
