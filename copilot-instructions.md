@@ -17,8 +17,20 @@ Global rules
 
 Safety checks before edits
 -------------------------
-1. Locate and open `AppDbContext` and `BaseViewModel` in the workspace. Use exact namespaces from the files before referencing them in generated code.
-2. Run a local build (dotnet build or Visual Studio) after changes. Fix compile errors introduced by edits.
+1. Locate and open `_AppDbContext.cs` (namespace `fabrizio.DAL.Entities`) and `_BaseViewModel.cs` (namespace `fabrizio.App.ViewModels`) in the workspace. Use exact namespaces from the files.
+2. Build the relevant project after changes:
+   - Backend changes: `dotnet build fabrizio.API/fabrizio.API.csproj -c Release` (mirrors CI; do not build entire solution).
+   - MAUI changes: `dotnet workload install maui` (first time only), then `dotnet build fabrizio.App/fabrizio.App.csproj` (CI does not build MAUI).
+   - Fix any compile errors introduced by edits.
+
+Error handling & Result pattern
+--------------------------------
+- BLL services return `Result<T>` or `Result` for expected business errors (not exceptions).
+- Use `Result.Failure(new BusinessError(code, message, httpStatusCode))` from `fabrizio.Shared.Contracts`.
+- Argument errors still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`).
+- Controllers call `result.ToProblem()` to convert `Result<T>` to `ProblemDetails`.
+- MAUI clients deserialize `Result<T>` or `ApiProblem` from API responses and rewrap in local `Result<T>` for UI.
+- See [Error Handling & the Result Pattern](.github/docs/ARCHITECTURE.md#error-handling--the-result-pattern) for details.
 
 Entity Framework migrations
 ---------------------------
@@ -50,11 +62,19 @@ Architecture & project boundaries
 ----------------------------------
 This repository follows a strict **layered architecture** where dependency direction ALWAYS flows downward. All agents MUST respect these boundaries when adding features or fixing bugs.
 
-See: **[Layered Architecture & Project Boundaries](.github/docs/ARCHITECTURE.md)** for detailed rules, file organization patterns, and the bottom-up workflow for adding features.
+See: **[Layered Architecture & Project Boundaries](.github/docs/ARCHITECTURE.md)** for detailed rules, file organization patterns, Error handling & Result pattern, known deviations, and the bottom-up workflow.
+
+Key file locations:
+- Backend entities: `fabrizio.DAL/` (project root; namespace `fabrizio.DAL.Entities`; infrastructure with `_` prefix; no `Entities/` folder).
+- Repositories: `fabrizio.Repository/` (one file per aggregate; namespace `fabrizio.Repository`).
+- BLL services: `fabrizio.BLL/` (project root; one file per aggregate; namespace `fabrizio.BLL`; no `Services/` folder).
+- DTOs: `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); Contracts: `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`).
+- Controllers: `fabrizio.API/Controllers/` (PLURAL; namespace `fabrizio.API.Controllers`).
+- MAUI Pages: `fabrizio.App/Pages/<Area>/`; ViewModels: `fabrizio.App/ViewModels/`; Services (interface + impl same file): `fabrizio.App/Services/`.
 
 Key rules:
-- No circular dependencies. No upward references.
-- Controllers are thin. All domain logic belongs in BLL services.
-- Repositories expose only interfaces, never DbContext.
-- DTOs in fabrizio.DTO only. No business logic there.
-- Always start from DAL and work upward: DAL → Repository → BLL → API/App.
+- No circular or upward dependencies.
+- Controllers thin; domain logic in BLL services.
+- Repositories expose interfaces only; BLL may use `IQueryable<T>` from `QueryAll()` for query composition (known trade-off).
+- Result pattern: BLL returns `Result<T>` for business errors; controllers call `result.ToProblem()`.
+- Always bottom-up: DAL → Repository → BLL → API/App.
