@@ -66,29 +66,12 @@ BLL services in this codebase return `Result` / `Result<T>` for expected busines
 
 ## Current Deviations from Target Architecture
 
-The following patterns exist in the codebase and should NOT be expanded or replicated in new code. Agents should note these as known trade-offs:
+These patterns are accepted tech debt. For all of them: match the existing style when editing an affected file, never introduce the pattern in new code, and propose any cleanup as a separate task — not mixed into a feature. Note the deviation in the PR description when you touch such a file.
 
-### Deviation 1: IQueryable<T> from Repositories
-- **Pattern:** Repositories expose `IQueryable<T>` from `QueryAll()` for read operations.
-- **Violation:** Leaky abstraction; upper layers (BLL) apply filtering/sorting/paging.
-- **Reason:** Avoids overloading repository methods; enables efficient query composition.
-- **Status:** Accepted trade-off; do not expand this pattern to new aggregates without explicit approval.
-- **Refactoring path:** Replace with explicit query specifications (e.g., Specification pattern) in future refactoring.
-- **Agent guidance:** When modifying code that uses this pattern, match the existing style. In new code, seek permission before adopting IQueryable.
+- **`IQueryable<T>` from repositories.** `QueryAll()` returns `IQueryable<Trip>`; the BLL service applies filtering/sorting/paging. Accepted to avoid a combinatorial explosion of repository query methods. Future direction: explicit query specifications.
+- **Direct `AppDbContext` in services.** `AccountService` and `TripService` inject `AppDbContext` for some reads instead of going through a repository. Historical; new services must depend only on `I*Repository`.
 
-### Deviation 2: Direct AppDbContext Usage in Services
-- **Pattern:** `AccountService` and `TripService` inject `AppDbContext` directly for certain read operations, not just via repositories.
-- **Violation:** BLL should only use repositories, not DbContext.
-- **Reason:** Historical; allowed for performance-critical queries.
-- **Status:** Known tech debt; do not expand to new services.
-- **Refactoring path:** Migrate to repository methods or explicit query specifications.
-- **Agent guidance:** When modifying these services, use repositories where possible. If DbContext is required, match the style and document why (performance, circular-dependency avoidance, etc.).
-
-## How Agents Should Apply These Rules
-
-1. **New code:** Always follow the target architecture (Rule #1–6). Do not introduce new deviations.
-2. **Existing deviations:** When modifying code that deviates from the target, preserve the deviation's style and match the surrounding code. Mark deviations in PR description ("Note: This file uses IQueryable in QueryAll(); matched existing style.").
-3. **Refactoring existing deviations:** If you discover an opportunity to fix a deviation, propose it separately in a comment or as a future task. Do not mix deviation fixes with feature additions.
+For everything else, new code always follows the target architecture (Rules #1–6); do not introduce new deviations.
 
 ## Technical Debt Summary
 
