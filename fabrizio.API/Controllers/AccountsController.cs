@@ -1,4 +1,5 @@
 ﻿using fabrizio.API.Services;
+using fabrizio.API.Extensions;
 using fabrizio.BLL;
 using fabrizio.Shared.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -115,7 +116,7 @@ namespace fabrizio.API.Controllers
 												[FromQuery] string? name = null, [FromQuery] string? email = null)
 		{
 			var result = await _accountService.GetAll(skip, take, name, email);
-			return Ok(result);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -129,7 +130,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _accountService.GetAccountInfoById(accountId);
-			return Ok(result);
+			return result.ToActionResult();
 		}
 		
 		/// <summary>
@@ -144,8 +145,8 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _accountService.Update(accountId, dto);
-			return NoContent();
+			var result = await _accountService.Update(accountId, dto);
+			return result.ToActionResult();
 		}
 		
 		/// <summary>

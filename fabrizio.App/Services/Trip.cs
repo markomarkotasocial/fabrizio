@@ -1,12 +1,9 @@
-﻿using fabrizio.Shared.Contracts;
+using fabrizio.Shared.Contracts;
 using fabrizio.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace fabrizio.App.Services
@@ -39,212 +36,38 @@ namespace fabrizio.App.Services
 
 		public async Task<Result<IEnumerable<TripListItemDto>>> GetTrips(TripFilter filter, int skip, int take)
 		{
-			try
-			{
-				var url = $"api/trips?filter={filter}&skip={skip}&take={take}";
+			var url = $"api/trips?filter={filter}&skip={skip}&take={take}";
 
-				var result = await _http.GetFromJsonAsync<Result<PagedResult<TripListItemDto>>>(url);
+			var result = await _http.GetResultAsync<PagedResult<TripListItemDto>>(url);
 
-				if (result == null)
-				{
-					return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-				}
-
-				if (!result.IsSuccess)
-				{
-					return Result<IEnumerable<TripListItemDto>>.Fail(result.Error!);
-				}
-
-				return Result<IEnumerable<TripListItemDto>>.Success(result.Value!.Items);
-			}
-			catch (Exception)
-			{
-				return Result<IEnumerable<TripListItemDto>>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
+			return result.IsSuccess
+				? Result<IEnumerable<TripListItemDto>>.Success(result.Value!.Items)
+				: Result<IEnumerable<TripListItemDto>>.Fail(result.Error!);
 		}
 
-		public async Task<Result<TripDto>> GetTrip(Guid id)
-		{
-			try
-			{
-				var result = await _http.GetFromJsonAsync<Result<TripDto>>($"api/trips/{id}");
+		public Task<Result<TripDto>> GetTrip(Guid id)
+			=> _http.GetResultAsync<TripDto>($"api/trips/{id}");
 
-				if (result == null)
-				{
-					return Result<TripDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-				}
+		public Task<Result<GETTripOverview>> GetTripsOverview()
+			=> _http.GetResultAsync<GETTripOverview>("api/trips/overview");
 
-				if (!result.IsSuccess)
-				{
-					return Result<TripDto>.Fail(result.Error!);
-				}
+		public Task<Result> AddTrip(CreateTripRequest trip)
+			=> _http.PostResultAsync("api/trips", trip);
 
-				return Result<TripDto>.Success(result.Value!);
-			}
-			catch (Exception)
-			{
-				return Result<TripDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
+		public Task<Result> UpdateTrip(UpdateTripRequest trip)
+			=> _http.PutResultAsync($"api/trips/{trip.Id}", trip);
 
-		public async Task<Result<GETTripOverview>> GetTripsOverview()
-		{
-			try
-			{
-				var result = await _http.GetFromJsonAsync<Result<GETTripOverview>>($"api/trips/overview");
+		public Task<Result> DeleteTrip(Guid id)
+			=> _http.DeleteResultAsync($"api/trips/{id}");
 
-				if (result == null)
-				{
-					return Result<GETTripOverview>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-				}
+		public Task<Result<DestinationDto>> AddDestination(Guid tripId, CreateDestinationRequest request)
+			=> _http.PostResultAsync<DestinationDto>($"api/trips/{tripId}/destination", request);
 
-				if (!result.IsSuccess)
-				{
-					return Result<GETTripOverview>.Fail(result.Error!);
-				}
+		public Task<Result<DestinationDto>> UpdateDestination(Guid tripId, UpdateDestinationRequest request)
+			=> _http.PutResultAsync<DestinationDto>($"api/trips/{tripId}/destination", request);
 
-				return Result<GETTripOverview>.Success(result.Value!);
-			}
-			catch (Exception)
-			{
-				return Result<GETTripOverview>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-			
-		}
-
-
-		public async Task<Result> AddTrip(CreateTripRequest trip)
-		{
-			try
-			{
-				var response = await _http.PostAsJsonAsync("api/trips", trip);
-				if (response.IsSuccessStatusCode)
-				{
-					return Result.Success();
-				}
-
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-
-				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
-		public async Task<Result> UpdateTrip(UpdateTripRequest trip)
-		{
-			try
-			{
-				var response = await _http.PutAsJsonAsync($"api/trips/{trip.Id}", trip);
-				if (response.IsSuccessStatusCode)
-				{
-					return Result.Success();
-				}
-
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-
-				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
-		public async Task<Result> DeleteTrip(Guid id)
-		{
-			try
-			{
-				var response = await _http.DeleteAsync($"api/trips/{id}");
-				if (response.IsSuccessStatusCode)
-				{
-					return Result.Success();
-				}
-
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-
-				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
-
-
-
-
-		public async Task<Result<DestinationDto>> AddDestination(Guid tripId, CreateDestinationRequest request)
-		{
-			try
-			{
-				var response = await _http.PostAsJsonAsync($"api/trips/{tripId}/destination", request);
-				if (response.IsSuccessStatusCode)
-				{
-					var dto = await response.Content.ReadFromJsonAsync<DestinationDto>();
-					if (dto == null)
-					{
-						return Result<DestinationDto>.Fail(new BusinessError("parse_error", "Unable to parse response.", 0));
-					}
-
-					return Result<DestinationDto>.Success(dto);
-				}
-
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-
-				return Result<DestinationDto>.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error", problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result<DestinationDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
-		public async Task<Result<DestinationDto>> UpdateDestination(Guid tripId, UpdateDestinationRequest request)
-		{
-			try
-			{
-				var response = await _http.PutAsJsonAsync($"api/trips/{tripId}/destination", request);
-				if (response.IsSuccessStatusCode)
-				{
-					var dto = await response.Content.ReadFromJsonAsync<DestinationDto>();
-
-					if (dto == null)
-					{
-						return Result<DestinationDto>.Fail(new BusinessError("parse_error", "Unable to parse response.", 0));
-					}
-
-					return Result<DestinationDto>.Success(dto);
-				}
-
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-
-				return Result<DestinationDto>.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error",	problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result<DestinationDto>.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
-		public async Task<Result> DeleteDestination(Guid tripId, Guid destinationId)
-		{
-			try
-			{
-				var response = await _http.DeleteAsync($"api/trips/{tripId}/destination/{destinationId}");
-				if (response.IsSuccessStatusCode) return Result.Success();
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>();
-				return Result.Fail(new BusinessError(problem?.Type ?? "api_error", problem?.Detail ?? "Unknown API error",	problem?.Status ?? (int)response.StatusCode));
-			}
-			catch (Exception)
-			{
-				return Result.Fail(new BusinessError("network_error", "Unable to reach server.", 0));
-			}
-		}
-
+		public Task<Result> DeleteDestination(Guid tripId, Guid destinationId)
+			=> _http.DeleteResultAsync($"api/trips/{tripId}/destination/{destinationId}");
 	}
 
 }

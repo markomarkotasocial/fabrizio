@@ -23,5 +23,19 @@ namespace fabrizio.API.Extensions
 				StatusCode = error.HttpStatusCode
 			};
 		}
+
+		/// <summary>
+		/// Maps a non-generic <see cref="Result"/> to <c>204 No Content</c> on success,
+		/// or a <see cref="ProblemDetails"/> response on failure.
+		/// </summary>
+		public static IActionResult ToActionResult(this Result result)
+			=> result.IsSuccess ? new NoContentResult() : result.ToProblem();
+
+		/// <summary>
+		/// Maps a <see cref="Result{T}"/> to <c>200 OK</c> with the value on success,
+		/// or a <see cref="ProblemDetails"/> response on failure.
+		/// </summary>
+		public static IActionResult ToActionResult<T>(this Result<T> result)
+			=> result.IsSuccess ? new OkObjectResult(result.Value) : result.ToProblem();
 	}
 }

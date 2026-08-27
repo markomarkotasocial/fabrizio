@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 using fabrizio.API.Services;
 using fabrizio.API.Extensions;
 using fabrizio.BLL;
-using fabrizio.DAL.Entities;
 using fabrizio.Shared.DTO;
 
 namespace fabrizio.API.Controllers
@@ -32,8 +29,7 @@ namespace fabrizio.API.Controllers
 		/// <param name="skip"></param>
 		/// <param name="take"></param>
 		/// <param name="name"></param>
-		/// <param name="startdate"></param>
-		/// <param name="enddate"></param>
+		/// <param name="filter"></param>
 		/// <returns></returns>
 		[HttpGet]
 		[Authorize]
@@ -44,7 +40,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetAllTrips(accountId, skip, take, name, filter);
-			return Ok(result);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -59,7 +55,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetTripById(accountId, id);
-			return Ok(result);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -74,7 +70,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.GetTripOverview(accountId, date);
-			return Ok(result);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -89,8 +85,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateTrip(accountId, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -105,8 +100,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateTravelBooking(accountId, id, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -121,8 +115,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateAccommodationBooking(accountId, id, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -137,8 +130,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.CreateDestination(accountId, id, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -154,8 +146,7 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.UpdateTrip(accountId, id, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -170,8 +161,8 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.UpdateTravelBooking(accountId, id, dto);
-			return NoContent();
+			var result = await _tripsService.UpdateTravelBooking(accountId, id, dto);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -186,8 +177,8 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.UpdateAccommodationBooking(accountId, id, dto);
-			return NoContent();
+			var result = await _tripsService.UpdateAccommodationBooking(accountId, id, dto);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -203,12 +194,11 @@ namespace fabrizio.API.Controllers
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
 			var result = await _tripsService.UpdateDestination(accountId, id, dto);
-			if (!result.IsSuccess) return result.ToProblem();
-			return Ok(result.Value);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
-		/// Delete an trip.
+		/// Delete a trip.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -218,12 +208,12 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.DeleteTrip(accountId, id);
-			return NoContent();
+			var result = await _tripsService.DeleteTrip(accountId, id);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
-		/// Delete an travel booking.
+		/// Delete a travel booking.
 		/// </summary>
 		/// <param name="tripid"></param>
 		/// <param name="travelbookingid"></param>
@@ -234,8 +224,8 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.DeleteTravelBooking(accountId, tripid, travelbookingid);
-			return NoContent();
+			var result = await _tripsService.DeleteTravelBooking(accountId, tripid, travelbookingid);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -250,12 +240,12 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.DeleteAccommodationBooking(accountId, tripid, accommodationbookingid);
-			return NoContent();
+			var result = await _tripsService.DeleteAccommodationBooking(accountId, tripid, accommodationbookingid);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
-		/// Delete an destination.
+		/// Delete a destination.
 		/// </summary>
 		/// <param name="tripid"></param>
 		/// <param name="destinationid"></param>
@@ -266,8 +256,8 @@ namespace fabrizio.API.Controllers
 		{
 			if (!TryGetAccountId(out var accountId)) return Unauthorized();
 
-			await _tripsService.DeleteDestination(accountId, tripid, destinationid);
-			return NoContent();
+			var result = await _tripsService.DeleteDestination(accountId, tripid, destinationid);
+			return result.ToActionResult();
 		}
 
 

@@ -12,7 +12,7 @@ namespace fabrizio.BLL
 	public interface IAccountService
 	{
 		Task<Account?> ValidateCredentials(string email, string password);
-		Task<PagedResult<AccountDto>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
+		Task<Result<PagedResult<AccountDto>>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null);
 		Task<Result<AccountDto>> GetAccountInfoById(int id);
 		Task<Account> Create(CreateAccountRequest dto);
 		Task<Result> Update(int id, UpdateAccountProfileRequest dto);
@@ -79,7 +79,7 @@ namespace fabrizio.BLL
 			});
 		}
 
-		public async Task<PagedResult<AccountDto>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
+		public async Task<Result<PagedResult<AccountDto>>> GetAll(int skip = 0, int take = 100, string? name = null, string? email = null)
 		{
 			#region Validate
 
@@ -122,11 +122,11 @@ namespace fabrizio.BLL
 				CreatedAt = account.Audit.AddTime
 			});
 
-			return new PagedResult<AccountDto>
+			return Result<PagedResult<AccountDto>>.Success(new PagedResult<AccountDto>
 			{
 				TotalCount = totalCount,
 				Items = dtoItems
-			};
+			});
 		}
 
 		public async Task<Account> Create(CreateAccountRequest dto)
