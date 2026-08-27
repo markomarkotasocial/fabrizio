@@ -8,16 +8,25 @@ description: "Agent specialized in implementing and modifying backend REST API f
 Agent rules
 -----------
 - Work only in the backend projects listed in frontmatter. Do not modify MAUI project files.
-- Before making any code changes, locate and open the actual `AppDbContext` source file and entity definitions under `fabrizio.DAL` and confirm their namespaces and DbSet names. Use those exact symbols in generated code.
-- Use existing repository pattern: create or update `I{Name}Repository` in `fabrizio.Repository` and an implementation that uses `AppDbContext`. Follow method signatures and patterns already present (QueryAll, GetById, Add, Delete, SaveChangesAsync).
-- Add DTOs to `fabrizio.DTO` only when the shape differs from entities. Keep DTOs simple and version-aware.
+- Before making any code changes, locate and open the actual `_AppDbContext` source file and entity definitions in `fabrizio.DAL/` (project root; namespace `fabrizio.DAL.Entities`). Confirm namespaces, DbSet names, and that no physical `Entities/` folder exists.
+- Use existing repository pattern: create or update `I{Name}Repository` in `fabrizio.Repository` and an implementation that uses `AppDbContext`. Follow method signatures already present. Note: repositories may expose `IQueryable<T>` from `QueryAll()` for read operations; this is a known trade-off (leaky abstraction) for efficient query composition in BLL. Do not expose `DbContext` directly to upper layers.
+- Services in `fabrizio.BLL` are organized one per aggregate in root folder (e.g., `Trip.cs`). Namespace `fabrizio.BLL`. Larger services use `partial` in adjacent files (e.g., `AccommodationBooking.cs`).
+- Add DTOs to `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`) when shape differs from entities. Contracts go in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`). Remember: project assembly is `fabrizio.Shared`.
 - Place business logic in `fabrizio.BLL` services; controllers in `fabrizio.API` should be thin and call BLL services.
-- Register new repositories/services in `fabrizio.API/Program.cs` using AddScoped. If adding DbContext changes, update DI accordingly.
+- Register new repositories/services in `fabrizio.API/Program.cs` using `AddScoped`. All repositories and services use Scoped lifetime.
+
+Error handling & the Result pattern
+-----------------------------------
+- BLL services return `Result<T>` or `Result` for expected business errors. Use `Result.Failure()` with custom `BusinessError(string code, string message, int httpStatusCode)` from `fabrizio.Shared.Contracts`.
+- Lists return `PagedResult<T>`.
+- Argument errors (null checks, out-of-range, etc.) still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`); these are programmer errors, not business failures.
+- Controllers translate via `result.ToProblem()` (declared in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns `ProblemDetails`. Success case: `return Ok(result.Value);`.
+- Extract `accountId` from claims: `var accountIdClaim = User.FindFirstValue("accountId");` + `int.TryParse` guard. Return `Unauthorized()` if claim is missing or invalid.
 
 EF migrations boundary
 ----------------------
 - When changing EF models, agents MAY create migration files:
-  dotnet ef migrations add <Name> -p fabrizio.DAL -s fabrizio.API
+  `dotnet ef migrations add <Name> -p fabrizio.DAL -s fabrizio.API`
 - Agents MUST NOT apply migrations: do not run `dotnet ef database update`. The developer is solely responsible for applying migrations after review.
 - Document the migration command in the PR so the developer can review and apply it.
 
@@ -28,14 +37,14 @@ NuGet package policy
 
 Security & API surface
 ----------------------
-- Follow existing JWT auth setup in `Program.cs`. Do not change token validation defaults without explicit reason. If endpoints require authorization, use [Authorize] attributes and document required scopes/roles.
+- Follow existing JWT auth setup in `Program.cs`. Do not change token validation defaults without explicit reason. If endpoints require authorization, use `[Authorize]` attributes and document required scopes/roles.
 - Update Swagger (Swashbuckle) security definitions when adding authenticated endpoints.
 
-Testing & verification
-----------------------
-- Run `dotnet build` for the solution after edits. Fix compile errors.
-- Add unit tests in BLL where logic is non-trivial.
-- When adding or modifying controllers, include example request/response samples and expected status codes in the controller XML comments.
+Verification
+------------
+- Build the API project: `dotnet build fabrizio.API/fabrizio.API.csproj -c Release` (mirrors CI in `.github/workflows/master_fabrizio.yml`, which only builds the API project and does not build MAUI). Fix compile errors.
+- Verify endpoints manually via Swagger UI or `fabrizio.API/fabrizio.API.http`.
+- This solution has no automated test project. If a change would benefit from tests, recommend it in the PR description. Do not add test packages or a test project without explicit developer approval.
 
 Handoff notes
 -------------
