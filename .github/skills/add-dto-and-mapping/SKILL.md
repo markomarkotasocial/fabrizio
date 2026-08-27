@@ -8,7 +8,7 @@ Add DTO classes to `fabrizio.DTO` and implement mapping between entities and DTO
 Steps
 -----
 1. Create DTO class in `fabrizio.DTO` (project is referenced by BLL and MAUI; note: assembly name is `fabrizio.Shared`). DTOs go in `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); contracts go in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`). Keep DTOs minimal and serializable.
-2. If DTOs are shared between API and MAUI, prefer `fabrizio.DTO` to avoid duplication. Update ProjectReference on projects that need them.
+2. Put shared DTOs in `fabrizio.DTO` to avoid duplication. The `fabrizio.Shared` project is already referenced by `fabrizio.BLL` (and therefore the API) and by `fabrizio.App`, so a DTO added here is available to both sides without any new `ProjectReference`.
 3. Implement mapping in `fabrizio.BLL` service method(s) (one file per aggregate). Use manual mapping in the service or a static mapping helper (avoid adding large mapping libraries unless necessary).
    - Example mapping:
 	 ```csharp

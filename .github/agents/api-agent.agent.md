@@ -17,10 +17,10 @@ Agent rules
 
 Error handling & the Result pattern
 -----------------------------------
-- BLL services return `Result<T>` or `Result` for expected business errors. Use `Result.Failure()` with custom `BusinessError(string code, string message, int httpStatusCode)` from `fabrizio.Shared.Contracts`.
-- Lists return `PagedResult<T>`.
+- BLL services return `Result` / `Result<T>` for expected business errors. Build them with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(error)` / `Result<T>.Fail(error)`, where `error` is a `BusinessError(string Code, string Message, int HttpStatusCode)` record from `fabrizio.Shared.Contracts`.
+- Lists are returned as `Result<PagedResult<T>>.Success(...)`.
 - Argument errors (null checks, out-of-range, etc.) still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`); these are programmer errors, not business failures.
-- Controllers translate via `result.ToProblem()` (declared in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns `ProblemDetails`. Success case: `return Ok(result.Value);`.
+- Controllers translate failures via `result.ToProblem()` (extension in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns an `IActionResult` wrapping a `ProblemDetails`. Success case: `return Ok(result.Value);`.
 - Extract `accountId` from claims: `var accountIdClaim = User.FindFirstValue("accountId");` + `int.TryParse` guard. Return `Unauthorized()` if claim is missing or invalid.
 
 EF migrations boundary

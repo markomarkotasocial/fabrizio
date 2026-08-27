@@ -55,13 +55,13 @@ Dependency flow is **strictly unidirectional downward**:
 
 ## Error Handling & the Result Pattern
 
-BLL services in this codebase return `Result<T>` for expected business errors:
+BLL services in this codebase return `Result` / `Result<T>` for expected business errors:
 
-- **Success path:** `Result.Ok(value)` or `PagedResult<T>` for lists.
-- **Business failure:** `Result.Failure(new BusinessError(code, message, httpStatusCode))` from `fabrizio.Shared.Contracts`.
-- **Programmer errors:** `ArgumentNullException.ThrowIfNull()`, `throw new ArgumentException()` — these are NOT caught by Result pattern.
-- **Controllers:** Translate via `result.ToProblem()` (declared in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns `ProblemDetails`. Success case: `return Ok(result.Value);`.
-- **MAUI clients:** Consume `Result<T>` or `PagedResult<T>` from API; on error, deserialize to `ApiProblem` and rewrap in `Result<T>` for UI consumption.
+- **Success path:** `Result.Success()` (no value), `Result<T>.Success(value)`, or `Result<PagedResult<T>>.Success(...)` for lists.
+- **Business failure:** `Result.Fail(new BusinessError(code, message, httpStatusCode))` or `Result<T>.Fail(...)`. `BusinessError` is a `record` in `fabrizio.Shared.Contracts` with positional members `Code`, `Message`, `HttpStatusCode`.
+- **Programmer errors:** `ArgumentNullException.ThrowIfNull()`, `throw new ArgumentException()` — these are NOT expressed as a `Result`.
+- **Controllers:** Translate failures via `result.ToProblem()` (extension in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns an `IActionResult` (`ObjectResult` wrapping a `ProblemDetails`). Success case: `return Ok(result.Value);`.
+- **MAUI clients:** Consume `Result<T>` (or `Result<PagedResult<T>>`) from the API; on error, deserialize to `ApiProblem` and rewrap in a local `Result<T>` for UI consumption.
 - **Authentication:** Extract accountId from claims: `User.FindFirstValue("accountId")` + `int.TryParse` guard. Return `Unauthorized()` if claim missing or invalid.
 
 ## Current Deviations from Target Architecture

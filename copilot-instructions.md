@@ -25,10 +25,10 @@ Safety checks before edits
 
 Error handling & Result pattern
 --------------------------------
-- BLL services return `Result<T>` or `Result` for expected business errors (not exceptions).
-- Use `Result.Failure(new BusinessError(code, message, httpStatusCode))` from `fabrizio.Shared.Contracts`.
+- BLL services return `Result` / `Result<T>` for expected business errors (not exceptions).
+- Build results with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(new BusinessError(code, message, httpStatusCode))` — `BusinessError` is a record in `fabrizio.Shared.Contracts`.
 - Argument errors still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`).
-- Controllers call `result.ToProblem()` to convert `Result<T>` to `ProblemDetails`.
+- Controllers call `result.ToProblem()` to convert a failed `Result` into an `IActionResult` (a `ProblemDetails` payload).
 - MAUI clients deserialize `Result<T>` or `ApiProblem` from API responses and rewrap in local `Result<T>` for UI.
 - See [Error Handling & the Result Pattern](.github/docs/ARCHITECTURE.md#error-handling--the-result-pattern) for details.
 
@@ -47,12 +47,14 @@ NuGet package management
 
 Git & PR
 --------
-- Branch naming: `feature/agent/<short-desc>` or `fix/agent/<short-desc>`.
+- **Branch creation:** Agents MUST NOT create branches independently. Only create a branch when explicitly instructed by the developer. Always confirm the task scope and approach with the developer before branching.
+- Branch naming (when instructed): `feature/agent/<short-desc>` or `fix/agent/<short-desc>`.
 - Commit message template: `<scope>: <short summary>
 
   - Body: one-line description of why change was made
   - Footer: references (issue/PR)`
 - Create a draft PR targeting `master` for agent-created branches.
+- After completing work, notify the developer with a summary of changes and PR link for review.
 
 Use skills
 ----------

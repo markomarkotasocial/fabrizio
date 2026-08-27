@@ -12,7 +12,7 @@ Steps
 3. Create EF migration:
    - `dotnet ef migrations add Add{EntityName} -p fabrizio.DAL -s fabrizio.API`
    - Do NOT run `dotnet ef database update`. Migrations are applied by the developer after review. Include the exact migration command in the PR description.
-4. Add repository interface `I{Entity}Repository` and implementation `EntityRepository` in `fabrizio.Repository` (one file per aggregate). Follow existing patterns: QueryAll, GetById, Add, Delete, SaveChangesAsync.
+4. Add repository interface `I{Entity}Repository` and implementation `{Entity}Repository` in `fabrizio.Repository` (one file per aggregate; interface + implementation in the same file). Follow existing patterns: QueryAll, GetById, Add, Delete, SaveChangesAsync.
 5. Add DTO(s) in `fabrizio.DTO` when DTO shape differs from entity. Remember: the project is named `fabrizio.Shared`; DTOs go in `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); contracts go in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`).
 6. Add mapping methods in `fabrizio.BLL` service (one file per aggregate, e.g., `Trip.cs`). Keep service thin but own domain rules.
 7. Register repository and BLL service in `fabrizio.API/Program.cs` using `AddScoped<I{Repository}, {Repository}>` and `AddScoped<I{Service}, {Service}>`.
