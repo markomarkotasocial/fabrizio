@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -56,8 +57,11 @@ namespace fabrizio.App.Services
 			catch (Exception) { return Result.Fail(NetworkError()); }
 		}
 
+		// Pre-serialize into a StringContent so the request carries a Content-Length.
+		// JsonContent streams without a length (chunked transfer-encoding), which the
+		// Android HTTP stack can drop, leaving the API with an empty request body.
 		private static HttpContent AsJson(object body)
-			=> JsonContent.Create(body, body.GetType(), mediaType: null, options: JsonOptions);
+			=> new StringContent(JsonSerializer.Serialize(body, body.GetType(), JsonOptions), Encoding.UTF8, "application/json");
 
 		private static async Task<Result<T>> ReadResultAsync<T>(HttpResponseMessage response)
 		{
