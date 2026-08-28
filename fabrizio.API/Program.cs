@@ -75,7 +75,12 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+	// Bind request bodies leniently; business validation (required fields, ranges, …)
+	// is owned by fabrizio.BLL and surfaced as a Result -> ProblemDetails.
+	options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 
 
