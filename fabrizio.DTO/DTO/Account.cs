@@ -6,20 +6,10 @@ using System.Threading.Tasks;
 
 namespace fabrizio.Shared.DTO
 {
-	public class GoogleLoginDto
-	{
-		public required string IdToken { get; set; }
-	}
-
 	public class LoginDto
 	{
 		public required string Email { get; set; }
 		public required string Password { get; set; }
-	}
-
-	public class ActivateAccountDto
-	{
-		public string Token { get; set; } = string.Empty;
 	}
 
 	public class AccountDto

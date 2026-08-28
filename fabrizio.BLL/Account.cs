@@ -16,7 +16,6 @@ namespace fabrizio.BLL
 		Task<Result<AccountDto>> GetAccountInfoById(int id);
 		Task<Account> Create(CreateAccountRequest dto);
 		Task<Result> Update(int id, UpdateAccountProfileRequest dto);
-		Task Activate(string token);
 		Task Delete(int id);
 	}
 
@@ -206,25 +205,6 @@ namespace fabrizio.BLL
 
 			await _repository.SaveChangesAsync();
 			return Result.Success();
-		}
-
-		public async Task Activate(string token)
-		{
-			throw new NotImplementedException();
-
-
-			//if (string.IsNullOrWhiteSpace(token))
-			//	throw new ArgumentException("Activation token is required.", nameof(token));
-
-			//var account = await _repository.GetByActivationTokenAsync(token);
-			//if (account == null || account.ActivationTokenExpiry < DateTime.UtcNow)
-			//	throw new InvalidOperationException("Invalid or expired activation token.");
-
-			//account.Status = AccountStatuses.Active;
-			//account.ActivationToken = null; // clear it so it can't be reused
-			//account.ActivationTokenExpiry = null;
-
-			//await _repository.SaveChangesAsync();
 		}
 
 		public async Task Delete(int id)

@@ -40,69 +40,6 @@ namespace fabrizio.API.Controllers
 		}
 
 		/// <summary>
-		/// Google login. Generates a JWT token if credentials are valid.
-		/// </summary>
-		/// <param name="dto"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		[HttpPost("google-login")]
-		[AllowAnonymous]
-		public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
-		{
-			throw new NotImplementedException();
-
-
-			//// Validate Google token
-			//var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
-
-			//// Check if user exists
-			//var account = await _accountService.GetByEmailAsync(payload.Email);
-			//if (account == null)
-			//{
-			//	account = await _accountService.CreateFromGoogleAsync(payload.Email, payload.Name);
-			//}
-
-			//// Issue your JWT
-			//var token = _jwtTokenService.GenerateToken(account);
-			//return Ok(new { Token = token });
-		}
-
-
-
-
-		/// <summary>
-		/// Create a new account.
-		/// </summary>
-		/// <param name="dto"></param>
-		/// <returns></returns>
-		[HttpPost("register")]
-		[AllowAnonymous]
-		public async Task<IActionResult> Create([FromBody] CreateAccountRequest dto)
-		{
-
-			throw new NotImplementedException();
-
-			//var account = await _accountService.Create(dto);
-			//return CreatedAtAction(nameof(GetById), new { id = account.Id }, account);
-		}
-
-		/// <summary>
-		/// Activate an account.
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		[HttpPost("activate")]
-		[AllowAnonymous]
-		public async Task<IActionResult> Activate([FromBody] ActivateAccountDto dto)
-		{
-			await _accountService.Activate(dto.Token);
-			return NoContent();
-		}
-
-
-
-
-		/// <summary>
 		/// Filter all accounts.
 		/// </summary>
 		/// <param name="skip"></param>
@@ -150,15 +87,16 @@ namespace fabrizio.API.Controllers
 		}
 		
 		/// <summary>
-		/// Delete an account.
+		/// Soft-delete the authenticated account.
 		/// </summary>
-		/// <param name="id"></param>
 		/// <returns></returns>
-		[HttpDelete("{id:int}")]
+		[HttpDelete]
 		[Authorize]
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete()
 		{
-			await _accountService.Delete(id);
+			if (!TryGetAccountId(out var accountId)) return Unauthorized();
+
+			await _accountService.Delete(accountId);
 			return NoContent();
 		}
 	}
