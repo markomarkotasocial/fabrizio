@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using fabrizio.App.Pages.Components;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.Contracts;
@@ -59,6 +60,11 @@ namespace fabrizio.App.Services
 		{
 			_tripService = tripService;
 
+			// Navigating in with tripId == Guid.Empty does not change the property
+			// (it is already the default), so OnTripIdChanged never fires for a new
+			// trip. Seed the "new trip" state here; OnTripIdChanged still loads an
+			// existing trip when a real id arrives.
+			InitNewTrip();
 		}
 
 
@@ -136,6 +142,7 @@ namespace fabrizio.App.Services
 					return;
 				}
 
+				WeakReferenceMessenger.Default.Send(new TripsChangedMessage());
 				await Shell.Current.GoToAsync("..");
 			}
 			finally

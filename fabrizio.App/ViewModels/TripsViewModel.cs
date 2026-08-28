@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
@@ -40,6 +41,7 @@ namespace fabrizio.App.Services
 		private bool _isInitialized;
 		private bool _isInitializing = true;
 		private bool _isLoadingTrips;
+		private bool _reloadPending;
 
 
 		private int _skip = 0;
@@ -58,6 +60,9 @@ namespace fabrizio.App.Services
 			// if something happen to Trips collection (add, delete, clear) => recalculate IsEmpty
 			Trips.CollectionChanged += (_, __) => {	OnPropertyChanged(nameof(IsEmpty));	};
 			this.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(IsRefreshing))	RefreshCommand.NotifyCanExecuteChanged(); };
+
+			// A trip was created / edited / deleted elsewhere -> reload on next appearance.
+			WeakReferenceMessenger.Default.Register<TripsChangedMessage>(this, static (r, _) => ((TripsViewModel)r)._reloadPending = true);
 
 			_isInitializing = false;
 		}
@@ -124,7 +129,13 @@ namespace fabrizio.App.Services
 		[RelayCommand]
 		private async Task DeleteTrip(TripListItemDto trip)
 		{
-			await _tripService.DeleteTrip(trip.Id);
+			if (trip == null) return;
+
+			var result = await _tripService.DeleteTrip(trip.Id);
+			if (result.IsSuccess)
+				Trips.Remove(trip);
+			else
+				await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Error deleting trip", "OK");
 		}
 
 
@@ -214,8 +225,9 @@ namespace fabrizio.App.Services
 
 		public async Task EnsureLoadedAsync()
 		{
-			if (_isInitialized)	return;
+			if (_isInitialized && !_reloadPending) return;
 			_isInitialized = true;
+			_reloadPending = false;
 			await Load();
 		}
 

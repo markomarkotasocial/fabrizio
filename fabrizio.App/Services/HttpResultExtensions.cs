@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -63,11 +62,7 @@ namespace fabrizio.App.Services
 		// JsonContent streams without a length (chunked transfer-encoding), which the
 		// Android HTTP stack can drop, leaving the API with an empty request body.
 		private static HttpContent AsJson(object body)
-		{
-			var json = JsonSerializer.Serialize(body, body.GetType(), JsonOptions);
-			Debug.WriteLine($"[api] request body ({body.GetType().Name}): {json}"); // TEMP diagnostic
-			return new StringContent(json, Encoding.UTF8, "application/json");
-		}
+			=> new StringContent(JsonSerializer.Serialize(body, body.GetType(), JsonOptions), Encoding.UTF8, "application/json");
 
 		private static async Task<Result<T>> ReadResultAsync<T>(HttpResponseMessage response)
 		{
@@ -90,8 +85,6 @@ namespace fabrizio.App.Services
 			var status = (int)response.StatusCode;
 			var raw = string.Empty;
 			try { raw = await response.Content.ReadAsStringAsync(); } catch (Exception) { }
-
-			Debug.WriteLine($"[api] {status} {response.RequestMessage?.Method} {response.RequestMessage?.RequestUri}\n{raw}"); // TEMP diagnostic
 
 			try
 			{

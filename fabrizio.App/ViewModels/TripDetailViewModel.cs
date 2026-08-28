@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using fabrizio.App.ViewModels;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
@@ -201,6 +202,7 @@ namespace fabrizio.App.Services
 				return;
 			}
 
+			WeakReferenceMessenger.Default.Send(new TripsChangedMessage());
 			await Shell.Current.GoToAsync("..");
 		}
 
