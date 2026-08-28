@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 using fabrizio.DAL;
 using fabrizio.DAL.Entities;
@@ -6,55 +6,33 @@ using fabrizio.DAL.Entities;
 
 namespace fabrizio.Repository
 {
-	public interface ITripRepository
+	public interface ITripRepository : IRepository<Trip>
 	{
-		Task SaveChangesAsync();
-
 		IQueryable<Trip> QueryAll(int accountid);
 		Task<Trip?> GetById(Guid id);
-		void Add(Trip trip);
 		Task<bool> HasOverlappingTrip(int accountId, DateTime? start, DateTime? end, Guid? excludeTripId = null);
-		void Delete(Trip trip);
 	}
 
 
-	public class TripRepository : ITripRepository
+	public class TripRepository : RepositoryBase<Trip>, ITripRepository
 	{
-
-		private readonly AppDbContext _context;
-
-		public TripRepository(AppDbContext context)
-		{
-			_context = context;
-		}
-
-		public async Task SaveChangesAsync()
-		{
-			await _context.SaveChangesAsync();
-		}
-
-
+		public TripRepository(AppDbContext context) : base(context) { }
 
 		public IQueryable<Trip> QueryAll(int accountid)
 		{
-			return _context.Trips.Where(x => x.AccountId == accountid).Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).Include(t => t.Destinations).AsNoTracking();
+			return Context.Trips.Where(x => x.AccountId == accountid).Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).Include(t => t.Destinations).AsNoTracking();
 		}
 
 		public async Task<Trip?> GetById(Guid id)
 		{
-			return await _context.Trips.Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).Include(t => t.Destinations).FirstOrDefaultAsync(t => t.Id == id); 
-		}
-
-		public void Add(Trip trip)
-		{
-			_context.Trips.Add(trip);
+			return await Context.Trips.Include(t => t.AccommodationBookings).Include(t => t.TravelBookings).Include(t => t.Destinations).FirstOrDefaultAsync(t => t.Id == id);
 		}
 
 		public async Task<bool> HasOverlappingTrip(int accountId, DateTime? start, DateTime? end, Guid? excludeTripId = null)
 		{
 			var normalizedEnd = end ?? DateTime.Today;
 
-			return await _context.Trips.AnyAsync(t =>
+			return await Context.Trips.AnyAsync(t =>
 				t.AccountId == accountId
 				&& t.Status != TripStatus.Cancelled
 				&& (excludeTripId == null || t.Id != excludeTripId)
@@ -63,13 +41,5 @@ namespace fabrizio.Repository
 				&& (t.EndDate ?? DateTime.Today) >= start
 			);
 		}
-
-
-		public void Delete(Trip trip)
-		{
-			_context.Trips.Remove(trip);
-		}
-
-
 	}
 }

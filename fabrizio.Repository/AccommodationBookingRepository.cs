@@ -1,51 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-
 using fabrizio.DAL;
 using fabrizio.DAL.Entities;
 
 
 namespace fabrizio.Repository
 {
-	public interface IAccommodationBookingRepository
+	public interface IAccommodationBookingRepository : IRepository<AccommodationBooking>
 	{
-		Task SaveChangesAsync();
-
-		//IQueryable<TravelBooking> QueryAll(int accountid);
-		//Task<TravelBooking?> GetById(Guid id);
-		void Add(AccommodationBooking accommodationbooking);
-		void Delete(AccommodationBooking accommodationbooking);
 	}
 
 
-	public class AccommodationBookingRepository : IAccommodationBookingRepository
+	public class AccommodationBookingRepository : RepositoryBase<AccommodationBooking>, IAccommodationBookingRepository
 	{
-
-		private readonly AppDbContext _context;
-
-		public AccommodationBookingRepository(AppDbContext context)
-		{
-			_context = context;
-		}
-
-		public async Task SaveChangesAsync()
-		{
-			await _context.SaveChangesAsync();
-		}
-
-
-
-
-		public void Add(AccommodationBooking accommodationbooking)
-		{
-			_context.AccommodationBookings.Add(accommodationbooking);
-		}
-
-
-		public void Delete(AccommodationBooking accommodationbooking)
-		{
-			_context.AccommodationBookings.Remove(accommodationbooking);
-		}
-
-
+		public AccommodationBookingRepository(AppDbContext context) : base(context) { }
 	}
 }

@@ -1,5 +1,4 @@
-﻿using fabrizio.DAL;
-using fabrizio.DAL.Entities;
+﻿using fabrizio.DAL.Entities;
 using fabrizio.Repository;
 using fabrizio.Shared.Contracts;
 using fabrizio.Shared.DTO;
@@ -42,15 +41,13 @@ namespace fabrizio.BLL
 		private readonly ITravelBookingRepository _travelBookingRepository;
 		private readonly IAccommodationBookingRepository _accommodationBookingRepository;
 		private readonly IDestinationRepository _destinationRepository;
-		private readonly AppDbContext _context;
 
-		public TripService(ITripRepository repository, ITravelBookingRepository travelBookingRepository, IAccommodationBookingRepository accommodationBookingRepository, IDestinationRepository destinationRepository, AppDbContext context)
+		public TripService(ITripRepository repository, ITravelBookingRepository travelBookingRepository, IAccommodationBookingRepository accommodationBookingRepository, IDestinationRepository destinationRepository)
 		{
 			_tripRepository = repository;
 			_travelBookingRepository = travelBookingRepository;
 			_accommodationBookingRepository = accommodationBookingRepository;
 			_destinationRepository = destinationRepository;
-			_context = context;	
 		}
 
 

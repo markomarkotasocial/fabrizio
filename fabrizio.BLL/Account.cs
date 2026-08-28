@@ -1,5 +1,4 @@
 ﻿
-using fabrizio.DAL;
 using fabrizio.DAL.Entities;
 using fabrizio.Repository;
 using fabrizio.Shared.Contracts;
@@ -22,12 +21,10 @@ namespace fabrizio.BLL
 	public class AccountService : IAccountService
 	{
 		private readonly IAccountRepository _repository;
-		private readonly AppDbContext _context;
 
-		public AccountService(IAccountRepository repository, AppDbContext context)
+		public AccountService(IAccountRepository repository)
 		{
 			_repository = repository;
-			_context = context;
 		}
 
 
@@ -44,7 +41,7 @@ namespace fabrizio.BLL
 
 			#endregion Validate
 
-			var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email && a.Status == AccountStatuses.Active);
+			var account = await _repository.GetActiveByEmailAsync(email);
 			if (account == null) return null;
 			return BCrypt.Net.BCrypt.Verify(password, account.PasswordHash) ? account : null;
 		}

@@ -36,7 +36,7 @@ namespace fabrizio.API.Controllers
 			if (account == null) return Unauthorized();
 
 			var token = _jwtTokenService.GenerateToken(account);
-			return Ok(new { Token = token });
+			return Ok(new LoginResponseDto { Token = token });
 		}
 
 		/// <summary>

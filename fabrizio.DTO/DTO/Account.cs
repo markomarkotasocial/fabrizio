@@ -12,6 +12,11 @@ namespace fabrizio.Shared.DTO
 		public required string Password { get; set; }
 	}
 
+	public class LoginResponseDto
+	{
+		public string Token { get; set; } = string.Empty;
+	}
+
 	public class AccountDto
 	{
 		public int Id { get; set; }
