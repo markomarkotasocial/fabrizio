@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -61,7 +63,11 @@ namespace fabrizio.App.Services
 		// JsonContent streams without a length (chunked transfer-encoding), which the
 		// Android HTTP stack can drop, leaving the API with an empty request body.
 		private static HttpContent AsJson(object body)
-			=> new StringContent(JsonSerializer.Serialize(body, body.GetType(), JsonOptions), Encoding.UTF8, "application/json");
+		{
+			var json = JsonSerializer.Serialize(body, body.GetType(), JsonOptions);
+			Debug.WriteLine($"[api] request body ({body.GetType().Name}): {json}"); // TEMP diagnostic
+			return new StringContent(json, Encoding.UTF8, "application/json");
+		}
 
 		private static async Task<Result<T>> ReadResultAsync<T>(HttpResponseMessage response)
 		{
@@ -81,21 +87,35 @@ namespace fabrizio.App.Services
 
 		private static async Task<BusinessError> ReadErrorAsync(HttpResponseMessage response)
 		{
+			var status = (int)response.StatusCode;
+			var raw = string.Empty;
+			try { raw = await response.Content.ReadAsStringAsync(); } catch (Exception) { }
+
+			Debug.WriteLine($"[api] {status} {response.RequestMessage?.Method} {response.RequestMessage?.RequestUri}\n{raw}"); // TEMP diagnostic
+
 			try
 			{
-				var problem = await response.Content.ReadFromJsonAsync<ApiProblem>(JsonOptions);
+				var problem = JsonSerializer.Deserialize<ApiProblem>(raw, JsonOptions);
 				if (problem is not null)
+				{
+					var message = problem.Detail;
+					if (string.IsNullOrWhiteSpace(message) && problem.Errors is { Count: > 0 })
+						message = string.Join("; ", problem.Errors.SelectMany(e => e.Value));
+					if (string.IsNullOrWhiteSpace(message))
+						message = problem.Title;
+
 					return new BusinessError(
 						problem.Type ?? "api_error",
-						problem.Detail ?? problem.Title ?? "Unknown API error",
-						problem.Status ?? (int)response.StatusCode);
+						message ?? "Unknown API error",
+						problem.Status ?? status);
+				}
 			}
 			catch (Exception)
 			{
 				// response body was not problem+json; fall through to a generic error
 			}
 
-			return new BusinessError("api_error", $"Request failed ({(int)response.StatusCode}).", (int)response.StatusCode);
+			return new BusinessError("api_error", $"Request failed ({status}).", status);
 		}
 	}
 }

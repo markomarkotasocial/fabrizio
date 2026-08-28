@@ -12,6 +12,9 @@ namespace fabrizio.Shared.Contracts
 		public string? Title { get; set; }
 		public string? Detail { get; set; }
 		public int? Status { get; set; }
+
+		// Populated for ASP.NET ValidationProblemDetails (model-binding failures).
+		public Dictionary<string, string[]>? Errors { get; set; }
 	}
 
 }
