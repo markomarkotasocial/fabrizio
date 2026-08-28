@@ -22,16 +22,12 @@ namespace fabrizio.App.Services
 
 	public class AuthService : IAuthService
 	{
-		private readonly HttpClient _httpClient;
-
-		public AuthService(HttpClient httpClient)
+		// Standalone client: login must not go through the TokenHandler pipeline
+		// (no token yet, and a 401 here means bad credentials, not an expired session).
+		private readonly HttpClient _httpClient = new HttpClient
 		{
-			_httpClient = new HttpClient
-			{
-				BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/")
-			};
-		}
-
+			BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/")
+		};
 
 		private bool _isLoggingOut;
 

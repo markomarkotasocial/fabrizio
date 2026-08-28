@@ -53,7 +53,7 @@ namespace fabrizio.BLL
 			};
 
 			trip.Destinations.Add(destination);
-			await _travelBookingRepository.SaveChangesAsync();
+			await _tripRepository.SaveChangesAsync();
 			return Result<DestinationDto>.Success(destination.ToDto());
 		}
 

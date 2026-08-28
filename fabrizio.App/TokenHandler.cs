@@ -28,11 +28,10 @@ public class TokenHandler : DelegatingHandler
 
 		var response = await base.SendAsync(request, cancellationToken);
 
+		// Single place that reacts to an expired/invalid session: sign the user out.
+		// Callers just see the 401 turn into a failed Result.
 		if (response.StatusCode == HttpStatusCode.Unauthorized)
-		{
 			await _authService.LogoutAsync();
-			throw new UnauthorizedException();
-		}
 
 		return response;
 	}

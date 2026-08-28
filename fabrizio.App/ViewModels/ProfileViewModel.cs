@@ -144,10 +144,6 @@ namespace fabrizio.App.Services
 				IsBusy = true;
 				await LoadOverviewCoreAsync();
 			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
-			}
 			finally
 			{
 				IsBusy = false;
@@ -163,10 +159,6 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = true;
 				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
 			}
 			finally
 			{

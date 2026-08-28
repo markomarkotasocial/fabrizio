@@ -9,7 +9,6 @@ namespace fabrizio.App.Services
 	public partial class HomeViewModel : BaseViewModel
 	{
 		private readonly ITripService _tripService;
-		private readonly IAuthService _authService;
 
 
 
@@ -46,12 +45,9 @@ namespace fabrizio.App.Services
 
 		private bool _isInitialized;
 
-		public HomeViewModel(ITripService tripService, AuthService authService)
+		public HomeViewModel(ITripService tripService)
 		{
 			_tripService = tripService;
-			_authService = authService;
-
-
 		}
 
 
@@ -62,10 +58,6 @@ namespace fabrizio.App.Services
 			try
 			{
 				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
 			}
 			finally
 			{
@@ -85,10 +77,6 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = true;
 				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
 			}
 			finally
 			{
@@ -133,10 +121,6 @@ namespace fabrizio.App.Services
 			{
 				IsBusy = true;
 				await LoadOverviewCoreAsync();
-			}
-			catch (UnauthorizedException)
-			{
-				await _authService.LogoutAsync();
 			}
 			finally
 			{
