@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Security;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	[QueryProperty(nameof(TripId), "tripId")]
 	public partial class TripDetailViewModel : BaseViewModel

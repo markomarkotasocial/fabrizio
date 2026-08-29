@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Pages.Auth;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.DTO;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	public partial class HomeViewModel : BaseViewModel
 	{
@@ -42,8 +42,6 @@ namespace fabrizio.App.Services
 			}
 		}
 
-
-		private bool _isInitialized;
 
 		public HomeViewModel(ITripService tripService)
 		{

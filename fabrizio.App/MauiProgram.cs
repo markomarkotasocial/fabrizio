@@ -5,6 +5,7 @@ using fabrizio.App.Pages.Flows;
 using fabrizio.App.Pages.Tabs;
 using fabrizio.App.Services;
 using fabrizio.App.Services.Abstractions;
+using fabrizio.App.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

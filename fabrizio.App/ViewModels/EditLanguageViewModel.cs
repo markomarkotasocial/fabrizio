@@ -2,11 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using fabrizio.App.Resources.Lookups;
 using fabrizio.App.Services.Abstractions;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	public partial class EditLanguageViewModel : BaseViewModel
 	{

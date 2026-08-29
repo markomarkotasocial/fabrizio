@@ -4,10 +4,10 @@ using fabrizio.App.Pages.Auth;
 using fabrizio.App.Pages.Flows;
 using fabrizio.App.Resources.Lookups;
 using fabrizio.App.Services.Abstractions;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.DTO;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	public partial class ProfileViewModel : BaseViewModel
 	{

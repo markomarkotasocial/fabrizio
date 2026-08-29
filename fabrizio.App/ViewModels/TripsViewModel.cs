@@ -2,16 +2,17 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using fabrizio.App.Pages.Flows;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	public partial class FilterChip : ObservableObject
 	{
-		public string Name { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public TripFilter Filter { get; set; }
 
 		[ObservableProperty] private bool isSelected;
 	}
@@ -24,10 +25,13 @@ namespace fabrizio.App.Services
 		public ObservableCollection<TripListItemDto> Trips { get; } = new();
 		public ObservableCollection<FilterChip> Filters { get; } = new()
 		{
-			new FilterChip { Name = "Upcoming", IsSelected = true },
-			new FilterChip { Name = "Past" }, 
-			new FilterChip { Name = "All" }
+			new FilterChip { Name = "Upcoming", Filter = TripFilter.CurrentAndUpcoming, IsSelected = true },
+			new FilterChip { Name = "Past",     Filter = TripFilter.Past },
+			new FilterChip { Name = "All",      Filter = TripFilter.All },
 		};
+
+		private TripFilter SelectedFilter =>
+			(Filters.FirstOrDefault(c => c.IsSelected) ?? Filters[0]).Filter;
 
 
 		[ObservableProperty] private bool isRefreshing;
@@ -39,8 +43,6 @@ namespace fabrizio.App.Services
 		public bool IsEmpty => !IsBusy && !IsRefreshing && Trips.Count == 0;
 
 		private bool _isInitialized;
-		private bool _isInitializing = true;
-		private bool _isLoadingTrips;
 		private bool _reloadPending;
 
 
@@ -63,8 +65,6 @@ namespace fabrizio.App.Services
 
 			// A trip was created / edited / deleted elsewhere -> reload on next appearance.
 			WeakReferenceMessenger.Default.Register<TripsChangedMessage>(this, static (r, _) => ((TripsViewModel)r)._reloadPending = true);
-
-			_isInitializing = false;
 		}
 
 
@@ -162,17 +162,7 @@ namespace fabrizio.App.Services
 			{
 				_isLoadingMore = true;
 
-				var chip = Filters.FirstOrDefault(x => x.IsSelected);
-
-				TripFilter filter = chip?.Name switch
-				{
-					"Upcoming" => TripFilter.CurrentAndUpcoming,
-					"Past" => TripFilter.Past,
-					"All" => TripFilter.All,
-					_ => TripFilter.CurrentAndUpcoming
-				};
-
-				var result = await _tripService.GetTrips(filter, _skip, PageSize);
+				var result = await _tripService.GetTrips(SelectedFilter, _skip, PageSize);
 				if (!result.IsSuccess || result.Value == null) return;
 
 				var items = result.Value.ToList(); // !
@@ -201,21 +191,6 @@ namespace fabrizio.App.Services
 				
 
 		private async Task ApplyFilter()
-		{
-			var chip = Filters.FirstOrDefault(x => x.IsSelected);
-
-			TripFilter filter = chip?.Name switch
-			{
-				"Upcoming" => TripFilter.CurrentAndUpcoming,
-				"Past" => TripFilter.Past,
-				"All" => TripFilter.All,
-				_ => TripFilter.CurrentAndUpcoming
-			};
-
-			await ResetAndLoadAsync(filter);
-		}
-
-		private async Task ResetAndLoadAsync(TripFilter filter)
 		{
 			_skip = 0;
 			_hasMoreItems = true;

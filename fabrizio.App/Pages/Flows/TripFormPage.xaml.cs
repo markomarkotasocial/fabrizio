@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using fabrizio.App.Services;
+using fabrizio.App.ViewModels;
 
 namespace fabrizio.App.Pages.Flows
 {

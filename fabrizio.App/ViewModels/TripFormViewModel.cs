@@ -2,12 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using fabrizio.App.Pages.Components;
-using fabrizio.App.ViewModels;
+using fabrizio.App.Services;
 using fabrizio.Shared.Contracts;
 using fabrizio.Shared.DTO;
 using System.Collections.ObjectModel;
 
-namespace fabrizio.App.Services
+namespace fabrizio.App.ViewModels
 {
 	public partial class DestinationItemViewModel : ObservableObject
 	{
