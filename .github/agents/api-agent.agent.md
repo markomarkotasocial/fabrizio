@@ -5,23 +5,27 @@ scope: "fabrizio.API, fabrizio.Repository, fabrizio.DAL, fabrizio.BLL"
 description: "Agent specialized in implementing and modifying backend REST API features for this repository. Works with EF Core, Repository pattern, BLL services, DTOs and Swagger/JWT configuration."
 ---
 
+Read [.github/docs/CONVENTIONS.md](../docs/CONVENTIONS.md) first — the backend helper table is the contract for this agent.
+
 Agent rules
 -----------
 - Work only in the backend projects listed in frontmatter. Do not modify MAUI project files.
 - Before making any code changes, locate and open the actual `_AppDbContext` source file and entity definitions in `fabrizio.DAL/` (project root; namespace `fabrizio.DAL.Entities`). Confirm namespaces, DbSet names, and that no physical `Entities/` folder exists.
-- Use existing repository pattern: create or update `I{Name}Repository` in `fabrizio.Repository` and an implementation that uses `AppDbContext`. Follow method signatures already present. Note: repositories may expose `IQueryable<T>` from `QueryAll()` for read operations; this is a known trade-off (leaky abstraction) for efficient query composition in BLL. Do not expose `DbContext` directly to upper layers.
-- Services in `fabrizio.BLL` are organized one per aggregate in root folder (e.g., `Trip.cs`). Namespace `fabrizio.BLL`. Larger services use `partial` in adjacent files (e.g., `AccommodationBooking.cs`).
-- Add DTOs to `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`) when shape differs from entities. Contracts go in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`). Remember: project assembly is `fabrizio.Shared`.
-- Place business logic in `fabrizio.BLL` services; controllers in `fabrizio.API` should be thin and call BLL services.
-- Register new repositories/services in `fabrizio.API/Program.cs` using `AddScoped`. All repositories and services use Scoped lifetime.
+- **Repository:** `interface I{X}Repository : IRepository<{X}>` and `class {X}Repository : RepositoryBase<{X}>, I{X}Repository` with `public {X}Repository(AppDbContext c) : base(c) { }`. `Add` / `Delete` / `SaveChangesAsync` and `Context` come from the base — do NOT re-declare them or an `_context` field. Add only aggregate-specific queries (`GetById`, `HasOverlapping…`, and `IQueryable<{X}> QueryAll(...)` for composable reads).
+- **BLL services take only `I*Repository`** (and other BLL services) in their constructor. Never inject `AppDbContext` into `fabrizio.BLL`. Need a query the repository lacks? Add it to the repository interface.
+- Services in `fabrizio.BLL` are one per aggregate in the root folder (e.g., `Trip.cs`), namespace `fabrizio.BLL`; larger services use `partial` in adjacent files. Entity → DTO mapping lives in `fabrizio.BLL/Mapping/{X}MappingExtensions.cs` as `ToDto()` extension methods — call `entity.ToDto()`, never build `new XDto { ... }` inline.
+- For a trip-scoped resource, reuse a `LoadOwned…Async(accountId, id) → Result<...>` guard for the 404 / 403 / (cancelled) ladder (see `fabrizio.BLL/TripService.Guards.cs`); do not repeat the checks inline.
+- **Request DTOs carry no validation attributes.** `Program.cs` sets `SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true`; a missing/blank field must produce a `Result.Fail(new BusinessError(...))` from the BLL, not an ASP.NET `[Required]` error.
+- Add DTOs to `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); contracts to `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`). Project assembly is `fabrizio.Shared`. Responses are typed DTOs (`LoginResponseDto`), not anonymous objects.
+- Register new repositories/services in `fabrizio.API/Program.cs` using `AddScoped`.
 
 Error handling & the Result pattern
 -----------------------------------
-- BLL services return `Result` / `Result<T>` for expected business errors. Build them with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(error)` / `Result<T>.Fail(error)`, where `error` is a `BusinessError(string Code, string Message, int HttpStatusCode)` record from `fabrizio.Shared.Contracts`.
-- Lists are returned as `Result<PagedResult<T>>.Success(...)`.
-- Argument errors (null checks, out-of-range, etc.) still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`); these are programmer errors, not business failures.
-- Controllers translate failures via `result.ToProblem()` (extension in `fabrizio.API/Extensions/ResultExtensions.cs`), which returns an `IActionResult` wrapping a `ProblemDetails`. Success case: `return Ok(result.Value);`.
-- Extract `accountId` from claims: `var accountIdClaim = User.FindFirstValue("accountId");` + `int.TryParse` guard. Return `Unauthorized()` if claim is missing or invalid.
+- BLL services return `Result` / `Result<T>` for expected business errors. Build with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(error)` / `Result<T>.Fail(error)`, where `error` is a `BusinessError(string Code, string Message, int HttpStatusCode)` positional record from `fabrizio.Shared.Contracts`.
+- Lists: `Result<PagedResult<T>>.Success(...)` (the controller sends the bare `PagedResult<T>` on `200`).
+- Argument errors (null checks, out-of-range, …) still `throw` — programmer errors, not business failures.
+- **Controller action = one line:** `var result = await _service.X(...); return result.ToActionResult();` (`ResultExtensions`: generic → `200` + value, non-generic → `204`, failure → `ProblemDetails` at the error's status).
+- **Auth:** controller inherits `AuthorizedControllerBase`; `if (!TryGetAccountId(out var accountId)) return Unauthorized();`.
 
 EF migrations boundary
 ----------------------
@@ -37,8 +41,8 @@ NuGet package policy
 
 Security & API surface
 ----------------------
-- Follow existing JWT auth setup in `Program.cs`. Do not change token validation defaults without explicit reason. If endpoints require authorization, use `[Authorize]` attributes and document required scopes/roles.
-- Update Swagger (Swashbuckle) security definitions when adding authenticated endpoints.
+- Follow the existing JWT auth setup in `Program.cs`. Do not change token validation defaults without explicit reason. Put `[Authorize]` on endpoints that need it (the Swagger `Bearer` security scheme is global — no per-endpoint Swagger wiring).
+- Secrets (`ConnectionStrings:DefaultConnection`, `Jwt:Key`) come from User Secrets locally / App Service settings in Azure — never add them to `appsettings*.json`.
 
 Verification
 ------------

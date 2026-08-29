@@ -13,18 +13,17 @@ Orchestrator rules
 - Do not start frontend implementation until api-agent confirms DTO shapes and exposes Swagger examples or sample JSON.
 - Produce handoff artifacts: DTO files, example request/response JSON, curl requests, and a short integration checklist.
 
+Both agents assume [.github/docs/CONVENTIONS.md](../docs/CONVENTIONS.md). The wire contract is fixed by it: a `2xx` carries the **bare value** (or `204`), a `4xx` carries a `ProblemDetails`; list endpoints are `Result<PagedResult<T>>` server-side → bare `PagedResult<T>` on the wire.
+
 Recommended flow
 ----------------
-1. Define API contract (list DTOs, route paths, HTTP methods, responses, error cases). Send to api-agent.
-2. api-agent implements backend endpoints, creates migration files (agents do NOT apply migrations), updates DI, and provides example JSON payloads or Swagger export.
-3. Once backend reports a stable contract, ask maui-agent to:
-   - add/consume DTOs (or share existing ones)
-   - create a typed HttpClient + service
-   - add ViewModel and Page
-4. Run integration: start API locally (or use deployed base address), run MAUI app against API, validate end-to-end scenarios.
+1. Define the API contract (DTOs, routes, HTTP methods, success/error status codes). Send to api-agent.
+2. api-agent implements backend endpoints (controllers via `AuthorizedControllerBase` + `ToActionResult`, BLL via `Result`, repos via `RepositoryBase`), creates migration files (agents do NOT apply migrations), updates DI, and provides example JSON payloads.
+3. Once the backend reports a stable contract, ask maui-agent to: reuse the shared DTOs; add/extend an `I{X}Service` whose methods delegate to `HttpResultExtensions`; add ViewModel + Page.
+4. Integration: run the API (local or deployed base address), run the MAUI app against it, validate end-to-end.
 
 Handoff artifact checklist
 -------------------------
-- DTO definitions (C#) and example JSON
-- Endpoint list: method, route, auth requirement, example request/response and status codes
-- **Exact migration command** (e.g., `dotnet ef migrations add AddTrip -p fabrizio.DAL -s fabrizio.API`) for developer review. Note: agents create migration files but do NOT apply migrations to database.
+- DTO definitions (C#, in `fabrizio.Shared`) and example JSON
+- Endpoint list: method, route, auth requirement, request/response shape and status codes (bare value on `2xx` / `204`, `ProblemDetails` on `4xx`)
+- **Exact migration command** (e.g., `dotnet ef migrations add AddTrip -p fabrizio.DAL -s fabrizio.API`) for developer review. Agents create migration files but do NOT apply them.

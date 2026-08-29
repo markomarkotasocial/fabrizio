@@ -7,13 +7,14 @@ Rules and best practices for automated code agents working in this repository.
 
 Global rules
 ------------
+- **Read [.github/docs/CONVENTIONS.md](.github/docs/CONVENTIONS.md) first** — the canonical helpers (`AuthorizedControllerBase`, `ToActionResult`, `RepositoryBase<T>`, BLL mapping extensions, `LoadOwnedTripAsync`, `HttpResultExtensions`, `INavigationService`, `*ChangedMessage`). Use them; do not hand-roll the boilerplate they replace.
 - Scope: only modify files in this repository. For cross-project changes, update ProjectReference and adjust DI registrations.
 - Platform: this solution targets .NET 8. Use .NET 8 features and SDK-style projects.
 - UI: this repository uses .NET MAUI (CommunityToolkit.Maui + CommunityToolkit.Mvvm). Do NOT reference Xamarin.Forms.
-- ORM: backend uses Entity Framework Core with SQL Server. Follow existing repository and DbContext patterns.
+- ORM: EF Core + SQL Server. A concrete repository is `XRepository : RepositoryBase<X>, IXRepository` (base gives `Add`/`Delete`/`SaveChangesAsync` + `Context`); it only adds aggregate-specific queries. BLL services take only `I*Repository` — never `AppDbContext`.
 - Naming: interfaces start with `I` (IAccountService, ITripRepository). Repositories end with `Repository`, services with `Service`, view models with `ViewModel`.
-- DI: in API use AddScoped for repositories and business services. In MAUI follow existing lifetimes: AddSingleton for app/global state, AddTransient for Pages/ViewModels, typed AddHttpClient for API services.
-- ViewModels: use CommunityToolkit.Mvvm patterns: `[ObservableProperty]`, `AsyncRelayCommand`, inherit from repository's `BaseViewModel`.
+- DI: in API use AddScoped for repositories and business services. In MAUI: AddSingleton for `IAccountState` / `AuthService` / `INavigationService`, AddTransient for Pages / ViewModels / `AppShell`, typed AddHttpClient (+ `TokenHandler`) for API services.
+- ViewModels: CommunityToolkit.Mvvm patterns (`[ObservableProperty]`, `AsyncRelayCommand`), namespace `fabrizio.App.ViewModels`, inherit the repo's `BaseViewModel` (`_BaseViewModel.cs`).
 
 Safety checks before edits
 -------------------------
@@ -26,10 +27,11 @@ Safety checks before edits
 Error handling & Result pattern
 --------------------------------
 - BLL services return `Result` / `Result<T>` for expected business errors (not exceptions).
-- Build results with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(new BusinessError(code, message, httpStatusCode))` — `BusinessError` is a record in `fabrizio.Shared.Contracts`.
+- Build results with `Result.Success()` / `Result<T>.Success(value)` and `Result.Fail(new BusinessError(code, message, httpStatusCode))` — `BusinessError` is a positional record in `fabrizio.Shared.Contracts`.
 - Argument errors still `throw` (e.g., `ArgumentNullException.ThrowIfNull()`).
-- Controllers call `result.ToProblem()` to convert a failed `Result` into an `IActionResult` (a `ProblemDetails` payload).
-- MAUI clients deserialize `Result<T>` or `ApiProblem` from API responses and rewrap in local `Result<T>` for UI.
+- **Field validation belongs to the BLL, not the DTO.** `Program.cs` disables the implicit `[Required]` on non-nullable reference types — do not add `[Required]` / data annotations to request DTOs; a missing field must come back as `Result.Fail`.
+- Controllers are one line: `return result.ToActionResult();` (generic → `200` + value, non-generic → `204`, failure → `ProblemDetails`).
+- MAUI clients use the `HttpResultExtensions` helpers, which turn the response into `Result` / `Result<T>`.
 - See [Error Handling & the Result Pattern](.github/docs/ARCHITECTURE.md#error-handling--the-result-pattern) for details.
 
 Entity Framework migrations
@@ -64,7 +66,7 @@ Architecture & project boundaries
 ----------------------------------
 This repository follows a strict **layered architecture** where dependency direction ALWAYS flows downward. All agents MUST respect these boundaries when adding features or fixing bugs.
 
-See: **[Layered Architecture & Project Boundaries](.github/docs/ARCHITECTURE.md)** for detailed rules, file organization patterns, Error handling & Result pattern, known deviations, and the bottom-up workflow.
+See: **[CONVENTIONS.md](.github/docs/CONVENTIONS.md)** for the canonical helpers, and **[Layered Architecture & Project Boundaries](.github/docs/ARCHITECTURE.md)** for detailed rules, file organization, the Result pattern, and the bottom-up workflow.
 
 Key file locations:
 - Backend entities: `fabrizio.DAL/` (project root; namespace `fabrizio.DAL.Entities`; infrastructure with `_` prefix; no `Entities/` folder).
@@ -76,7 +78,8 @@ Key file locations:
 
 Key rules:
 - No circular or upward dependencies.
-- Controllers thin; domain logic in BLL services.
-- Repositories expose interfaces only; BLL may use `IQueryable<T>` from `QueryAll()` for query composition (known trade-off).
-- Result pattern: BLL returns `Result<T>` for business errors; controllers call `result.ToProblem()`.
+- Controllers thin (`AuthorizedControllerBase` + `return result.ToActionResult();`); domain logic in BLL services.
+- Repositories expose `I*Repository` only; BLL takes only `I*Repository` (no `AppDbContext`). `IQueryable<T>` from `QueryAll()` is the one accepted read seam.
+- Result pattern: BLL returns `Result` / `Result<T>`; controller `ToActionResult()`; MAUI uses `HttpResultExtensions`.
+- Entity → DTO mapping via `fabrizio.BLL/Mapping/*MappingExtensions.cs` (`ToDto()`), not inline.
 - Always bottom-up: DAL → Repository → BLL → API/App.

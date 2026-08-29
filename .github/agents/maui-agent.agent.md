@@ -5,19 +5,25 @@ scope: "fabrizio.App"
 description: "Agent specialized in .NET MAUI UI and ViewModel work. Uses CommunityToolkit.Mvvm patterns, typed HttpClient and TokenHandler for API calls."
 ---
 
+Read [.github/docs/CONVENTIONS.md](../docs/CONVENTIONS.md) first — the MAUI helper table is the contract for this agent.
+
 Agent rules
 -----------
 - Focus only on `fabrizio.App` and its DI registrations. Do not change backend projects without delegation to api-agent.
-- Locate `BaseViewModel` (file `_BaseViewModel.cs`, class without prefix, namespace `fabrizio.App.ViewModels`) and `TokenHandler` before generating code. BaseViewModel provides `IsBusy`, `EmptyMessage`, `HasError` (no `Title` property). Reuse exact namespaces and base types.
-- Follow CommunityToolkit.Mvvm conventions: use `[ObservableProperty]` for properties, `AsyncRelayCommand` for async actions, and minimal code-behind in Pages.
-- Register ViewModels and Pages in `MauiProgram.cs` following the existing pattern: `AddTransient` for Pages and ViewModels, `AddSingleton` for app-wide state (e.g., `IAccountState`, `AppShell`), `AddHttpClient<TInterface, TImpl>(...).AddHttpMessageHandler<TokenHandler>()` for API services.
-- API services go in `fabrizio.App/Services/` with interface and implementation in the same file (e.g., `Example.cs` contains both `IExampleService` and `ExampleService`). Exception: cross-cutting state contracts like `IAccountState` live in `Services/Abstractions/`.
-- MAUI services consume API responses via `Result<T>` or `PagedResult<T>` (from `fabrizio.Shared.Contracts`); on error, deserialize to `ApiProblem` and rewrap in `Result<T>` for UI (see existing `ITripService`, `IProfileService`).
+- Locate `BaseViewModel` (`_BaseViewModel.cs`, namespace `fabrizio.App.ViewModels`: `IsBusy`, `EmptyMessage`, `HasError` — no `Title`) before generating code. ViewModels live in `namespace fabrizio.App.ViewModels`, files under `ViewModels/`.
+- Follow CommunityToolkit.Mvvm conventions: `[ObservableProperty]`, `AsyncRelayCommand` / `[RelayCommand]`, minimal code-behind.
+- **API service method = one line** calling a `HttpResultExtensions` helper (`http.GetResultAsync<T>(url)`, `PostResultAsync<T>(url, body)`, `PostResultAsync(url, body)`, `PutResultAsync…`, `DeleteResultAsync(url)`). Each returns `Result` / `Result<T>`, maps a non-2xx `ProblemDetails` to a `BusinessError` and a transport failure to `network_error`. Do NOT hand-roll `try { ReadFromJsonAsync } catch`. Keep the `I{X}Service` interface stable so ViewModels don't change.
+- Interface + implementation in one file under `fabrizio.App/Services/` (e.g. `Trip.cs`). `Services/Abstractions/` is only for cross-cutting state contracts (`IAccountState`).
+- **Root navigation is `INavigationService`** (`GoToApp()` / `GoToLogin()`), injected. Never `Application.Current.MainPage = new AppShell()/new LoginPage()`.
+- **`fabrizio.Shared` DTOs stay pure data.** Computed/display members go on a client wrapper (`TripCardModel`) or the ViewModel.
+- After a create/edit/delete that another screen's list shows, `WeakReferenceMessenger.Default.Send(new {X}ChangedMessage())`; the list VM `Register`s for it and reloads on next appearance (see `TripsChangedMessage`).
+- A login-style call that must not carry a token / must not trigger logout-on-401 uses a standalone `HttpClient` (see `AuthService`), not the typed client + `TokenHandler`.
+- Register in `MauiProgram.cs`: `AddTransient` for Pages, ViewModels, `AppShell`; `AddSingleton` for `IAccountState`, `AuthService` (+ `AddSingleton<IAuthService>(sp => sp.GetRequiredService<AuthService>())`), `INavigationService`; `AddHttpClient<TInterface, TImpl>(...).AddHttpMessageHandler<TokenHandler>()` for API services.
 
 XAML and binding
 ----------------
-- Pages should bind to ViewModels via DI-resolved instances. Do not set BindingContext in XAML; resolve Page from DI when navigating or when constructing AppShell.
-- Keep UI code declarative in XAML. Move logic to ViewModel and services.
+- Each Page ctor takes its ViewModel via DI and sets `BindingContext` in the code-behind: `public XPage(XViewModel vm) { InitializeComponent(); BindingContext = vm; }`.
+- Keep UI declarative in XAML; logic in ViewModel / services.
 
 NuGet package policy
 --------------------
@@ -33,4 +39,4 @@ Verification
 
 Handoff
 -------
-When a backend API contract is provided, implement client-side DTOs (share via `fabrizio.DTO/DTO/` if possible; assembly is `fabrizio.Shared`) and wire calls through typed HttpClient services. Provide sample usage in a ViewModel and a minimal Page.
+When a backend API contract is provided: reuse the shared DTOs from `fabrizio.Shared` (add client-only ones only if the shape genuinely differs); add/extend an `I{X}Service` whose methods each delegate to a `HttpResultExtensions` call; wire it into a ViewModel and a minimal Page. Do not duplicate DTOs that already exist server-side.

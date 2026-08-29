@@ -3,13 +3,21 @@ Skill: add-authenticated-http-client
 
 Purpose
 -------
-Add a typed HttpClient service that uses the existing TokenHandler message handler for authenticated API calls.
+Add a MAUI API service. Assumes [.github/docs/CONVENTIONS.md](../../docs/CONVENTIONS.md).
 
 Steps
 -----
-1. Define service interface and implementation in `fabrizio.App/Services/` in the same file (e.g., `Example.cs` contains both `IExampleService` and `ExampleService`). Note: `Services/Abstractions/` is reserved for cross-cutting state contracts like `IAccountState`; most API service interfaces live alongside their implementations in `Services/`.
-2. Implement `ExampleService` in `fabrizio.App/Services/Example.cs` that accepts `HttpClient` in constructor and calls JSON endpoints.
-3. Register service in `MauiProgram.cs` using a typed client and the `TokenHandler`, matching existing services:
+1. Interface + implementation in one file under `fabrizio.App/Services/` (e.g. `Example.cs` has both `IExampleService` and `ExampleService`). `Services/Abstractions/` is only for cross-cutting state contracts (`IAccountState`).
+2. `ExampleService` takes `HttpClient` in its constructor. **Each method is one line** delegating to a `HttpResultExtensions` helper:
+   ```csharp
+   public Task<Result<ThingDto>> GetThing(Guid id) => _http.GetResultAsync<ThingDto>($"api/things/{id}");
+   public Task<Result>          AddThing(CreateThingRequest r) => _http.PostResultAsync("api/things", r);
+   public Task<Result<ThingDto>> UpdateThing(Guid id, UpdateThingRequest r) => _http.PutResultAsync<ThingDto>($"api/things/{id}", r);
+   public Task<Result>          DeleteThing(Guid id) => _http.DeleteResultAsync($"api/things/{id}");
+   ```
+   The helper reads a non-2xx `ProblemDetails` into a `BusinessError` and a transport failure into `network_error` — do not add your own `try/catch`.
+   For a list endpoint the wire shape is a bare `PagedResult<T>`: `_http.GetResultAsync<PagedResult<T>>(url)`, then map to whatever the interface exposes.
+3. Register in `MauiProgram.cs` as a typed client with the `TokenHandler`:
    ```csharp
    builder.Services.AddHttpClient<IExampleService, ExampleService>(client =>
    {
@@ -17,10 +25,11 @@ Steps
 	   client.DefaultRequestHeaders.Add("Accept", "application/json");
    }).AddHttpMessageHandler<TokenHandler>();
    ```
-4. Inject `IExampleService` into ViewModels and use methods. Handle exceptions and propagate meaningful messages to UI. Services may return `Result<T>` or `PagedResult<T>` from the API; deserialize these into `ApiProblem` on error and rewrap in `Result<T>` for UI consumption (see how existing `ITripService` and `IProfileService` handle this in `fabrizio.App/Services/`).
+   Exception: a login-style call that must NOT carry a token / must NOT trigger logout-on-401 uses a standalone `HttpClient` (see `AuthService`), not this pattern.
+4. Inject `IExampleService` into ViewModels; act on the returned `Result` (`IsSuccess`, `Value`, `Error?.Message`).
 
 Verification
 ------------
-- Build the MAUI project: `dotnet workload install maui` (first time), then `dotnet build fabrizio.App/fabrizio.App.csproj`.
-- Run against running API (local or deployed). Verify token is attached by inspecting requests or using a proxy (e.g., Fiddler or Charles).
-- This solution has no automated test project. Verify changes by testing the app manually on your platform target.
+- Build: `dotnet build fabrizio.App/fabrizio.App.csproj` (needs the `maui` workload; CI does not build MAUI).
+- Run against the API; confirm the token is attached (a proxy such as Fiddler/Charles) and errors surface as readable messages.
+- No automated test project — verify by running the app.

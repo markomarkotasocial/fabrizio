@@ -3,7 +3,7 @@ Skill: add-crud-endpoint
 
 Purpose
 -------
-Guided steps to add a new CRUD resource to this solution following its conventions.
+Guided steps to add a new CRUD resource. Assumes [.github/docs/CONVENTIONS.md](../../docs/CONVENTIONS.md) — use the helpers named there.
 
 Steps
 -----
@@ -11,16 +11,24 @@ Steps
 2. Add a `DbSet<TEntity>` to `_AppDbContext.cs` (locate file and use exact namespace).
 3. Create EF migration:
    - `dotnet ef migrations add Add{EntityName} -p fabrizio.DAL -s fabrizio.API`
-   - Do NOT run `dotnet ef database update`. Migrations are applied by the developer after review. Include the exact migration command in the PR description.
-4. Add repository interface `I{Entity}Repository` and implementation `{Entity}Repository` in `fabrizio.Repository` (one file per aggregate; interface + implementation in the same file). Follow existing patterns: QueryAll, GetById, Add, Delete, SaveChangesAsync.
-5. Add DTO(s) in `fabrizio.DTO` when DTO shape differs from entity. Remember: the project is named `fabrizio.Shared`; DTOs go in `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); contracts go in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`).
-6. Add mapping methods in `fabrizio.BLL` service (one file per aggregate, e.g., `Trip.cs`). Keep service thin but own domain rules.
-7. Register repository and BLL service in `fabrizio.API/Program.cs` using `AddScoped<I{Repository}, {Repository}>` and `AddScoped<I{Service}, {Service}>`.
-8. Add controller in `fabrizio.API/Controllers` named `{EntityPlural}Controller` (e.g., `TripsController`) with `[Route("api/{entity-plural}")]` and RESTful endpoints: GET (list), GET (by id), POST, PUT, DELETE. BLL service methods should return `Result<T>` or `PagedResult<T>` for expected business errors; controllers translate via `result.ToProblem()` (see `fabrizio.API/Extensions/ResultExtensions.cs`). Use DTOs for input/output.
-9. Add Swagger comments and example responses. Protect endpoints with `[Authorize]` if needed. Extract accountId from claims: `User.FindFirstValue("accountId")` + null check and `int.TryParse` guard; return `Unauthorized()` on failure.
-10. Build the API project: `dotnet build fabrizio.API/fabrizio.API.csproj -c Release` (mirrors CI in `.github/workflows/master_fabrizio.yml`, which only builds the API project). Create a draft PR with changes and migration files. Include example curl snippets and the exact `migrations add` command in PR description.
+   - Do NOT run `dotnet ef database update`. The developer applies migrations after review. Put the exact command in the PR description.
+4. Repository in `fabrizio.Repository` (one file, interface + class):
+   - `public interface I{Entity}Repository : IRepository<{Entity}> { /* only entity-specific queries */ }`
+   - `public class {Entity}Repository : RepositoryBase<{Entity}>, I{Entity}Repository { public {Entity}Repository(AppDbContext c) : base(c) { } ... }`
+   - `Add` / `Delete` / `SaveChangesAsync` and `Context` come from the base — do not re-declare them. Add `GetById`, any `HasOverlapping…`, and `IQueryable<{Entity}> QueryAll(...)` only if a composable read is needed.
+5. DTO(s) in `fabrizio.DTO/DTO/` (namespace `fabrizio.Shared.DTO`); contracts in `fabrizio.DTO/Contracts/` (namespace `fabrizio.Shared.Contracts`). Project assembly is `fabrizio.Shared`. **No `[Required]` / data annotations** on request DTOs — the BLL validates.
+6. Mapping in `fabrizio.BLL/Mapping/{Entity}MappingExtensions.cs`: `public static {Entity}Dto ToDto(this {Entity} e) => new() { ... };`. The service calls `entity.ToDto()` — never inline `new {Entity}Dto { ... }`.
+7. BLL service in `fabrizio.BLL/{Entity}.cs` (namespace `fabrizio.BLL`), constructor takes only `I{Entity}Repository` (+ other BLL services). Methods return `Result` / `Result<T>` / `Result<PagedResult<T>>`. For a resource scoped to another aggregate (e.g. a trip), reuse a `LoadOwned…Async` guard for the 404 / 403 / cancelled ladder.
+8. Register in `fabrizio.API/Program.cs`: `AddScoped<I{Entity}Repository, {Entity}Repository>()` and `AddScoped<I{Entity}Service, {Entity}Service>()`.
+9. Controller `fabrizio.API/Controllers/{EntityPlural}Controller` (e.g. `TripsController`), `: AuthorizedControllerBase`, `[Route("api/{entity-plural}")]`, RESTful actions. Each action:
+   ```csharp
+   if (!TryGetAccountId(out var accountId)) return Unauthorized();
+   var result = await _service.X(accountId, ...);
+   return result.ToActionResult();
+   ```
+10. Build: `dotnet build fabrizio.API/fabrizio.API.csproj -c Release` (mirrors CI). Draft PR with the diff, migration files, example curl snippets, and the exact `migrations add` command.
 
 Notes
 -----
-- Follow existing naming conventions and DI lifetimes. Keep controllers thin; all domain logic belongs in BLL.
-- The repository pattern in this codebase exposes `IQueryable<T>` from `QueryAll()` for read operations; upper layers (BLL) apply filtering/sorting/paging. This is a known trade-off (leaky abstraction) accepted to avoid overloading repository methods.
+- Controllers stay one-liner-thin; all domain logic and field validation is in the BLL.
+- `IQueryable<T>` from `QueryAll()` is the accepted read seam — BLL applies filtering/sorting/paging over it.

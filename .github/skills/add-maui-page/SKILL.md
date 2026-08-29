@@ -3,20 +3,20 @@ Skill: add-maui-page
 
 Purpose
 -------
-Steps to add a .NET MAUI Page + ViewModel and register them with DI and navigation in this repository.
+Add a .NET MAUI Page + ViewModel with DI and navigation. Assumes [.github/docs/CONVENTIONS.md](../../docs/CONVENTIONS.md).
 
 Steps
 -----
-1. Create the XAML Page under `fabrizio.App/Pages/<Area>/<Name>Page.xaml` and code-behind `.xaml.cs`.
-2. Create `NameViewModel` in `fabrizio.App/ViewModels`, inherit from `BaseViewModel` (located in `_BaseViewModel.cs`, namespace `fabrizio.App.ViewModels`).
-   - Use CommunityToolkit.Mvvm attributes:
-	 - `[ObservableProperty]` on backing fields
-	 - `AsyncRelayCommand` for async actions
-   - BaseViewModel provides: `IsBusy`, `EmptyMessage`, `HasError` (do NOT add `Title`).
-3. Register Page and ViewModel in `MauiProgram.cs` using `AddTransient<NamePage>()` and `AddTransient<NameViewModel>()`. Follow existing registration patterns.
-4. If the page consumes an API, add or use a typed HttpClient service (e.g., `IExampleService`) and inject it into the ViewModel.
-5. Bind XAML to ViewModel properties and commands. Prefer no code-behind logic beyond `InitializeComponent` and small UI wiring.
-6. Build the MAUI app: `dotnet workload install maui` (first time), then `dotnet build fabrizio.App/fabrizio.App.csproj` (CI does not build MAUI, so local build is the only automated check). Test navigation by resolving Page from DI and navigating via AppShell or navigation service.
+1. Create `fabrizio.App/Pages/<Area>/<Name>Page.xaml` + code-behind. The code-behind ctor injects the ViewModel and sets `BindingContext`:
+   ```csharp
+   public NamePage(NameViewModel vm) { InitializeComponent(); BindingContext = vm; }
+   ```
+2. Create `NameViewModel` in `fabrizio.App/ViewModels/` (namespace `fabrizio.App.ViewModels`), inherit `BaseViewModel` (`_BaseViewModel.cs`: `IsBusy`, `EmptyMessage`, `HasError` — no `Title`). Use `[ObservableProperty]` and `[RelayCommand]` / `AsyncRelayCommand`.
+3. Register in `MauiProgram.cs`: `AddTransient<NamePage>()` and `AddTransient<NameViewModel>()`. Register a flow route in `AppShell.xaml.cs` (`Routing.RegisterRoute(...)`) if it is not a tab.
+4. If the page calls the API, inject an `I{X}Service` whose methods delegate to `HttpResultExtensions` (see `add-authenticated-http-client`). If the page shows computed values over a DTO list, wrap items in a client model (like `TripCardModel`) rather than putting logic on the DTO.
+5. If the page creates/edits/deletes data that another screen's list shows, `WeakReferenceMessenger.Default.Send(new {X}ChangedMessage())` on success before navigating away.
+6. Bind XAML to ViewModel members. Code-behind stays at `InitializeComponent` + minimal UI wiring.
+7. Build: `dotnet build fabrizio.App/fabrizio.App.csproj` (needs the `maui` workload; CI does not build MAUI). Test navigation on a device/emulator.
 
 Example ViewModel template
 -------------------------
