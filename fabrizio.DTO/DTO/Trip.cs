@@ -40,28 +40,6 @@ namespace fabrizio.Shared.DTO
 
 
 		public IEnumerable<DestinationDto> Destinations { get; set; } = Enumerable.Empty<DestinationDto>();
-
-
-		#region UI Getters
-
-		public bool IsCurrent => StartDate.HasValue && EndDate.HasValue && DateTime.Today >= StartDate.Value.Date && DateTime.Today <= EndDate.Value.Date;
-
-		public bool ShowCountdown => StartDate.HasValue && StartDate.Value.Date > DateTime.Today;
-
-		public int DaysLeft => StartDate.HasValue ? Math.Max(0, (StartDate.Value.Date - DateTime.Today).Days) : 0;
-
-		public IEnumerable<DestinationDto> VisibleDestinations => Destinations?.Take(2) ?? Enumerable.Empty<DestinationDto>();
-
-		public int HiddenDestinationsCount => Destinations == null ? 0 : Math.Max(0, Destinations.Count() - 2);
-
-		public bool HasHiddenDestinations => HiddenDestinationsCount > 0;
-
-		public string DateRangeText => (StartDate.HasValue && EndDate.HasValue) ? ((StartDate.Value.Year != DateTime.UtcNow.Year || EndDate.Value.Year != DateTime.UtcNow.Year) ? $"{StartDate:dd MMM yyyy} — {EndDate:dd MMM yyyy}" : $"{StartDate:dd MMM} — {EndDate:dd MMM}") : string.Empty;
-
-
-		#endregion UI Getters
-
-
 	}
 
 	public class CreateTripRequest

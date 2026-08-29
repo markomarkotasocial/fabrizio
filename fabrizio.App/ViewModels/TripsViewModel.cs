@@ -22,7 +22,7 @@ namespace fabrizio.App.ViewModels
 		private readonly ITripService _tripService;
 
 
-		public ObservableCollection<TripListItemDto> Trips { get; } = new();
+		public ObservableCollection<TripCardModel> Trips { get; } = new();
 		public ObservableCollection<FilterChip> Filters { get; } = new()
 		{
 			new FilterChip { Name = "Upcoming", Filter = TripFilter.CurrentAndUpcoming, IsSelected = true },
@@ -89,7 +89,7 @@ namespace fabrizio.App.ViewModels
 		
 		private bool _isOpeningDetail; // double tap protection
 		[RelayCommand]
-		private async Task OpenTrip(TripListItemDto trip)
+		private async Task OpenTrip(TripCardModel trip)
 		{
 			if (trip == null || _isOpeningDetail) return;
 			try
@@ -127,7 +127,7 @@ namespace fabrizio.App.ViewModels
 		}
 
 		[RelayCommand]
-		private async Task DeleteTrip(TripListItemDto trip)
+		private async Task DeleteTrip(TripCardModel trip)
 		{
 			if (trip == null) return;
 
@@ -171,8 +171,8 @@ namespace fabrizio.App.ViewModels
 				{
 					// Prevent duplicates in case of backend paging inconsistencies
 					// or data changes between requests (e.g. new items inserted).
-					if (!Trips.Any(x => x.Id == t.Id)) 
-						Trips.Add(t);
+					if (!Trips.Any(x => x.Id == t.Id))
+						Trips.Add(new TripCardModel(t));
 				}
 
 				_skip += items.Count;
