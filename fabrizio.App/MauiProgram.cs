@@ -29,11 +29,12 @@ namespace fabrizio.App
 			builder.Logging.AddDebug();
 #endif
             // 🟢 Services
-            builder.Services.AddSingleton<AppShell>();
+            builder.Services.AddTransient<AppShell>();
             builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddSingleton<IAuthService>(sp => sp.GetRequiredService<AuthService>());
+            builder.Services.AddSingleton<INavigationService, NavigationService>();
             builder.Services.AddTransient<TokenHandler>();
             builder.Services.AddSingleton<IAccountState, AccountState>();
-            builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddHttpClient<ITripService, TripService>(client =>
             {
                 client.BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/");

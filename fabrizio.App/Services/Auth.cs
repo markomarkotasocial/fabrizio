@@ -1,12 +1,9 @@
-﻿using fabrizio.App.Pages.Auth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+
+using fabrizio.Shared.DTO;
 
 namespace fabrizio.App.Services
 {
@@ -29,7 +26,14 @@ namespace fabrizio.App.Services
 			BaseAddress = new Uri("https://fabrizio-ftdpcwhsh5enhscn.westeurope-01.azurewebsites.net/")
 		};
 
+		private readonly INavigationService _navigation;
+
 		private bool _isLoggingOut;
+
+		public AuthService(INavigationService navigation)
+		{
+			_navigation = navigation;
+		}
 
 		public async Task LogoutAsync()
 		{
@@ -39,44 +43,25 @@ namespace fabrizio.App.Services
 			try
 			{
 				SecureStorage.Remove("jwt_token");
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					Application.Current!.MainPage = new LoginPage();
-				});
+				_navigation.GoToLogin();
 			}
 			finally
 			{
 				_isLoggingOut = false;
 			}
 		}
-		
+
 		public async Task LoginAsync(string email, string password)
 		{
-			var response = await _httpClient.PostAsJsonAsync("api/accounts/login", new
-			{
-				email,
-				password
-			});
+			var response = await _httpClient.PostAsJsonAsync("api/accounts/login", new { email, password });
 
 			if (!response.IsSuccessStatusCode) throw new Exception("Invalid credentials");
 
-			var json = await response.Content.ReadAsStringAsync();
-			using var doc = JsonDocument.Parse(json);
+			var body = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+			if (string.IsNullOrWhiteSpace(body?.Token)) throw new Exception("Login response missing token");
 
-			if (!doc.RootElement.TryGetProperty("token", out var tokenProp) && !doc.RootElement.TryGetProperty("Token", out tokenProp))
-			{
-				throw new Exception("Login response missing token");
-			}
-
-			var token = tokenProp.GetString();
-			if (string.IsNullOrWhiteSpace(token)) throw new Exception("Empty token");
-
-			await SecureStorage.SetAsync("jwt_token", token);
-
-			if (Application.Current != null)
-			{
-				Application.Current.MainPage = new AppShell();
-			}
+			await SecureStorage.SetAsync("jwt_token", body.Token);
+			_navigation.GoToApp();
 		}
 
 		public async Task<bool> IsAuthenticatedAsync()
@@ -84,8 +69,5 @@ namespace fabrizio.App.Services
 			var token = await SecureStorage.GetAsync("jwt_token");
 			return !string.IsNullOrWhiteSpace(token);
 		}
-
 	}
-
-
 }
