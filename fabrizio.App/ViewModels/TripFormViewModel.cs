@@ -11,10 +11,10 @@ namespace fabrizio.App.ViewModels
 {
 	public partial class DestinationItemViewModel : ObservableObject
 	{
-		public Guid? Id { get; set; }
-		[ObservableProperty] private string name;
+		[ObservableProperty] private Guid? id;
+		[ObservableProperty] private string name = string.Empty;
 		[ObservableProperty] private int order;
-		public bool IsNew { get; set; }
+		[ObservableProperty] private bool isNew;
 	}
 
 
@@ -142,6 +142,12 @@ namespace fabrizio.App.ViewModels
 					return;
 				}
 
+				// Commit any destination rows that were typed but never unfocused.
+				var pending = (Destinations ?? new ObservableCollection<DestinationItemViewModel>())
+					.Where(d => d.IsNew && !string.IsNullOrWhiteSpace(d.Name)).ToList();
+				foreach (var item in pending)
+					await CreateDestinationAsync(item);
+
 				WeakReferenceMessenger.Default.Send(new TripsChangedMessage());
 				await Shell.Current.GoToAsync("..");
 			}
@@ -202,18 +208,27 @@ namespace fabrizio.App.ViewModels
 
 		public async Task CreateDestinationAsync(DestinationItemViewModel item)
 		{
-			var result = await _tripService.AddDestination(TripId, new CreateDestinationRequest	{ Name = item.Name });
-			if (!result.IsSuccess) return;
+			if (item == null || !item.IsNew || string.IsNullOrWhiteSpace(item.Name)) return;
 
-			item.Id = result?.Value?.Id;
+			var result = await _tripService.AddDestination(TripId, new CreateDestinationRequest { Name = item.Name.Trim() });
+			if (!result.IsSuccess)
+			{
+				await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Could not save destination.", "OK");
+				return;
+			}
+
+			item.Id = result.Value!.Id;
+			item.Order = result.Value.Order;
 			item.IsNew = false;
 		}
 
 		public async Task UpdateDestinationAsync(DestinationItemViewModel item)
 		{
-			if (item.IsNew || item.Id is not Guid id) return;
-			var result = await _tripService.UpdateDestination(TripId, new UpdateDestinationRequest	{ Id = id, Name = item.Name	});
-			if (!result.IsSuccess) return;
+			if (item == null || item.IsNew || item.Id is not Guid id || string.IsNullOrWhiteSpace(item.Name)) return;
+
+			var result = await _tripService.UpdateDestination(TripId, new UpdateDestinationRequest { Id = id, Name = item.Name.Trim() });
+			if (!result.IsSuccess)
+				await Shell.Current.DisplayAlert("Error", result.Error?.Message ?? "Could not update destination.", "OK");
 		}
 
 

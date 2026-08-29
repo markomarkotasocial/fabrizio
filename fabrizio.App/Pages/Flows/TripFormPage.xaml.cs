@@ -40,16 +40,22 @@ namespace fabrizio.App.Pages.Flows
 
 			var vm = (TripFormViewModel)BindingContext;
 
-			if (item.IsNew && string.IsNullOrWhiteSpace(item.Name))
+			// Read straight off the Entry: the TwoWay binding may not have pushed
+			// the latest text into item.Name yet by the time Unfocused fires.
+			var name = entry.Text?.Trim() ?? string.Empty;
+			item.Name = name;
+
+			if (string.IsNullOrWhiteSpace(name))
 			{
-				vm.Destinations.Remove(item);
+				if (item.IsNew)
+					vm.Destinations.Remove(item);
 				return;
 			}
 
-			if (string.IsNullOrWhiteSpace(item.Name)) return;
-
-			if (item.IsNew)	await vm.CreateDestinationAsync(item);
-			else await vm.UpdateDestinationAsync(item);
+			if (item.IsNew)
+				await vm.CreateDestinationAsync(item);
+			else
+				await vm.UpdateDestinationAsync(item);
 		}
 
 		private void OnEntryLoaded(object sender, EventArgs e)
